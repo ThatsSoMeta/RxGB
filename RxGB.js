@@ -1,9 +1,17 @@
 var modalContainer = document.createElement("div"),
-  logoContainer = document.createElement("div"),
+  modalToggleButton = document.createElement("button"),
+  originalComboContainer = document.createElement("div"),
+  origTextColorInputLabel = document.createElement("label"),
+  origTextDiv = document.createElement("div"),
+  origTextColorInput = document.createElement("input"),
+  origTextSwatch = document.createElement("div"),
+  origBgColorInputLabel = document.createElement("label"),
+  origBgDiv = document.createElement("div"),
+  origBgColorInput = document.createElement("input"),
+  origBgSwatch = document.createElement("div"),
+  colorSubmitButton = document.createElement("button"),
   newTextColorSuggestionContainer = document.createElement("div"),
   newBgColorSuggestionContainer = document.createElement("div"),
-  logoImg = document.createElement("img"),
-  originalComboContainer = document.createElement("div"),
   newComboContainer1 = document.createElement("div"),
   newComboContainer2 = document.createElement("div"),
   resultContainer = document.createElement("div"),
@@ -11,10 +19,7 @@ var modalContainer = document.createElement("div"),
   contrastOptionContainer = document.createElement("div"),
   AARadio = document.createElement("input"),
   AAARadio = document.createElement("input"),
-  colorSubmitButton = document.createElement("button"),
-  origTextSwatch = document.createElement("div"),
-  origBgSwatch = document.createElement("div"),
-  modalToggleButton = document.createElement("button"),
+  rxgbLogoURL = "https://i.ibb.co/T22Nc8J/rxgb-logo-wknd.png",
   wkndDarkBlue = "#303D78",
   wkndLightBlue = "#3D54CC",
   wkndGreen = "#24B79D",
@@ -24,19 +29,17 @@ var modalContainer = document.createElement("div"),
   wkndBrown = "#CC9965",
   black = "#000",
   white = "#FFF",
-  rxgbLogoURL = "https://i.ibb.co/T22Nc8J/rxgb-logo-wknd.png",
+  borderWidth = "3px",
   AA = 4.5,
   AAA = 7,
   RGB = "rgb",
   HEX = "hex",
   rgbRegex = /\s*\d+,\s*\d+,\s*\d+/gi,
-  hexRegex = /#?[0-9a-f]{6}/gi;
-
-var allContainers = [
+  hexRegex = /#?[0-9a-f]{6}/gi,
+  allContainers = [
     modalContainer,
     newTextColorSuggestionContainer,
     newBgColorSuggestionContainer,
-    logoContainer,
     originalComboContainer,
     newComboContainer1,
     newComboContainer2,
@@ -99,16 +102,18 @@ modalContainer.style.backgroundImage = `url(${rxgbLogoURL})`;
 modalContainer.style.backgroundRepeat = "no-repeat";
 modalContainer.style.backgroundSize = "45px";
 modalContainer.style.backgroundPosition = "center left 15px";
+modalContainer.style.boxShadow = "0 0 10px black";
 modalContainer.style.color = "black";
 modalContainer.style.fontSize = "16px";
-modalContainer.style.border = "1px solid black";
+modalContainer.style.border = `${borderWidth} solid black`;
 modalContainer.style.borderRadius = "10px";
 modalContainer.style.zIndex = "2147483647";
 modalContainer.style.position = "fixed";
 modalContainer.style.bottom = "5px";
 modalContainer.style.right = "5px";
 modalContainer.style.padding = "10px";
-modalContainer.style.transition = "height .3s ease-in-out, width .3s ease-in-out";
+modalContainer.style.transition =
+  "height .3s ease-in-out, width .3s ease-in-out";
 modalContainer.style.minWidth = "100px";
 modalContainer.style.minHeight = "35px";
 modalContainer.style.alignItems = "flex-end";
@@ -116,8 +121,6 @@ modalContainer.style.alignItems = "flex-end";
 modalToggleButton.innerText = "+";
 modalToggleButton.style.fontSize = "16px";
 modalToggleButton.style.fontWeight = "bold";
-// modalToggleButton.style.right = "5px";
-// modalToggleButton.style.position = "absolute";
 modalToggleButton.style.cursor = "pointer";
 modalToggleButton.style.backgroundColor = "transparent";
 modalToggleButton.style.border = "none";
@@ -131,94 +134,49 @@ colorSubmitButton.style.color = "black";
 colorSubmitButton.style.fontWeight = "bold";
 colorSubmitButton.style.padding = "5px 10px";
 colorSubmitButton.style.margin = "5px";
-colorSubmitButton.style.border = "1px solid black";
+colorSubmitButton.style.border = `${borderWidth} solid black`;
 colorSubmitButton.style.borderRadius = "5px";
 colorSubmitButton.style.cursor = "pointer";
-colorSubmitButton.onclick = function () {
+colorSubmitButton.onclick = submitColors;
+
+function submitColors() {
   let contrastTarget = document.querySelector(
       'input[name="contrast-target"]:checked'
     ).value,
-    textColor = document.querySelector("input#orig-text-color-input").value,
-    bgColor = document.querySelector("input#orig-bg-color-input").value;
-  if (textColor === "" || bgColor === "") {
+    textColorInput = document.querySelector("input#orig-text-color-input").value,
+    bgColorInput = document.querySelector("input#orig-bg-color-input").value,
+    origTextRgb,
+    origBgRgb;
+  if (textColorInput === "" || bgColorInput === "") {
     console.log("Please select both colors.");
   } else {
-    let origTextRgb = getColor(textColor),
-      origBgRgb = getColor(bgColor);
-    console.log({ contrastTarget, textColor, bgColor, origTextRgb, origBgRgb });
+    origTextRgb = getColor(textColorInput),
+    origBgRgb = getColor(bgColorInput);
+    console.log({ contrastTarget, textColor: textColorInput, bgColor: bgColorInput, origTextRgb, origBgRgb });
   }
-};
+  let result = getCompliantRGB(origTextRgb, origBgRgb, contrastTarget);
+  console.log("Get Complians RGB:");
+  console.log({result});
+}
 
-function toggleContainerDisplay () {
+function toggleContainerDisplay() {
   if (jQuery(".modal-container").hasClass("collapsed")) {
     modalContainer.classList.remove("collapsed");
     modalContainer.classList.add("expanded");
     modalContainer.style.backgroundPosition = "center top 10px";
-    modalToggleButton.innerText = "minimize";
+    modalContainer.style.alignItems = "flex-start";
+    modalToggleButton.innerText = "hide";
     modalToggleButton.style.fontSize = "10px";
     jQuery(".original-colors, .original-colors *").css("display", "flex");
   } else {
     modalContainer.classList.remove("expanded");
     modalContainer.classList.add("collapsed");
     modalContainer.style.backgroundPosition = "center left 10px";
+    modalContainer.style.alignItems = "flex-end";
     modalToggleButton.innerText = "+";
     modalToggleButton.style.fontSize = "16px";
     jQuery(".original-colors, .result-colors").css("display", "none");
   }
-}
-
-for (let element of comboContainers) {
-  let header = document.createElement("h6");
-  if (!element.classList.contains("rxgb")) {
-    element.classList.add("rxgb");
-  }
-  element.style.borderRadius = "10px";
-  element.style.transition = "all .3s";
-  header.style.textAlign = "center";
-  header.style.fontWeight = "bold";
-  header.style.fontSize = "12px";
-  element.style.display = "none";
-  if (element === originalComboContainer) {
-    header.innerText = "Original Color";
-    header.style.marginBottom = "5px";
-    element.prepend(header);
-    element.classList.add("original-colors")
-    element.style.backgroundColor = "lightgray";
-    element.style.border = "1px solid darkgray";
-    element.style.padding = "10px";
-    element.style.marginTop = "30px";
-    modalContainer.append(element);
-  } else if (element === resultContainer) {
-    header.innerText = "Results";
-    header.style.marginBottom = "5px";
-    element.style.marginTop = "30px";
-    element.prepend(header);
-    element.classList.add("result-colors");
-  } else if (element === newComboContainer1) {
-    header.innerText = "Option 1";
-    element.append(header);
-    resultContainer.append(element);
-  } else if (element === newComboContainer2) {
-    header.innerText = "Option 2";
-    element.append(header);
-    resultContainer.append(element);
-  }
-}
-modalContainer.append(resultContainer);
-
-let origTextColorInput = document.createElement("input"),
-  origTextColorInputLabel = document.createElement("label"),
-  origBgColorInput = document.createElement("input"),
-  origBgColorInputLabel = document.createElement("label");
-
-origTextColorInput.id = "orig-text-color-input";
-
-for (let element of [origBgSwatch, origTextSwatch]) {
-  element.style.width = "35px";
-  element.style.border = "1px solid black";
-  element.style.borderRadius = "5px";
-  element.style.height = "35px";
-  element.style.backgroundColor = "white";
 }
 
 function updateSwatch(e) {
@@ -237,9 +195,58 @@ function updateSwatch(e) {
   console.log({ hex, rgb });
 }
 
+for (let element of comboContainers) {
+  let header = document.createElement("h6");
+  if (!element.classList.contains("rxgb")) {
+    element.classList.add("rxgb");
+  }
+  element.style.borderRadius = "10px";
+  element.style.transition = "all .3s";
+  header.style.textAlign = "center";
+  header.style.fontWeight = "bold";
+  header.style.fontSize = "12px";
+  element.style.display = "none";
+  if (element === originalComboContainer) {
+    header.innerText = "Original Color";
+    header.style.marginBottom = "5px";
+    element.prepend(header);
+    element.classList.add("original-colors");
+    element.style.backgroundColor = "lightgray";
+    element.style.border = `${borderWidth} solid darkgray`;
+    element.style.padding = "10px";
+    element.style.marginTop = "15px";
+    modalContainer.append(element);
+  } else if (element === resultContainer) {
+    header.innerText = "Results";
+    header.style.marginBottom = "5px";
+    element.style.marginTop = "15px";
+    element.prepend(header);
+    element.classList.add("result-colors");
+  } else if (element === newComboContainer1) {
+    header.innerText = "Option 1";
+    element.append(header);
+    resultContainer.append(element);
+  } else if (element === newComboContainer2) {
+    header.innerText = "Option 2";
+    element.append(header);
+    resultContainer.append(element);
+  }
+}
+modalContainer.append(resultContainer);
+
+origTextColorInput.id = "orig-text-color-input";
+
+for (let swatch of [origBgSwatch, origTextSwatch]) {
+  swatch.style.backgroundColor = "white";
+  swatch.style.borderRadius = "50%";
+  swatch.style.border = `${borderWidth} solid black`;
+  swatch.style.height = "35px";
+  swatch.style.width = "35px";
+}
+
 for (let input of [origTextColorInput, origBgColorInput]) {
   input.style.textAlign = "center";
-  input.style.border = "1px solid black";
+  input.style.border = `${borderWidth} solid black`;
   input.style.borderRadius = "5px";
   input.style.height = "35px";
   input.placeholder = "rgb() or #Hex";
@@ -257,9 +264,6 @@ origBgColorInput.id = "orig-bg-color-input";
 origBgColorInputLabel.setAttribute("for", "orig-bg-color-input");
 origBgColorInputLabel.innerText = "Background:";
 origBgColorInputLabel.style.fontSize = "10px";
-
-let origTextDiv = document.createElement("div");
-let origBgDiv = document.createElement("div");
 
 origTextDiv.append(origTextColorInput, origTextSwatch);
 origBgDiv.append(origBgColorInput, origBgSwatch);
@@ -504,11 +508,10 @@ function HSLtoRGB(hue, saturation, luminance, goalLuminanceFactor = 1) {
 
 function getCompliantRGB(textRGB, bgRGB, targetContrast = AA) {
   let textLuminance = getLuminance(textRGB[0], textRGB[1], textRGB[2]),
-    bgLuminance = getLuminance(bgRGB[0], bgRGB[1], bgRGB[2]);
-
-  let lighterLum = Math.max(textLuminance, bgLuminance);
-  let darkerLum = Math.min(textLuminance, bgLuminance);
-  let goalTextRGB;
+    bgLuminance = getLuminance(bgRGB[0], bgRGB[1], bgRGB[2]),
+    lighterLum = Math.max(textLuminance, bgLuminance),
+    darkerLum = Math.min(textLuminance, bgLuminance),
+    goalTextRGB = textRGB;
 
   let contrast = Number(
     parseFloat((lighterLum + 0.05) / (darkerLum + 0.05)).toFixed(2)
@@ -530,7 +533,7 @@ function getCompliantRGB(textRGB, bgRGB, targetContrast = AA) {
         targetContrast * darkerLum - 0.05 + 0.05 * targetContrast;
     if (textLuminance === lighterLum) {
       // Text is lighter
-      goalTextRGB = RGBtoHSL(...textRGB, targetLighterLum / lighterLum); // Factor needs adjustment for accuracy
+      goalTextRGB = HSLtoRGB(RGBtoHSL(...textRGB, targetLighterLum / lighterLum)); // Factor needs adjustment for accuracy
       textLuminance = getLuminance(
         goalTextRGB.red,
         goalTextRGB.green,
@@ -541,7 +544,7 @@ function getCompliantRGB(textRGB, bgRGB, targetContrast = AA) {
       contrast = (lighterLum + 0.05) / (darkerLum + 0.05);
     } else {
       // BG is lighter
-      goalTextRGB = RGBtoHSL(...textRGB, targetDarkerLum / darkerLum); // Factor needs adjustment for accuracy
+      goalTextRGB = HSLtoRGB(RGBtoHSL(...textRGB, targetDarkerLum / darkerLum)); // Factor needs adjustment for accuracy
       textLuminance = getLuminance(
         goalTextRGB.red,
         goalTextRGB.green,
