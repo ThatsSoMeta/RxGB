@@ -243,4 +243,4 @@ function getCompliantRGB(textRGB, bgRGB, targetContrast = AA) {
   };
 }
 
-getCompliantRGB(textColor, bgColor, AA);
+// getCompliantRGB(textColor, bgColor, AA);
