@@ -1,4 +1,8 @@
-// Lightness vs luminance: http://www.workwithcolor.com/color-luminance-2233.htm
+/*
+http://www.workwithcolor.com/color-luminance-2233.htm
+https://munsell.com/color-blog/difference-chroma-saturation/
+
+*/
 
 let AA = 4.5,
   AAA = 7,
