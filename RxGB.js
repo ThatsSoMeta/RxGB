@@ -140,23 +140,26 @@ colorSubmitButton.style.cursor = "pointer";
 colorSubmitButton.onclick = submitColors;
 
 function submitColors() {
-  let contrastTarget = document.querySelector(
-      'input[name="contrast-target"]:checked'
+  console.log(`********** submitColors():`);
+  let contrastTarget = Number(
+      document.querySelector('input[name="contrast-target"]:checked').value
+    ),
+    textColorInput = document.querySelector(
+      "input#orig-text-color-input"
     ).value,
-    textColorInput = document.querySelector("input#orig-text-color-input").value,
     bgColorInput = document.querySelector("input#orig-bg-color-input").value,
     origTextRgb,
     origBgRgb;
   if (textColorInput === "" || bgColorInput === "") {
     console.log("Please select both colors.");
   } else {
-    origTextRgb = getColor(textColorInput),
-    origBgRgb = getColor(bgColorInput);
-    console.log({ contrastTarget, textColor: textColorInput, bgColor: bgColorInput, origTextRgb, origBgRgb });
+    (origTextRgb = getColor(textColorInput).rgb),
+      (origBgRgb = getColor(bgColorInput).rgb);
+    // console.log({ contrastTarget, textColorInput, bgColorInput, origTextRgb, origBgRgb });
   }
   let result = getCompliantRGB(origTextRgb, origBgRgb, contrastTarget);
-  console.log("Get Complians RGB:");
-  console.log({result});
+  console.log({ result });
+  console.log(`************* END submitColors() ***************`);
 }
 
 function toggleContainerDisplay() {
@@ -180,19 +183,19 @@ function toggleContainerDisplay() {
 }
 
 function updateSwatch(e) {
-  let hex = getColor(e.target.value, HEX),
-    rgb = getColor(e.target.value, RGB);
+  let hex = getColor(e.target.value).hex,
+    rgb = getColor(e.target.value).rgb;
   if (e.target.id === "orig-text-color-input") {
     origTextSwatch.style.backgroundColor = hex;
   } else {
     origBgSwatch.style.backgroundColor = hex;
   }
-  if (e.target.value.match(hexRegex)) {
-    e.target.value = hex;
-  } else {
-    e.target.value = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
-  }
-  console.log({ hex, rgb });
+  // if (e.target.value.match(hexRegex)) {
+  //   e.target.value = hex;
+  // } else if (e.target.value.match(rgbRegex)) {
+  //   e.target.value = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+  // }
+  // console.log({ hex, rgb });
 }
 
 for (let element of comboContainers) {
@@ -307,31 +310,34 @@ let nonGrayColor = [255, 30, 50];
 let exampleColor = [24, 98, 118];
 let michelle = [37, 184, 157];
 
-function getColor(string, format = HEX) {
-  let rgbArray = [],
+function getColor(input) {
+  let rgb = [],
     hex = "";
-  string = String(string);
-  if (string.match(hexRegex)) {
-    if (string.startsWith("#")) {
-      hex = string;
+  if (typeof input === "string") {
+    if (input.match(hexRegex)) {
+      if (input.startsWith("#")) {
+        hex = input;
+      } else {
+        hex = "#" + input;
+      }
+      let rgbObj = hexToRgb(hex);
+      rgb = [rgbObj.r, rgbObj.g, rgbObj.b];
     } else {
-      hex = "#" + string;
+      for (let value of input.split(",")) {
+        rgb.push(Number(value.replace(/\D/gi, "")));
+      }
+      hex = rgbToHex(...rgb);
     }
-    let rgbObj = hexToRgb(hex);
-    rgbArray = [rgbObj.r, rgbObj.g, rgbObj.b];
   } else {
-    for (let value of string.split(",")) {
-      rgbArray.push(Number(value.replace(/\D/gi, "")));
-    }
-    hex = rgbToHex(...rgbArray);
+    console.log("This is not a string:", input);
+    rgb = input;
+    hex = rgbToHex(...input);
   }
   hex = hex.toUpperCase();
-  let result;
-  format === HEX
-    ? (result = hex)
-    : format === RGB
-    ? (result = rgbArray)
-    : (result = "unknown");
+  let result = {
+    hex,
+    rgb,
+  };
   return result;
 }
 
@@ -375,6 +381,8 @@ function formatRatio(ratio) {
 
 /* https://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl */
 function RGBtoHSL(r, g, b, goalLuminanceFactor = 1) {
+  console.log(`********** RGBtoHSL()`);
+  console.log({ r, g, b, goalLuminanceFactor });
   r /= 255;
   g /= 255;
   b /= 255;
@@ -418,11 +426,15 @@ function RGBtoHSL(r, g, b, goalLuminanceFactor = 1) {
     hue = 0;
   }
   var newRGB = HSLtoRGB(hue, saturation, luminance, goalLuminanceFactor);
-  return newRGB;
+  // return newRGB;
+  console.log("New rgb:", newRGB);
+  console.log(`*********** END RGBtoHSL()`);
+  return { hue, saturation, luminance };
 }
 
 function HSLtoRGB(hue, saturation, luminance, goalLuminanceFactor = 1) {
-  console.log({ goalLuminanceFactor });
+  console.log(`******* HSLtoRGB()`);
+  console.log({ hue, saturation, luminance, goalLuminanceFactor });
   var red,
     green,
     blue,
@@ -446,7 +458,7 @@ function HSLtoRGB(hue, saturation, luminance, goalLuminanceFactor = 1) {
       temporary_1 = luminance + saturation - luminance * saturation;
     }
     temporary_2 = 2 * luminance - temporary_1;
-    hue = hue / 360;
+    hue /= 360;
     temporary_r = hue + 0.333;
     temporary_g = hue;
     temporary_b = hue - 0.333;
@@ -466,7 +478,6 @@ function HSLtoRGB(hue, saturation, luminance, goalLuminanceFactor = 1) {
       temporary_b += 1;
     }
     // Red tests
-    console.log({ red });
     if (6 * temporary_r < 1) {
       red = temporary_2 + (temporary_1 - temporary_2) * 6 * temporary_r;
     } else if (2 * temporary_r < 1) {
@@ -477,6 +488,7 @@ function HSLtoRGB(hue, saturation, luminance, goalLuminanceFactor = 1) {
     } else {
       red = temporary_2;
     }
+    console.log({ red });
     // Green Tests
     if (6 * temporary_g < 1) {
       green = temporary_2 + (temporary_1 - temporary_2) * 6 * temporary_g;
@@ -488,6 +500,7 @@ function HSLtoRGB(hue, saturation, luminance, goalLuminanceFactor = 1) {
     } else {
       green = temporary_2;
     }
+    console.log({ green });
     // Blue Tests
     if (6 * temporary_b < 1) {
       blue = temporary_2 + (temporary_1 - temporary_2) * 6 * temporary_b;
@@ -503,25 +516,34 @@ function HSLtoRGB(hue, saturation, luminance, goalLuminanceFactor = 1) {
     green = Math.round(green * 255);
     blue = Math.round(blue * 255);
   }
+  console.log({ blue });
+  console.log("HSLtoRGB() result:", { red, green, blue });
+  console.log(`******* END HSLtoRGB() *******************`);
   return { red, green, blue };
 }
 
 function getCompliantRGB(textRGB, bgRGB, targetContrast = AA) {
+  console.log("getCompliantRGB():");
+  console.log({ textRGB, bgRGB, targetContrast });
   let textLuminance = getLuminance(textRGB[0], textRGB[1], textRGB[2]),
     bgLuminance = getLuminance(bgRGB[0], bgRGB[1], bgRGB[2]),
     lighterLum = Math.max(textLuminance, bgLuminance),
     darkerLum = Math.min(textLuminance, bgLuminance),
-    goalTextRGB = textRGB;
-
-  let contrast = Number(
-    parseFloat((lighterLum + 0.05) / (darkerLum + 0.05)).toFixed(2)
-  );
+    goalTextRGB = textRGB,
+    contrast = Number(
+      parseFloat((lighterLum + 0.05) / (darkerLum + 0.05)).toFixed(2)
+    );
+  let resultObject = {
+    status: "fail",
+    AA: {},
+    AAA: {},
+  };
   console.log("Initial state:", {
     contrast,
     textRGB,
-    textHex: rgbToHex(textRGB[0], textRGB[1], textRGB[2]),
+    textHex: getColor(textRGB).hex,
     bgRGB,
-    bgHex: rgbToHex(bgRGB[0], bgRGB[1], bgRGB[2]),
+    bgHex: getColor(bgRGB).hex,
     targetContrast,
   });
 
@@ -533,7 +555,9 @@ function getCompliantRGB(textRGB, bgRGB, targetContrast = AA) {
         targetContrast * darkerLum - 0.05 + 0.05 * targetContrast;
     if (textLuminance === lighterLum) {
       // Text is lighter
-      goalTextRGB = HSLtoRGB(RGBtoHSL(...textRGB, targetLighterLum / lighterLum)); // Factor needs adjustment for accuracy
+      goalTextRGB = HSLtoRGB(
+        RGBtoHSL(...textRGB, targetLighterLum / lighterLum)
+      ); // Factor needs adjustment for accuracy
       textLuminance = getLuminance(
         goalTextRGB.red,
         goalTextRGB.green,
@@ -561,9 +585,9 @@ function getCompliantRGB(textRGB, bgRGB, targetContrast = AA) {
   console.log("New state:", {
     contrast: ratio,
     textRGB: [goalTextRGB.red, goalTextRGB.green, goalTextRGB.blue],
-    textHex: rgbToHex(goalTextRGB.red, goalTextRGB.green, goalTextRGB.blue),
+    textHex: getColor(rgbToHex(goalTextRGB.red, goalTextRGB.green, goalTextRGB.blue)).hex,
     bgRGB,
-    bgHex: rgbToHex(bgRGB[0], bgRGB[1], bgRGB[2]),
+    bgHex: getColor(rgbToHex(bgRGB[0], bgRGB[1], bgRGB[2])).hex,
   });
   return {
     ratio,
