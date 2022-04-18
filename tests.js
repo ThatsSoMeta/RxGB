@@ -1,4 +1,5 @@
 /*
+LOGIC
 http://www.workwithcolor.com/color-luminance-2233.htm
 https://munsell.com/color-blog/difference-chroma-saturation/
 
@@ -8,8 +9,10 @@ let AA = 4.5,
   AAA = 7,
   RGB = "rgb",
   HEX = "hex",
+  HSL = "hsl",
   rgbRegex = /\s*\d+,\s*\d+,\s*\d+/gi,
-  hexRegex = /#?[0-9a-f]{6}/gi;
+  hexRegex = /#?[0-9a-f]{6}/gi,
+  hslRegex = /hsl\(\d+,[\s\d%.]+,[\s\d%.]+\)/gi;
 
 function getLuminance(r, g, b) {
   let [lumR, lumG, lumB] = [r, g, b].map((component) => {
@@ -35,46 +38,107 @@ function formatRatio(ratio) {
 }
 
 function getColor(input) {
-  console.log(`**************** getColor(${input}) ***************`);
-  let rgb = [],
-    hex = "";
+  // console.log(`**************** getColor(${input}) ***************`);
+  let rgbArray = [],
+    hslArray = [],
+    hex = "",
+    rgbObj = {},
+    hslObj = {};
   if (typeof input === "string") {
-    console.log("The input is a string in getColor()");
+    // console.log("This is a string...");
     if (input.match(hexRegex)) {
-      if (input.startsWith("#")) {
-        hex = input;
+      console.log(input.match(hexRegex));
+      let match = input.match(hexRegex)[0];
+      if (match.startsWith("#")) {
+        hex = match;
       } else {
-        hex = "#" + input;
+        hex = "#" + match;
       }
-      let rgbObj = hexToRgb(hex);
-      console.log({ rgbObj });
-      rgb = [rgbObj.r, rgbObj.g, rgbObj.b];
+      rgbObj = hexToRgb(hex);
+      hslObj = rgbToHsl(rgbObj.r, rgbObj.g, rgbObj.b);
+    } else if (input.match(hslRegex)) {
+      // console.log("This is an hsl string...");
+      let extractedHSL = captureParentheses(input).split(",");
+      extractedHSL.forEach(function (e) {
+        if (e.includes("%")) {
+          /* Convert percentages to decimals */
+          hslArray.push(Number(e.replace(/\D/g, "")) / 100);
+        } else {
+          hslArray.push(Number(e));
+        }
+      });
+      rgbObj = hslToRgb(hslArray[0], hslArray[1], hslArray[2]);
+      hslObj = { h: hslArray[0], s: hslArray[1], l: hslArray[2] };
+      hex = rgbToHex(rgbObj.r, rgbObj.g, rgbObj.b);
+    } else if (input.match(rgbRegex)) {
+      // console.log("This is an rgb string.");
+      let extractedRgb = captureParentheses(input).split(",");
+      extractedRgb.forEach(function (e) {
+        rgbArray.push(Number(e));
+      });
+      rgbObj = { r: rgbArray[0], g: rgbArray[1], b: rgbArray[2] };
+      hslObj = rgbToHsl(...rgbArray);
+      hex = rgbToHex(...rgbArray);
     } else {
-      for (let value of input.split(",")) {
-        rgb.push(Number(value.replace(/\D/gi, "")));
+      throw Error("This is an unrecognized string.");
+    }
+  } else if (Array.isArray(input)) {
+    // console.log("This is an array...");
+    let isRgb = true,
+      isHsl = false;
+    input.forEach(function (e) {
+      if (e.toString().includes(".") || e.toString().includes("%")) {
+        isRgb = false;
+        isHsl = true;
       }
-      hex = rgbToHex(...rgb);
+    });
+    if (isRgb) {
+      hex = rgbToHex(...input);
+      rgbObj = { r: input[0], g: input[1], b: input[2] };
+      hslObj = rgbToHsl(...input);
+    } else {
+      rgbObj = hslToRgb(...input);
+      hslObj = { h: input[0], s: input[1], l: input[2] };
+      hex = rgbToHex(rgbObj.r, rgbObj.g, rgbObj.b);
     }
   } else {
-    console.log("This is not a string:", input);
-    console.log("typeof input === ", typeof input);
-    rgb = input;
-    hex = rgbToHex(...input);
+    if ("r" in input && "g" in input && "b" in input) {
+      rgbObj = input;
+      hslObj = rgbToHsl(input.r, input.g, input.b);
+      hex = rgbToHex(input.r, input.g, input.b);
+    } else if ("red" in input && "green" in input && "blue" in input) {
+      rgbObj = { r: input.red, g: input.green, b: input.blue };
+      hslObj = rgbToHsl(input.red, input.green, input.blue);
+      hex = rgbToHex(input.red, input.green, input.blue);
+    } else if ("h" in input && "s" in input && "l" in input) {
+      hslObj = { h: input.h, s: input.s, l: input.l };
+      rgbObj = hslToRgb(input.h, input.s, input.l);
+      hex = rgbToHex(rgbObj.r, rgbObj.g, rgbObj.b);
+    } else {
+      throw Error(`Cannot determine color from the given input.`);
+    }
   }
   hex = hex.toUpperCase();
-  let hsl = RGBtoHSL(rgb[0], rgb[1], rgb[2]),
-    luminance = getLuminance(rgb[0], rgb[1], rgb[2]);
+  rgbArray = [rgbObj.r, rgbObj.g, rgbObj.b];
+  hslArray = rgbToHsl(rgbArray[0], rgbArray[1], rgbArray[2]);
+  luminance = getLuminance(rgbObj.r, rgbObj.g, rgbObj.b);
   let result = {
     hex,
-    rgb,
-    hsl,
+    rgb: rgbObj,
+    hsl: hslObj,
     luminance,
   };
-  // console.log("HSL:", hsl);
-  console.log(
-    `******** END getColor(): {hex: ${result.hex}, rgb: ${result.rgb}, hsl: (${result.hsl.hue}, ${result.hsl.saturation}, ${result.hsl.luminance}), luminance: ${luminance}} *************`
-  );
   return result;
+}
+
+function captureParentheses(input = "") {
+  let regex = /\((.+)\)/gi;
+  if (input === "" || typeof input !== "string") {
+    throw Error("Input must be a string and cannot be blank.");
+  } else if (!input.includes("(") || !input.includes(")")) {
+    throw Error("No parentheses found.");
+  }
+  return regex.exec(input)[1];
 }
 
 function rgbToHex(r, g, b) {
@@ -93,10 +157,10 @@ function hexToRgb(hex) {
 }
 
 /* https://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl */
-function RGBtoHSL(r, g, b, goalLuminanceFactor = 1) {
-  console.log(
-    `********** RGBtoHSL(r = ${r}, g = ${g}, b = ${b}, goalLuminance = ${goalLuminanceFactor})`
-  );
+function rgbToHsl(r, g, b, goalLuminanceFactor = 1) {
+  // console.log(
+  //   `********** RGBtoHSL(r = ${r}, g = ${g}, b = ${b}, goalLuminance = ${goalLuminanceFactor})`
+  // );
   r /= 255;
   g /= 255;
   b /= 255;
@@ -142,21 +206,21 @@ function RGBtoHSL(r, g, b, goalLuminanceFactor = 1) {
   } else if (hue === 0) {
     hue = 0;
   }
-  console.log("Hue in RGBtoHSL(): ", hue);
-  let result = { hue, saturation, lightness };
+  // console.log("Hue in RGBtoHSL(): ", hue);
+  let result = { h: hue, s: saturation, l: lightness };
   // var newRGB = HSLtoRGB(hue, saturation, luminance, goalLuminanceFactor);
   // return newRGB;
   // console.log("New rgb:", newRGB);
-  console.log(
-    `*********** END RGBtoHSL(): {hue: ${result.hue}, saturation: ${result.saturation}, lightness: ${result.lightness}}`
-  );
+  // console.log(
+  //   `*********** END RGBtoHSL(): {hue: ${result.h}, saturation: ${result.s}, lightness: ${result.l}}`
+  // );
   return result;
 }
 
-function HSLtoRGB(hue, saturation, luminance, goalLuminanceFactor = 1) {
-  console.log(
-    `******* HSLtoRGB(${hue}, ${saturation}, ${luminance}, ${goalLuminanceFactor})`
-  );
+function hslToRgb(hue, saturation, lightness, goalLuminanceFactor = 1) {
+  // console.log(
+  //   `******* HSLtoRGB(${hue}, ${saturation}, ${lightness}, ${goalLuminanceFactor})`
+  // );
   var red,
     green,
     blue,
@@ -165,23 +229,23 @@ function HSLtoRGB(hue, saturation, luminance, goalLuminanceFactor = 1) {
     temporary_r,
     temporary_g,
     temporary_b;
-  luminance *= goalLuminanceFactor;
-  console.log({ luminance });
-  console.log("^This should be a number");
+  lightness *= goalLuminanceFactor;
+  // console.log({ luminance: lightness });
+  // console.log("^This should be a number");
   if (saturation === 0) {
-    console.log("This is a grayscale color.");
-    var rbgVal = Math.round(255 * luminance);
+    // console.log("This is a grayscale color.");
+    var rbgVal = Math.round(255 * lightness);
     red = rbgVal;
     green = rbgVal;
     blue = rbgVal;
   } else {
-    console.log("This is not a grayscale color.");
-    if (luminance < 0.5) {
-      temporary_1 = luminance * (1 + saturation);
+    // console.log("This is not a grayscale color.");
+    if (lightness < 0.5) {
+      temporary_1 = lightness * (1 + saturation);
     } else {
-      temporary_1 = luminance + saturation - luminance * saturation;
+      temporary_1 = lightness + saturation - lightness * saturation;
     }
-    temporary_2 = 2 * luminance - temporary_1;
+    temporary_2 = 2 * lightness - temporary_1;
     hue /= 360;
     temporary_r = hue + 0.333;
     temporary_g = hue;
@@ -238,43 +302,15 @@ function HSLtoRGB(hue, saturation, luminance, goalLuminanceFactor = 1) {
     green = Math.round(Number(green) * 255);
     blue = Math.round(Number(blue) * 255);
   }
-  console.log(`******* END HSLtoRGB(): {${red}, ${green}, ${blue}}`);
-  return { red, green, blue };
-}
-
-function submitColors(
-  textColorInput = "",
-  bgColorInput = "",
-  contrastTarget = 4.5
-) {
-  console.log(
-    `********** submitColors(${textColorInput}, ${bgColorInput}, ${contrastTarget}):`
-  );
-  // let contrastTarget = Number(
-  //     document.querySelector('input[name="contrast-target"]:checked').value
-  //   ),
-  //   textColorInput = document.querySelector(
-  //     "input#orig-text-color-input"
-  //   ).value,
-  //   bgColorInput = document.querySelector("input#orig-bg-color-input").value,
-  let origTextRgb, origBgRgb;
-  if (textColorInput === "" || bgColorInput === "") {
-    console.log("Please select both colors.");
-  } else {
-    (origTextRgb = getColor(textColorInput).rgb),
-      (origBgRgb = getColor(bgColorInput).rgb);
-    // console.log({ contrastTarget, textColorInput, bgColorInput, origTextRgb, origBgRgb });
-  }
-  let result = getCompliantRGB(origTextRgb, origBgRgb, contrastTarget);
-  console.log(`************* END submitColors(): ${result}`);
-  return result;
+  // console.log(`******* END HSLtoRGB(): {${red}, ${green}, ${blue}}`);
+  return { r: red, g: green, b: blue };
 }
 
 function getCompliantRGB(textColor, bgColor, targetContrast = AA) {
-  console.log(
-    `********* getCompliantRGB(${textColor}, ${bgColor}, ${targetContrast}):`
-  );
-  console.log({ textColor, bgColor, targetContrast });
+  // console.log(
+  //   `********* getCompliantRGB(${textColor}, ${bgColor}, ${targetContrast}):`
+  // );
+  // console.log({ textColor, bgColor, targetContrast });
   textColor = getColor(textColor);
   bgColor = getColor(bgColor);
   let textRGB = textColor.rgb,
@@ -294,17 +330,17 @@ function getCompliantRGB(textColor, bgColor, targetContrast = AA) {
     AA: {},
     AAA: {},
   };
-  console.log("Initial state:", {
-    contrast,
-    textRGB,
-    textHex,
-    bgRGB,
-    bgHex,
-    targetContrast,
-  });
+  // console.log("Initial state:", {
+  //   contrast,
+  //   textRGB,
+  //   textHex,
+  //   bgRGB,
+  //   bgHex,
+  //   targetContrast,
+  // });
 
   if (contrast < targetContrast) {
-    console.log("This does not meet a11y standards. Let's find a better one.");
+    // console.log("This does not meet a11y standards. Let's find a better one.");
     let targetDarkerLum =
         (lighterLum + 0.05 - 0.05 * targetContrast) / targetContrast,
       targetLighterLum =
@@ -313,7 +349,7 @@ function getCompliantRGB(textColor, bgColor, targetContrast = AA) {
       // Text is lighter
       console.log("Text is the lighter luminance - we need it to be lighter");
       // console.log({textColor});
-      goalTextRGB = HSLtoRGB(RGBtoHSL(textRGB[0], textRGB[1], textRGB[2])); // Factor needs adjustment for accuracy
+      goalTextRGB = hslToRgb(rgbToHsl(textRGB[0], textRGB[1], textRGB[2])); // Factor needs adjustment for accuracy
       // console.log({goalTextRGB});
       textLuminance = textColor.luminance;
       darkerLum = Math.min(textLuminance, bgLuminance);
@@ -323,13 +359,9 @@ function getCompliantRGB(textColor, bgColor, targetContrast = AA) {
       // BG is lighter
       console.log("BG is the lighter luminance - we need a darker text color");
       // console.log({textColor});
-      goalTextRGB = HSLtoRGB(RGBtoHSL(textRGB[0], textRGB[1], textRGB[2])); // Factor needs adjustment for accuracy
+      goalTextRGB = hslToRgb(rgbToHsl(textRGB[0], textRGB[1], textRGB[2])); // Factor needs adjustment for accuracy
       console.log({ goalTextRGB });
-      textLuminance = getLuminance(
-        goalTextRGB.red,
-        goalTextRGB.green,
-        goalTextRGB.blue
-      );
+      textLuminance = getLuminance(goalTextRGB.r, goalTextRGB.g, goalTextRGB.b);
       darkerLum = Math.min(textLuminance, bgLuminance);
       lighterLum = Math.max(textLuminance, bgLuminance);
       contrast = (lighterLum + 0.05) / (darkerLum + 0.05);
@@ -338,40 +370,37 @@ function getCompliantRGB(textColor, bgColor, targetContrast = AA) {
     console.log("This passes a11y...");
   }
   let ratio = formatRatio(contrast);
-  console.log("New state:", {
-    contrast: ratio,
-    textRGB: [goalTextRGB.red, goalTextRGB.green, goalTextRGB.blue],
-    textHex: getColor(
-      rgbToHex(goalTextRGB.red, goalTextRGB.green, goalTextRGB.blue)
-    ).hex,
-    bgRGB: bgColor,
-    bgHex: getColor(rgbToHex(bgColor.rgb[0], bgColor.rgb[1], bgColor.rgb[2]))
-      .hex,
-  });
-  console.log(`******** end getCompliantRGB() *************`);
+  // console.log("New state:", {
+  //   contrast: ratio,
+  //   textRGB: [goalTextRGB.r, goalTextRGB.g, goalTextRGB.b],
+  //   textHex: getColor(
+  //     rgbToHex(goalTextRGB.r, goalTextRGB.g, goalTextRGB.b)
+  //   ).hex,
+  //   bgRGB: bgColor,
+  //   bgHex: getColor(rgbToHex(bgColor.rgb[0], bgColor.rgb[1], bgColor.rgb[2]))
+  //     .hex,
+  // });
+  // console.log(`******** end getCompliantRGB() *************`);
   return {
     ratio,
-    textRGB: [goalTextRGB.red, goalTextRGB.green, goalTextRGB.blue],
-    textHex: rgbToHex(goalTextRGB.red, goalTextRGB.green, goalTextRGB.blue),
+    textRGB: [goalTextRGB.r, goalTextRGB.g, goalTextRGB.b],
+    textHex: rgbToHex(goalTextRGB.r, goalTextRGB.g, goalTextRGB.b),
     bgRGB: bgColor,
     bgHex: rgbToHex(bgColor[0], bgColor[1], bgColor[2]),
   };
 }
 
 function getCompliantColor(textColor, bgColor, targetContrast = AA) {
+  // console.log(`****** getCompliantColor(${textColor}, ${bgColor}, ${targetContrast})`)
   textColor = getColor(textColor);
   bgColor = getColor(bgColor);
-  let newTextColor = HSLtoRGB(
-    textColor.hsl.hue,
-    textColor.hsl.saturation,
-    textColor.hsl.lightness,
+  let newTextColor = hslToRgb(
+    textColor.hsl.h,
+    textColor.hsl.s,
+    textColor.hsl.l,
     0.5
   );
-  newTextColor = getColor([
-    newTextColor.red,
-    newTextColor.green,
-    newTextColor.blue,
-  ]);
+  newTextColor = getColor([newTextColor.r, newTextColor.g, newTextColor.b]);
   let lighterLum = Math.max(textColor.luminance, bgColor.luminance),
     darkerLum = Math.min(textColor.luminance, bgColor.luminance),
     initialContrast = (lighterLum + 0.05) / (darkerLum + 0.05);
@@ -386,17 +415,53 @@ function getCompliantColor(textColor, bgColor, targetContrast = AA) {
     // text color is lighter
     lighterColor = textColor;
     darkerColor = bgColor;
+    console.log(`We need a lighter text color.`);
+    console.log({ lighterColor });
+    // Determine natural luminance
+    let textHue = textColor.hsl.h,
+      naturalColor = getColor(`hsl(${textHue}, 1, .5)`),
+      testLighterColor;
+    // console.log("Natural color:", naturalColor);
+    if (naturalColor.hsl.l >= 0.5) {
+      console.log(
+        "This color's natural luminance is greater than or equal to 50%. Luminance will increase with more saturation. Current saturation:",
+        naturalColor.hsl.s
+      );
+      testLighterColor = getColor(
+        `hsl(${textColor.hsl.h}, ${textColor.hsl.s / 2}, ${textColor.hsl.l})`
+      );
+      console.log("Try this more luminant color", { testLighterColor });
+    } else {
+      console.log(
+        "This color's natural luminance is less than 50%. Luminance will decrease with more saturation"
+      );
+    }
   } else {
     // bg color is lighter
     lighterColor = bgColor;
     darkerColor = textColor;
+    console.log("We need a darker text color.");
   }
   console.log({ textColor, bgColor, initialContrast });
-  console.log({ lighterColor, darkerColor });
+  // console.log({ lighterColor, darkerColor });
   console.log({ targetDarkerLum, targetLighterLum });
 }
 
-// getColor("#d84000");
-// getColor("rgb(255,0,255)");
+function getFullColorArray() {
+  let result = [];
+  for (let i = 0; i <= 360; i++) {
+    let color = getColor(hslToRgb(i, 1, 0.5));
+    result.push(color);
+  }
+  return result;
+}
+
+// console.log(getColor([136, .5, .75]));
+// console.log(getColor({h: 200, s: .5, l: .3}));
+// console.log(getColor("#d84000"));
+// console.log(getColor("rgb(255,0,255)"));
+// console.log(getColor([255, 255, 0]));
+// console.log(getColor("hsl(13, 13%, .13)"));
 // submitColors("d84000", "rgb(255,0,0)");
 getCompliantColor("#d84000", [255, 0, 255]);
+// console.log(getFullColorArray());
