@@ -159,6 +159,7 @@ function submitColors() {
     // console.log("Is there a result? ", !!result);
     // console.log(`************* END submitColors() ***************`);
   }
+  getFullColorArray();
 }
 
 function toggleContainerDisplay() {
@@ -328,7 +329,7 @@ function getLuminance(r, g, b) {
 
 /* https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb */
 function componentToHex(c) {
-  c = Number(c);
+  c = Math.round(Number(c));
   var hex = c.toString(16);
   return hex.length == 1 ? "0" + hex : hex;
 }
@@ -349,7 +350,6 @@ function getColor(input) {
   if (typeof input === "string") {
     // console.log("This is a string...");
     if (input.match(hexRegex)) {
-      console.log(input.match(hexRegex));
       let match = input.match(hexRegex)[0]
       if (match.startsWith("#")) {
         hex = match;
@@ -359,16 +359,20 @@ function getColor(input) {
       rgbObj = hexToRgb(hex);
       hslObj = rgbToHsl(rgbObj.r, rgbObj.g, rgbObj.b);
     } else if (input.match(hslRegex)) {
-      // console.log("This is an hsl string...");
+      console.log("This is an hsl string...");
       let extractedHSL = captureParentheses(input).split(",");
+      console.log({extractedHSL});
       extractedHSL.forEach(function (e) {
         if (e.includes("%")) {
           /* Convert percentages to decimals */
+          console.log("There is a percent sign.");
           hslArray.push(Number(e.replace(/\D/g, "")) / 100);
         } else {
+          console.log("There is no percentage sign.");
           hslArray.push(Number(e));
         }
       });
+      console.log({hslArray});
       rgbObj = hslToRgb(hslArray[0], hslArray[1], hslArray[2]);
       hslObj = { h: hslArray[0], s: hslArray[1], l: hslArray[2] };
       hex = rgbToHex(rgbObj.r, rgbObj.g, rgbObj.b);
@@ -390,6 +394,7 @@ function getColor(input) {
       isHsl = false;
     input.forEach(function(e) {
       if (e.toString().includes('.') || e.toString().includes('%')) {
+      // if (e.includes('.') || e.includes('%')) {
         isRgb = false;
         isHsl = true;
       }
@@ -427,7 +432,9 @@ function getColor(input) {
   let result = {
     hex,
     rgb: rgbObj,
+    rgbString: `rgb(${rgbObj.r}, ${rgbObj.g}, ${rgbObj.b})`,
     hsl: hslObj,
+    hslString: `hsl(${hslObj.h}, ${hslObj.s * 100}%, ${hslObj.l * 100}%)`,
     luminance,
   };
   return result;
@@ -458,155 +465,243 @@ function hexToRgb(hex) {
     : null;
 }
 
+const hslToRgb = (h, s, l) => {
+  // s /= 100;
+  // l /= 100;
+  const k = n => (n + h / 30) % 12;
+  const a = s * Math.min(l, 1 - l);
+  const f = n =>
+    l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+  return {r: Math.round(255 * f(0)), g: Math.round(255 * f(8)), b: Math.round(255 * f(4))};
+};
+
 /* https://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl */
-function rgbToHsl(r, g, b, goalLuminanceFactor = 1) {
-  // console.log(
-  //   `********** RGBtoHSL(r = ${r}, g = ${g}, b = ${b}, goalLuminance = ${goalLuminanceFactor})`
-  // );
+// function rgbToHsl(r, g, b, goalLuminanceFactor = 1) {
+//   // console.log(
+//   //   `********** RGBtoHSL(r = ${r}, g = ${g}, b = ${b}, goalLuminance = ${goalLuminanceFactor})`
+//   // );
+//   r /= 255;
+//   g /= 255;
+//   b /= 255;
+//   r = Number(parseFloat(r).toFixed(2));
+//   g = Number(parseFloat(g).toFixed(2));
+//   b = Number(parseFloat(b).toFixed(2));
+//   var maxVal = Number(parseFloat(Math.max(r, g, b)).toFixed(2)),
+//     minVal = Number(parseFloat(Math.min(r, g, b)).toFixed(2)),
+//     lightness = Math.round(((maxVal + minVal) / 2) * 100) / 100,
+//     saturation,
+//     hue = 0;
+//   if (maxVal === minVal) {
+//     saturation = 0;
+//   } else {
+//     if (lightness <= 0.5) {
+//       saturation =
+//         Math.round(((maxVal - minVal) / (maxVal + minVal)) * 100) / 100;
+//     } else {
+//       saturation =
+//         Math.round(((maxVal - minVal) / (2 - maxVal - minVal)) * 100) / 100;
+//     }
+//     if (maxVal === r) {
+//       hue = (g - b) / (maxVal - minVal);
+//       // console.log({ hue });
+//     } else if (maxVal === g) {
+//       hue = 2 + (b - r) / (maxVal - minVal);
+//       // hue *= 60;
+//       // if (hue < 0) {
+//       //   hue += 360;
+//       // }
+//     } else {
+//       hue = 4 + (r - g) / (maxVal - minVal);
+//       // hue *= 60;
+//       // if (hue < 0) {
+//       //   hue += 360;
+//       // }
+//     }
+//   }
+//   hue *= 60;
+//   hue = Math.round(hue);
+//   if (hue < 0) {
+//     hue += 360;
+//   } else if (hue === 0) {
+//     hue = 0;
+//   }
+//   // console.log("Hue in RGBtoHSL(): ", hue);
+//   let result = { h: hue, s: saturation, l: lightness };
+//   // var newRGB = HSLtoRGB(hue, saturation, luminance, goalLuminanceFactor);
+//   // return newRGB;
+//   // console.log("New rgb:", newRGB);
+//   // console.log(
+//   //   `*********** END RGBtoHSL(): {hue: ${result.h}, saturation: ${result.s}, lightness: ${result.l}}`
+//   // );
+//   return result;
+// }
+
+// function hslToRgb(hue, saturation, lightness, goalLuminanceFactor = 1) {
+//   console.log(
+//     `******* HSLtoRGB(${hue}, ${saturation}, ${lightness}, ${goalLuminanceFactor})`
+//   );
+//   var red,
+//     green,
+//     blue,
+//     temporary_1,
+//     temporary_2,
+//     temporary_r,
+//     temporary_g,
+//     temporary_b;
+//   lightness *= goalLuminanceFactor;
+//   // console.log({ luminance: lightness });
+//   // console.log("^This should be a number");
+//   if (saturation === 0) {
+//     // console.log("This is a grayscale color.");
+//     var rbgVal = Math.round(255 * lightness);
+//     red = rbgVal;
+//     green = rbgVal;
+//     blue = rbgVal;
+//   } else {
+//     // console.log("This is not a grayscale color.");
+//     if (lightness < 0.5) {
+//       temporary_1 = lightness * (1 + saturation);
+//     } else {
+//       temporary_1 = lightness + saturation - lightness * saturation;
+//     }
+//     temporary_2 = 2 * lightness - temporary_1;
+//     hue /= 360;
+//     temporary_r = hue + 0.333;
+//     temporary_g = hue;
+//     temporary_b = hue - 0.333;
+//     if (temporary_r > 1) {
+//       temporary_r -= 1;
+//     } else if (temporary_r < 0) {
+//       temporary_r += 1;
+//     }
+//     if (temporary_g > 1) {
+//       temporary_g -= 1;
+//     } else if (temporary_g < 0) {
+//       temporary_g += 1;
+//     }
+//     if (temporary_b > 1) {
+//       temporary_b -= 1;
+//     } else if (temporary_b < 0) {
+//       temporary_b += 1;
+//     }
+//     console.log({temporary_r, temporary_g, temporary_b});
+//     // Red tests
+//     if (6 * temporary_r < 1) {
+//       red = temporary_2 + (temporary_1 - temporary_2) * 6 * temporary_r;
+//     } else if (2 * temporary_r < 1) {
+//       red = temporary_1;
+//     } else if (3 * temporary_r < 2) {
+//       red =
+//         temporary_2 + (temporary_1 - temporary_2) * (0.666 - temporary_r) * 6;
+//     } else {
+//       red = temporary_2;
+//     }
+//     red = Math.round(red);
+//     console.log({red});
+//     // Green Tests
+//     if (6 * temporary_g < 1) {
+//       green = temporary_2 + (temporary_1 - temporary_2) * 6 * temporary_g;
+//     } else if (2 * temporary_g < 1) {
+//       green = temporary_1;
+//     } else if (3 * temporary_g < 2) {
+//       green =
+//         temporary_2 + (temporary_1 - temporary_2) * (0.666 - temporary_g) * 6;
+//     } else {
+//       green = temporary_2;
+//     }
+//     // Blue Tests
+//     if (6 * temporary_b < 1) {
+//       blue = temporary_2 + (temporary_1 - temporary_2) * 6 * temporary_b;
+//     } else if (2 * temporary_b < 1) {
+//       blue = temporary_1;
+//     } else if (3 * temporary_b < 2) {
+//       blue =
+//         temporary_2 + (temporary_1 - temporary_2) * (0.666 - temporary_b) * 6;
+//     } else {
+//       blue = temporary_2;
+//     }
+//     red = Math.round(Number(red) * 255);
+//     green = Math.round(Number(green) * 255);
+//     blue = Math.round(Number(blue) * 255);
+//   }
+//   console.log(`******* END HSLtoRGB(): {${red}, ${green}, ${blue}}`);
+//   return { r: red, g: green, b: blue };
+// }
+
+/**
+ * Converts an HSL color value to RGB. Conversion formula
+ * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+ * Assumes h, s, and l are contained in the set [0, 1] and
+ * returns r, g, and b in the set [0, 255].
+ */
+//  function hslToRgb(h, s, l){
+//   var r, g, b;
+
+//   if(s == 0){
+//       r = g = b = l; // achromatic
+//   }else{
+//       var hue2rgb = function hue2rgb(p, q, t){
+//           if(t < 0) t += 1;
+//           if(t > 1) t -= 1;
+//           if(t < 1/6) return p + (q - p) * 6 * t;
+//           if(t < 1/2) return q;
+//           if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+//           return p;
+//       }
+
+//       var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+//       var p = 2 * l - q;
+//       r = hue2rgb(p, q, h + 1/3);
+//       g = hue2rgb(p, q, h);
+//       b = hue2rgb(p, q, h - 1/3);
+//   }
+
+//   return {r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255)};
+// }
+
+// function rgbToHsl(r, g, b) {
+//   r /= 255, g /= 255, b /= 255;
+
+//   var max = Math.max(r, g, b), min = Math.min(r, g, b);
+//   var h, s, l = (max + min) / 2;
+
+//   if (max == min) {
+//     h = s = 0; // achromatic
+//   } else {
+//     var d = max - min;
+//     s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+//     switch (max) {
+//       case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+//       case g: h = (b - r) / d + 2; break;
+//       case b: h = (r - g) / d + 4; break;
+//     }
+
+//     h /= 6;
+//   }
+
+//   return { h, s, l };
+// }
+
+const rgbToHsl = (r, g, b) => {
   r /= 255;
   g /= 255;
   b /= 255;
-  r = Number(parseFloat(r).toFixed(2));
-  g = Number(parseFloat(g).toFixed(2));
-  b = Number(parseFloat(b).toFixed(2));
-  var maxVal = Number(parseFloat(Math.max(r, g, b)).toFixed(2)),
-    minVal = Number(parseFloat(Math.min(r, g, b)).toFixed(2)),
-    lightness = Math.round(((maxVal + minVal) / 2) * 100) / 100,
-    saturation,
-    hue = 0;
-  if (maxVal === minVal) {
-    saturation = 0;
-  } else {
-    if (lightness <= 0.5) {
-      saturation =
-        Math.round(((maxVal - minVal) / (maxVal + minVal)) * 100) / 100;
-    } else {
-      saturation =
-        Math.round(((maxVal - minVal) / (2 - maxVal - minVal)) * 100) / 100;
-    }
-    if (maxVal === r) {
-      hue = (g - b) / (maxVal - minVal);
-      // console.log({ hue });
-    } else if (maxVal === g) {
-      hue = 2 + (b - r) / (maxVal - minVal);
-      // hue *= 60;
-      // if (hue < 0) {
-      //   hue += 360;
-      // }
-    } else {
-      hue = 4 + (r - g) / (maxVal - minVal);
-      // hue *= 60;
-      // if (hue < 0) {
-      //   hue += 360;
-      // }
-    }
-  }
-  hue *= 60;
-  hue = Math.round(hue);
-  if (hue < 0) {
-    hue += 360;
-  } else if (hue === 0) {
-    hue = 0;
-  }
-  // console.log("Hue in RGBtoHSL(): ", hue);
-  let result = { h: hue, s: saturation, l: lightness };
-  // var newRGB = HSLtoRGB(hue, saturation, luminance, goalLuminanceFactor);
-  // return newRGB;
-  // console.log("New rgb:", newRGB);
-  // console.log(
-  //   `*********** END RGBtoHSL(): {hue: ${result.h}, saturation: ${result.s}, lightness: ${result.l}}`
-  // );
-  return result;
-}
-
-function hslToRgb(hue, saturation, lightness, goalLuminanceFactor = 1) {
-  // console.log(
-  //   `******* HSLtoRGB(${hue}, ${saturation}, ${lightness}, ${goalLuminanceFactor})`
-  // );
-  var red,
-    green,
-    blue,
-    temporary_1,
-    temporary_2,
-    temporary_r,
-    temporary_g,
-    temporary_b;
-  lightness *= goalLuminanceFactor;
-  // console.log({ luminance: lightness });
-  // console.log("^This should be a number");
-  if (saturation === 0) {
-    // console.log("This is a grayscale color.");
-    var rbgVal = Math.round(255 * lightness);
-    red = rbgVal;
-    green = rbgVal;
-    blue = rbgVal;
-  } else {
-    // console.log("This is not a grayscale color.");
-    if (lightness < 0.5) {
-      temporary_1 = lightness * (1 + saturation);
-    } else {
-      temporary_1 = lightness + saturation - lightness * saturation;
-    }
-    temporary_2 = 2 * lightness - temporary_1;
-    hue /= 360;
-    temporary_r = hue + 0.333;
-    temporary_g = hue;
-    temporary_b = hue - 0.333;
-    if (temporary_r > 1) {
-      temporary_r -= 1;
-    } else if (temporary_r < 0) {
-      temporary_r += 1;
-    }
-    if (temporary_g > 1) {
-      temporary_g -= 1;
-    } else if (temporary_g < 0) {
-      temporary_g += 1;
-    }
-    if (temporary_b > 1) {
-      temporary_b -= 1;
-    } else if (temporary_b < 0) {
-      temporary_b += 1;
-    }
-    // Red tests
-    if (6 * temporary_r < 1) {
-      red = temporary_2 + (temporary_1 - temporary_2) * 6 * temporary_r;
-    } else if (2 * temporary_r < 1) {
-      red = temporary_1;
-    } else if (3 * temporary_r < 2) {
-      red =
-        temporary_2 + (temporary_1 - temporary_2) * (0.666 - temporary_r) * 6;
-    } else {
-      red = temporary_2;
-    }
-    // Green Tests
-    if (6 * temporary_g < 1) {
-      green = temporary_2 + (temporary_1 - temporary_2) * 6 * temporary_g;
-    } else if (2 * temporary_g < 1) {
-      green = temporary_1;
-    } else if (3 * temporary_g < 2) {
-      green =
-        temporary_2 + (temporary_1 - temporary_2) * (0.666 - temporary_g) * 6;
-    } else {
-      green = temporary_2;
-    }
-    // Blue Tests
-    if (6 * temporary_b < 1) {
-      blue = temporary_2 + (temporary_1 - temporary_2) * 6 * temporary_b;
-    } else if (2 * temporary_b < 1) {
-      blue = temporary_1;
-    } else if (3 * temporary_b < 2) {
-      blue =
-        temporary_2 + (temporary_1 - temporary_2) * (0.666 - temporary_b) * 6;
-    } else {
-      blue = temporary_2;
-    }
-    red = Math.round(Number(red) * 255);
-    green = Math.round(Number(green) * 255);
-    blue = Math.round(Number(blue) * 255);
-  }
-  // console.log(`******* END HSLtoRGB(): {${red}, ${green}, ${blue}}`);
-  return { r: red, g: green, b: blue };
-}
+  const l = Math.max(r, g, b);
+  const s = l - Math.min(r, g, b);
+  const h = s
+    ? l === r
+      ? (g - b) / s
+      : l === g
+      ? 2 + (b - r) / s
+      : 4 + (r - g) / s
+    : 0;
+  return {
+    h: 60 * h < 0 ? 60 * h + 360 : 60 * h,
+    s: 100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0),
+    l: (100 * (2 * l - s)) / 2,
+  };
+};
 
 function getCompliantRGB(textColor, bgColor, targetContrast = AA) {
   // console.log(
@@ -725,7 +820,7 @@ function getCompliantColor(textColor, bgColor, targetContrast = AA) {
     // text color is lighter
     lighterColor = textColor;
     darkerColor = bgColor;
-    console.log(`We need a lighter text color.`);
+    console.log(`We need a lighter text color or a darker background color.`);
     console.log({lighterColor});
     // Determine natural luminance
     let textHue = textColor.hsl.h,
@@ -747,7 +842,7 @@ function getCompliantColor(textColor, bgColor, targetContrast = AA) {
     // bg color is lighter
     lighterColor = bgColor;
     darkerColor = textColor;
-    console.log("We need a darker text color.");
+    console.log("We need a darker text color or a lighter background color.");
   }
   console.log({ textColor, bgColor, initialContrast });
   // console.log({ lighterColor, darkerColor });
@@ -755,10 +850,45 @@ function getCompliantColor(textColor, bgColor, targetContrast = AA) {
 }
 
 function getFullColorArray() {
-  let result = [];
-  for (let i = 0; i <= 360; i++) {
+  let result = [],
+    fullColorArray = [],
+    bgString = "",
+    colorDiv = document.createElement('div');
+    bgString = result.join(', ');
+  for (let i = 0; i <= 360; i += 20) {
     let color = getColor(hslToRgb(i, 1, 0.5));
-    result.push(color);
+    result.push(color.hex);
+    fullColorArray.push(color);
   }
+  for (let color of fullColorArray) {
+    let element = document.createElement('div');
+    element.innerText = `${color.hslString} | ${color.rgbString} | ${color.hex}`;
+    element.style.backgroundColor = color.hex;
+    element.style.color = "white";
+    element.style.textAlign = "center";
+    element.style.flexGrow = "1";
+    element.style.display = "flex";
+    element.style.justifyContent = "center";
+    element.style.alignItems = "center";
+    element.style.fontSize = "25px";
+    element.style.webkitTextStrokeColor = "black";
+    element.style.webkitTextStrokeWidth = "1px";
+    colorDiv.append(element)
+  }
+  /* Color Div Style*/
+  // console.log({bgString});
+  // console.log("linear-gradient(" + bgString + ")");
+  // colorDiv.style.background = `linear-gradient(${bgString})`;
+  colorDiv.style.position = 'absolute';
+  colorDiv.style.display = "flex";
+  colorDiv.style.flexDirection = "column";
+  colorDiv.style.top = '0';
+  colorDiv.style.left = '0';
+  colorDiv.style.height = '100vh';
+  colorDiv.style.width = '100vw';
+  colorDiv.style.zIndex = '2147483647';
+  colorDiv.classList.add('rxgb', 'colorDiv');
+  document.body.append(colorDiv);
+  /* END COLOR DIV CREATION */
   return result;
 }

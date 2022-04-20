@@ -57,8 +57,9 @@ function getColor(input) {
       rgbObj = hexToRgb(hex);
       hslObj = rgbToHsl(rgbObj.r, rgbObj.g, rgbObj.b);
     } else if (input.match(hslRegex)) {
-      // console.log("This is an hsl string...");
+      console.log("This is an hsl string...");
       let extractedHSL = captureParentheses(input).split(",");
+      console.log({extractedHSL});
       extractedHSL.forEach(function (e) {
         if (e.includes("%")) {
           /* Convert percentages to decimals */
@@ -463,5 +464,6 @@ function getFullColorArray() {
 // console.log(getColor([255, 255, 0]));
 // console.log(getColor("hsl(13, 13%, .13)"));
 // submitColors("d84000", "rgb(255,0,0)");
-getCompliantColor("#d84000", [255, 0, 255]);
+// getCompliantColor("#d84000", [255, 0, 255]);
 // console.log(getFullColorArray());
+console.log(getColor('hsl(120, 1, .5)'));
