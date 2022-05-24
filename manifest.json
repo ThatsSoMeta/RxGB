@@ -1,0 +1,33 @@
+{
+    "name": "RxGB",
+    "description": "Live in color!",
+    "version": "1.0",
+    "manifest_version": 3,
+    "background": {
+        "service_worker": "background.js"
+      },
+    "permissions": ["declarativeContent", "activeTab", "scripting"],
+    "action": {
+        "default_popup": "popup.html",
+        "default_title": "RxGB",
+        "default_icon": {
+            "16": "/images/RxGB_16.png",
+            "32": "/images/RxGB_32.png",
+            "48": "/images/RxGB_48.png",
+            "128": "/images/RxGB_128.png"
+          }
+      },
+    "icons": {
+        "16": "/images/RxGB_16.png",
+        "32": "/images/RxGB_32.png",
+        "48": "/images/RxGB_48.png",
+        "128": "/images/RxGB_128.png"
+    },
+    "content_scripts": [
+      {
+        "matches": ["https://*/*"],
+        "js": ["content.js", "popup.js"]
+      }
+    ]
+    
+  }
