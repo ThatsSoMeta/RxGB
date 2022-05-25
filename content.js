@@ -7,6 +7,8 @@ chrome.runtime.onConnect.addListener(function (port) {
         if (message.request.type === "init") {
             // DO SOMETHING
             responseObj.elements = findColors();
+            responseObj.white = getColor("#FFFFFF");
+            responseObj.black = getColor("#000000");
             port.postMessage(responseObj);
         } else {
             // DO SOMETHING
@@ -23,7 +25,7 @@ chrome.runtime.onConnect.addListener(function (port) {
 ;
 
 function findColors () {
-    var allElems = document.querySelectorAll("body *"),
+    var allElems = document.querySelectorAll("*"),
         fontColors = {},
         bgColors = {},
         allColors = { fontColors, bgColors }

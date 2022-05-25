@@ -17,8 +17,11 @@ var AA = 4.5,
     contrastToggle = document.getElementById("contrastToggle"),
     contrastDiv = document.getElementById("contrast"),
     swatchSize = "20px",
-    fontColorDiv = document.getElementById("fontColors"),
-    bgColorDiv = document.getElementById("bgColors");
+    websiteFontColorDiv = document.getElementById("fontColors"),
+    websiteBgColorDiv = document.getElementById("bgColors"),
+    contrastFontPalette = document.querySelector("#contrast #fontColor"),
+    contrastBgPalette = document.querySelector("#contrast #bgColor"),
+    contrastExampleText = document.getElementById("exampleText");
 
 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     port = chrome.tabs.connect(tabs[0].id, { name: "RxGB" });
@@ -32,18 +35,39 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     });
 });
 
+function setDetailPalette(color=getColor("#FFFFFF")) {
+    var swatch = colorDetailsDiv.querySelector(".swatch"),
+        hex = colorDetailsDiv.querySelector(".hex"),
+        rgb = colorDetailsDiv.querySelector(".rgb"),
+        hsl = colorDetailsDiv.querySelector(".hsl");
+        swatch.style.backgroundColor = color.hex;
+        hex.innerText = color.hex;
+        rgb.innerText = color.rgbString;
+        hsl.innerText = color.hslString;
+}
+
+function setContrastPalette(color=getColor("#FFFFFF"), type="font") {
+    var container = type === "font" ? contrastFontPalette : contrastBgPalette,
+        swatch = container.querySelector(".swatch"),
+        hex = container.querySelector(".hex"),
+        rgb = container.querySelector(".rgb"),
+        hsl = container.querySelector(".hsl");
+        swatch.style.backgroundColor = color.hex;
+        hex.innerText = color.hex;
+        rgb.innerText = color.rgbString;
+        hsl.innerText = color.hslString;
+        if (type === "font") {
+            contrastExampleText.style.color = color.hex;
+        } else if (type === "bg") {
+            contrastExampleText.style.backgroundColor = color.hex;
+        }
+        return color;
+}
+
 function collectNativeColors(fontColors, bgColors) {
-    var arrangedFontObject = Object.keys(fontColors).sort().reduce((acc, key) => {
-            acc[key] = fontColors[key];
-            return acc
-        }, {}),
-        arrangedBgObject = Object.keys(bgColors).sort().reduce((acc, key) => {
-            acc[key] = bgColors[key];
-            return acc
-        }, {}),
-        fontColorsArray = Object.values(arrangedFontObject),
-        bgColorsArray = Object.values(arrangedBgObject);
-    console.log({arrangedFontObject});
+    var fontColorsArray = Object.values(fontColors).sort((a, b) => (a.hsl.h > b.hsl.h) ? 1 : (a.hsl.s === b.hsl.s) ? ((a.hsl.s > b.hsl.s) ? 1 : -1) : -1 ),
+        bgColorsArray = Object.values(bgColors).sort((a, b) => (a.hsl.h > b.hsl.h) ? 1 : (a.hsl.s === b.hsl.s) ? ((a.hsl.s > b.hsl.s) ? 1 : -1) : -1 );
+    console.log({fontColorsArray});
     for (var color of fontColorsArray) {
         var name = color.hex,
             colorContainer = document.createElement("div"),
@@ -55,20 +79,32 @@ function collectNativeColors(fontColors, bgColors) {
         colorTitle.innerText = name;
         colorSwatch.style.backgroundColor = name;
         colorContainer.append(colorSwatch, colorTitle);
-        fontColorDiv.append(colorContainer);
+        websiteFontColorDiv.append(colorContainer);
+        colorContainer.addEventListener("click", (e) => {
+            var currentColor = getColor(e.target.textContent);
+            console.log({currentColor});
+            setContrastPalette(currentColor, "font");
+            setDetailPalette(currentColor);
+        })
     }
     for (var color of bgColorsArray) {
         var name = color.hex,
-            colorContainer = document.createElement("div"),
-            colorSwatch = document.createElement("div"),
-            colorTitle = document.createElement("h4");
+        colorContainer = document.createElement("div"),
+        colorSwatch = document.createElement("div"),
+        colorTitle = document.createElement("h4");
         colorSwatch.classList.add("swatch");
         colorTitle.classList.add("title");
         colorContainer.classList.add("color", "container", "button");
         colorTitle.innerText = name;
         colorSwatch.style.backgroundColor = name;
         colorContainer.append(colorSwatch, colorTitle);
-        bgColorDiv.append(colorContainer);
+        websiteBgColorDiv.append(colorContainer);
+        colorContainer.addEventListener("click", (e) => {
+            var currentColor = getColor(e.target.textContent);
+            console.log({currentColor});
+            setContrastPalette(currentColor, "bg");
+            setDetailPalette(currentColor);
+        })
     }
 }
 
@@ -145,8 +181,8 @@ function rgbToHsl(r, g, b) {
         : 0;
     return {
         h: Math.round(60 * h < 0 ? 60 * h + 360 : 60 * h),
-        s: Number(((s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0)).toFixed(2)),
-        l: Number((((2 * l - s)) / 2).toFixed(2)),
+        s: Number(((s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0))).toFixed(2),
+        l: Number((((2 * l - s)) / 2)).toFixed(2),
     };
 }
 
@@ -239,12 +275,12 @@ function getColor(input) {
                     hslArray.push(Number(e.replace(/\D/g, "")) / 100);
                 } else {
                     console.log("There is no percentage sign.");
-                    hslArray.push(Number(e));
+                    hslArray.push(Number(e).toFixed(2));
                 }
             });
             console.log({ hslArray });
             rgbObj = hslToRgb(hslArray[0], hslArray[1], hslArray[2]);
-            hslObj = { h: hslArray[0], s: hslArray[1], l: hslArray[2] };
+            hslObj = { h: hslArray[0], s: hslArray[1].toFixed(2), l: hslArray[2].toFixed(2) };
             hex = rgbToHex(rgbObj.r, rgbObj.g, rgbObj.b);
         } else if (input.match(rgbRegex)) {
             // console.log("This is an rgb string.");
@@ -305,8 +341,25 @@ function getColor(input) {
         rgb: rgbObj,
         rgbString: `rgb(${rgbObj.r}, ${rgbObj.g}, ${rgbObj.b})`,
         hsl: hslObj,
-        hslString: `hsl(${hslObj.h}, ${hslObj.s * 100}%, ${hslObj.l * 100}%)`,
+        hslString: `hsl(${hslObj.h}, ${Math.round(hslObj.s * 100)}%, ${Math.round(hslObj.l * 100)}%)`,
         luminance,
     };
     return result;
 }
+
+// https://www.reddit.com/r/learnjavascript/comments/31glai/color_selector_help/
+// function toggleColorPicker(enable=true) {
+//     if (enable) {
+//         $(window).on("click", function(ev) {
+//             var x = ev.clientX;
+//             var y = ev.clientY;
+          
+//             html2canvas(document.body).then(function(canvas) {
+//                var ctx = canvas.getContext('2d');
+//                var p = ctx.getImageData(x, y, 1, 1).data; 
+//                var hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
+//                console.log(hex);
+//             });
+//           });
+//     }
+// }
