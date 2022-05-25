@@ -4,15 +4,68 @@
         <link rel="stylesheet" href="main.css" />
     </head>
     <body>
+        <div id="minimizedContainer" hidden>
+            <img src="./images/RxGB_favicon_black_stroke.png" alt="RxGB" class="logo button" />
+        </div>
         <div id="modalContainer">
-            <img src="./images/RxGB_logo.png" alt="RxGB" id="logo"/>
-            <button id="pageColorToggle">Show Page Colors</button>
-            <div id="pageColors" hidden>
-                <div id="fontColors" class="colorDiv" >
-                    <h5>Font Colors:</h5>
+            <button id="toggleVisibility">minimize -</button>
+            <img
+                src="./images/RxGB_logo_black_stroke.png"
+                alt="RxGB"
+                class="logo"
+            />
+            <div id="nav">
+                <button id="colorDetailToggle" class="toggle active">
+                    Color Details
+                </button>
+                <button id="contrastToggle" class="toggle">Contrast</button>
+                <button id="pageColorToggle" class="toggle">Page Colors</button>
+            </div>
+            <div id="colorDetails" class="view">
+                <div class="section full primary">
+                    <div
+                        class="swatch"
+                        style="background-color: #000000"
+                    ></div>
+                    <h3>#000000</h3>
+                    <h3>rgb(0, 0, 0)</h3>
+                    <h3>hsl(0, 0, 0)</h3>
                 </div>
-                <div id="bgColors" class="colorDiv" >
-                    <h5>Background Colors:</h5>
+            </div>
+            <div id="contrast" class="view" hidden>
+                <div id="fontColor" class="section half">
+                    <h3 class="label">Font</h3>
+                    <div class="subsection">
+                        <div
+                            class="swatch"
+                            style="background-color: #000000"
+                        ></div>
+                        <h4>#000000</h4>
+                        <h4>rgb(0, 0, 0)</h4>
+                        <h4>hsl(0, 0, 0)</h4>
+                    </div>
+                </div>
+                <div id="bgColor" class="section half">
+                    <h3 class="label">Background</h3>
+                    <div class="subsection">
+                        <div
+                            class="swatch"
+                            style="background-color: #000000"
+                        ></div>
+                        <h4>#000000</h4>
+                        <h4>rgb(0, 0, 0)</h4>
+                        <h4>hsl(0, 0, 0)</h4>
+                    </div>
+                </div>
+            </div>
+            <div id="pageColors" class="view" hidden>
+                <div class="section half">
+                    <h3 class="label">Font</h3>
+                    <div id="fontColors" class="subsection"></div>
+                </div>
+                <div class="section half">
+                    <h3 class="label">Background</h3>
+                    <div id="bgColors" class="subsection"></div>
                 </div>
             </div>
         </div>

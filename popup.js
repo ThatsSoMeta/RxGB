@@ -6,102 +6,128 @@ var AA = 4.5,
     rgbRegex = /\s*\d+,\s*\d+,\s*\d+/gi,
     hexRegex = /#?[0-9a-f]{6}/gi,
     hslRegex = /hsl\(\d+,[\s\d%.]+,[\s\d%.]+\)/gi,
+    minimizedLogo = document.querySelector("#minimizedContainer .logo"),
+    minimizeButton = document.getElementById("toggleVisibility"),
+    minimizedContainer = document.getElementById("minimizedContainer"),
+    modalContainer = document.getElementById("modalContainer"),
     pageColorToggle = document.getElementById("pageColorToggle"),
     pageColorDiv = document.getElementById("pageColors"),
+    colorDetailsToggle = document.getElementById("colorDetailToggle"),
+    colorDetailsDiv = document.getElementById("colorDetails"),
+    contrastToggle = document.getElementById("contrastToggle"),
+    contrastDiv = document.getElementById("contrast"),
     swatchSize = "20px",
-    allElems = document.querySelectorAll("body *"),
-    fontColors = {},
-    bgColors = {},
-    allColors = { fontColors, bgColors };
+    fontColorDiv = document.getElementById("fontColors"),
+    bgColorDiv = document.getElementById("bgColors");
 
 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     port = chrome.tabs.connect(tabs[0].id, { name: "RxGB" });
     port.postMessage({ request: { type: "init" } });
     port.onMessage.addListener(function (response) {
         if (response.request === "init") {
-            console.log("RxGB Init in popup.js");
+            collectNativeColors(response.elements.fontColors, response.elements.bgColors);
         } else {
             console.log("RxGB non-Init in popup.js");
         }
     });
 });
 
-for (let elem of allElems) {
-    let style = window.getComputedStyle(elem);
-    if (style.color) {
-        // fontColors.push(getColor(style.color))
-        let verboseColor = getColor(style.color);
-        if (!fontColors[verboseColor.hex]) {
-            fontColors[verboseColor.hex] = verboseColor;
-        }
-    }
-    if (style.backgroundColor) {
-        // bgColors.push(getColor(style.backgroundColor))
-        let verboseColor = getColor(style.backgroundColor);
-        if (!bgColors[verboseColor.hex]) {
-            bgColors[verboseColor.hex] = verboseColor;
-        }
-    }
-}
-
-let fontColorDiv = document.getElementById("fontColors"),
-    bgColorDiv = document.getElementById("bgColors");
-
-function collectNativeColors() {
-    let fontColorsArray = Object.values(fontColors),
-        bgColorsArray = Object.values(bgColors);
-    for (let color of fontColorsArray) {
-        let name = color.hex,
+function collectNativeColors(fontColors, bgColors) {
+    var arrangedFontObject = Object.keys(fontColors).sort().reduce((acc, key) => {
+            acc[key] = fontColors[key];
+            return acc
+        }, {}),
+        arrangedBgObject = Object.keys(bgColors).sort().reduce((acc, key) => {
+            acc[key] = bgColors[key];
+            return acc
+        }, {}),
+        fontColorsArray = Object.values(arrangedFontObject),
+        bgColorsArray = Object.values(arrangedBgObject);
+    console.log({arrangedFontObject});
+    for (var color of fontColorsArray) {
+        var name = color.hex,
             colorContainer = document.createElement("div"),
             colorSwatch = document.createElement("div"),
-            colorTitle = document.createElement("h3");
+            colorTitle = document.createElement("h4");
+        colorSwatch.classList.add("color", "swatch");
+        colorTitle.classList.add("color", "title");
+        colorContainer.classList.add("color", "container", "button");
         colorTitle.innerText = name;
-        colorTitle.style.padding = "5px";
         colorSwatch.style.backgroundColor = name;
-        colorSwatch.style.borderRadius = "50%";
-        colorSwatch.style.height = "20px";
-        colorSwatch.style.width = "20px";
-        colorSwatch.style.border = "2px solid black";
-        colorSwatch.style.padding = "5px";
-        colorContainer.style.display = "flex";
-        colorContainer.style.justifyContent = "space-between";
-        colorContainer.style.alignItems = "center";
-        colorContainer.style.padding = "5px";
-        colorContainer.append(colorTitle, colorSwatch);
+        colorContainer.append(colorSwatch, colorTitle);
         fontColorDiv.append(colorContainer);
     }
-    for (let color of bgColorsArray) {
-        let name = color.hex,
+    for (var color of bgColorsArray) {
+        var name = color.hex,
             colorContainer = document.createElement("div"),
             colorSwatch = document.createElement("div"),
-            colorTitle = document.createElement("h3");
+            colorTitle = document.createElement("h4");
+        colorSwatch.classList.add("swatch");
+        colorTitle.classList.add("title");
+        colorContainer.classList.add("color", "container", "button");
         colorTitle.innerText = name;
-        colorTitle.style.padding = "5px";
         colorSwatch.style.backgroundColor = name;
-        colorSwatch.style.borderRadius = "50%";
-        colorSwatch.style.height = "20px";
-        colorSwatch.style.width = "20px";
-        colorSwatch.style.border = "2px solid black";
-        colorSwatch.style.padding = "5px";
-        colorContainer.style.display = "flex";
-        colorContainer.style.justifyContent = "space-between";
-        colorContainer.style.alignItems = "center";
-        colorContainer.style.padding = "5px";
-        colorContainer.append(colorTitle, colorSwatch);
+        colorContainer.append(colorSwatch, colorTitle);
         bgColorDiv.append(colorContainer);
     }
 }
 
-collectNativeColors();
-
 pageColorToggle.addEventListener("click", () => {
-    pageColorDiv.toggleAttribute("hidden");
-    if (pageColorDiv.hidden) {
-        pageColorToggle.innerHTML = "Show Page Colors";
-    } else {
-        pageColorToggle.innerHTML = "Hide Page Colors";
-    }
+    toggleView(pageColorDiv);
 });
+
+colorDetailsToggle.addEventListener("click", () => {
+    toggleView(colorDetailsDiv);
+});
+
+contrastToggle.addEventListener("click", () => {
+    toggleView(contrastDiv);
+});
+
+minimizedContainer.addEventListener("click", () => {
+    toggleApp(true);
+});
+
+minimizeButton.addEventListener("click", () => {
+    toggleApp(false);
+})
+
+function toggleApp(showApp=true) {
+    if (showApp) {
+        modalContainer.toggleAttribute("hidden", false);
+        minimizedContainer.toggleAttribute("hidden", true);
+    }
+    else {
+        minimizedContainer.toggleAttribute("hidden", false);
+        modalContainer.toggleAttribute("hidden", true);
+
+    }
+}
+
+function toggleView(view=colorDetailsDiv) {
+    if (view === colorDetailsDiv) {
+        colorDetailsDiv.toggleAttribute("hidden", false);
+        colorDetailsToggle.classList.add("active");
+        pageColorDiv.toggleAttribute("hidden", true);
+        pageColorToggle.classList.remove("active");
+        contrastDiv.toggleAttribute("hidden", true);
+        contrastToggle.classList.remove("active");
+    } else if (view === pageColorDiv) {
+        pageColorDiv.toggleAttribute("hidden", false);
+        pageColorToggle.classList.add("active");
+        colorDetailsDiv.toggleAttribute("hidden", true);
+        colorDetailsToggle.classList.remove("active");
+        contrastDiv.toggleAttribute("hidden", true);
+        contrastToggle.classList.remove("active");
+    } else if (view === contrastDiv) {
+        contrastDiv.toggleAttribute("hidden", false);
+        contrastToggle.classList.add("active");
+        pageColorDiv.toggleAttribute("hidden", true);
+        pageColorToggle.classList.remove("active");
+        colorDetailsDiv.toggleAttribute("hidden", true);
+        colorDetailsToggle.classList.remove("active");
+    }
+}
 
 // HELPERS
 function rgbToHsl(r, g, b) {
@@ -118,9 +144,9 @@ function rgbToHsl(r, g, b) {
             : 4 + (r - g) / s
         : 0;
     return {
-        h: 60 * h < 0 ? 60 * h + 360 : 60 * h,
-        s: 100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0),
-        l: (100 * (2 * l - s)) / 2,
+        h: Math.round(60 * h < 0 ? 60 * h + 360 : 60 * h),
+        s: Number(((s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0)).toFixed(2)),
+        l: Number((((2 * l - s)) / 2).toFixed(2)),
     };
 }
 
@@ -162,8 +188,8 @@ function hexToRgb(hex) {
 }
 
 function getLuminance(r, g, b) {
-    let [lumR, lumG, lumB] = [r, g, b].map((component) => {
-        let proportion = component / 255;
+    var [lumR, lumG, lumB] = [r, g, b].map((component) => {
+        var proportion = component / 255;
         return proportion <= 0.03928
             ? proportion / 12.92
             : Math.pow((proportion + 0.055) / 1.055, 2.4);
@@ -179,14 +205,14 @@ function componentToHex(c) {
 }
 
 function formatRatio(ratio) {
-    let ratioAsFloat = ratio.toFixed(2);
-    let isInteger = Number.isInteger(parseFloat(ratioAsFloat));
+    var ratioAsFloat = ratio.toFixed(2);
+    var isInteger = Number.isInteger(parseFloat(ratioAsFloat));
     return isInteger ? Number(Math.floor(ratio)) : Number(ratioAsFloat);
 }
 
 function getColor(input) {
     // console.log(`**************** getColor(${input}) ***************`);
-    let rgbArray = [],
+    var rgbArray = [],
         hslArray = [],
         hex = "",
         rgbObj = {},
@@ -194,7 +220,7 @@ function getColor(input) {
     if (typeof input === "string") {
         // console.log("This is a string...");
         if (input.match(hexRegex)) {
-            let match = input.match(hexRegex)[0];
+            var match = input.match(hexRegex)[0];
             if (match.startsWith("#")) {
                 hex = match;
             } else {
@@ -204,7 +230,7 @@ function getColor(input) {
             hslObj = rgbToHsl(rgbObj.r, rgbObj.g, rgbObj.b);
         } else if (input.match(hslRegex)) {
             console.log("This is an hsl string...");
-            let extractedHSL = captureParentheses(input).split(",");
+            var extractedHSL = captureParentheses(input).split(",");
             console.log({ extractedHSL });
             extractedHSL.forEach(function (e) {
                 if (e.includes("%")) {
@@ -222,7 +248,7 @@ function getColor(input) {
             hex = rgbToHex(rgbObj.r, rgbObj.g, rgbObj.b);
         } else if (input.match(rgbRegex)) {
             // console.log("This is an rgb string.");
-            let extractedRgb = captureParentheses(input).split(",");
+            var extractedRgb = captureParentheses(input).split(",");
             extractedRgb.forEach(function (e) {
                 rgbArray.push(Number(e));
             });
@@ -235,7 +261,7 @@ function getColor(input) {
         }
     } else if (Array.isArray(input)) {
         // console.log("This is an array...");
-        let isRgb = true,
+        var isRgb = true,
             isHsl = false;
         input.forEach(function (e) {
             if (e.toString().includes(".") || e.toString().includes("%")) {
@@ -274,7 +300,7 @@ function getColor(input) {
     rgbArray = [rgbObj.r, rgbObj.g, rgbObj.b];
     hslArray = rgbToHsl(rgbArray[0], rgbArray[1], rgbArray[2]);
     luminance = getLuminance(rgbObj.r, rgbObj.g, rgbObj.b);
-    let result = {
+    var result = {
         hex,
         rgb: rgbObj,
         rgbString: `rgb(${rgbObj.r}, ${rgbObj.g}, ${rgbObj.b})`,
