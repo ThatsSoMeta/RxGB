@@ -27,9 +27,17 @@
                         class="swatch"
                         style="background-color: #000000"
                     ></div>
-                    <h3 class="hex">#000000</h3>
-                    <h3 class="rgb">rgb(0, 0, 0)</h3>
-                    <h3 class="hsl">hsl(0, 0%, 0%)</h3>
+                    <h3 class="hex string">#000000</h3>
+                    <h3 class="rgb string">rgb(0, 0, 0)</h3>
+                    <h3 class="hsl string">hsl(0, 0%, 0%)</h3>
+                    <div id="detailsEditForm" class="color-input" hidden>
+                        <input type="text" placeholder="Enter new color" />
+                        <!-- <span class="vtext">Please enter a valid color format (hex, rgb, or hsl)</span> -->
+                        <button class="update-btn button">Update</button>
+                    </div>
+                    <button class="option edit" title="Edit color">
+                        <img src="./images/edit-pngrepo-com.png" width="30" />
+                    </button>
                 </div>
             </div>
             <div id="contrast" class="view" hidden>
@@ -41,9 +49,13 @@
                             class="swatch"
                             style="background-color: #000000"
                             ></div>
-                            <h4 class="hex">#000000</h4>
-                            <h4 class="rgb">rgb(0, 0, 0)</h4>
-                            <h4 class="hsl">hsl(0, 0%, 0%)</h4>
+                            <h4 class="hex string">#000000</h4>
+                            <h4 class="rgb string">rgb(0, 0, 0)</h4>
+                            <h4 class="hsl string">hsl(0, 0%, 0%)</h4>
+                            <div class="color-input" hidden>
+                                <input placeholder="Enter new color"/>
+                                <button class="update-btn">Update</button>
+                            </div>
                             <div class="options">
                                 <button class="option examine" title="See color details">
                                     <img src="./images/search-look-inspect-magnifying-glass-pngrepo-com.png" width="20" />
@@ -61,9 +73,13 @@
                                 class="swatch"
                                 style="background-color: #000000"
                             ></div>
-                            <h4 class="hex">#FFFFFF</h4>
-                            <h4 class="rgb">rgb(255, 255, 255)</h4>
-                            <h4 class="hsl">hsl(0, 0%, 100%)</h4>
+                            <h4 class="hex string">#FFFFFF</h4>
+                            <h4 class="rgb string">rgb(255, 255, 255)</h4>
+                            <h4 class="hsl string">hsl(0, 0%, 100%)</h4>
+                            <div class="color-input" hidden>
+                                <input  placeholder="Enter new color"/>
+                                <button class="update-btn">Update</button>
+                            </div>
                             <div class="options">
                                 <button class="option examine" title="See color details">
                                     <img src="./images/search-look-inspect-magnifying-glass-pngrepo-com.png" width="20" />

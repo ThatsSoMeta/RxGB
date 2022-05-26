@@ -106,9 +106,9 @@ function collectNativeColors(fontColors, bgColors) {
         selectIcon.src = "./images/add.png";
         selectIcon.width = "20";
         colorSwatch.classList.add("swatch");
-        colorHex.classList.add("hex");
-        colorRgb.classList.add("rgb");
-        colorHsl.classList.add("hsl");
+        colorHex.classList.add("hex", "string");
+        colorRgb.classList.add("rgb", "string");
+        colorHsl.classList.add("hsl", "string");
         selectBtn.classList.add("option", "font");
         options.classList.add("options");
         colorContainer.classList.add("color", "container", "palette");
@@ -139,9 +139,9 @@ function collectNativeColors(fontColors, bgColors) {
         selectIcon.src = "./images/add.png";
         selectIcon.width = "20";
         colorSwatch.classList.add("swatch");
-        colorHex.classList.add("hex");
-        colorRgb.classList.add("rgb");
-        colorHsl.classList.add("hsl");
+        colorHex.classList.add("hex", "string");
+        colorRgb.classList.add("rgb", "string");
+        colorHsl.classList.add("hsl", "string");
         selectBtn.classList.add("option", "bg");
         options.classList.add("options");
         colorContainer.classList.add("color", "container", "palette");
@@ -165,14 +165,56 @@ function collectNativeColors(fontColors, bgColors) {
 var contrastPaletteExamine = [contrastFontPalette.querySelector(".examine"), contrastBgPalette.querySelector(".examine")];
 contrastPaletteExamine.forEach((elem) => {
     elem.addEventListener("click", (e) => {
+        console.log({e});
         var btn = e.path.find(elem => elem.nodeName === "BUTTON"),
-            currentColor = getColor(btn.parentElement.previousElementSibling.innerText);
-        console.log("btn.parentElement.previousElementSibling.innerText", btn.parentElement.previousElementSibling.innerText);
+            palette = e.path.find(elem => elem.classList.contains("palette"))
+            currentColor = getColor(palette.querySelector(".hex").innerText);
         console.log({ currentColor });
         setDetailPalette(currentColor);
         toggleView(colorDetailsDiv)
     });
 });
+var editColorBtns = document.querySelectorAll(".option.edit");
+editColorBtns.forEach((elem) => {
+    elem.addEventListener("click", (e) => {
+        var palette= e.path.find(node => node.classList.contains("palette")),
+            strings = palette.querySelectorAll(".string"),
+            input = palette.querySelector(".color-input");
+        strings.forEach(elem => elem.toggleAttribute("hidden"));
+        input.toggleAttribute("hidden");
+    })
+});
+
+var updateColorBtns = document.querySelectorAll(".palette .update-btn");
+updateColorBtns.forEach((elem) => {
+    elem.addEventListener("click", (e) => {
+        var input = e.target.previousElementSibling,
+            selection = getColor(input.value),
+            palette = input.parentNode.parentNode,
+            hex = palette.querySelector(".hex"),
+            rgb = palette.querySelector(".rgb"),
+            hsl = palette.querySelector(".hsl"),
+            swatch = palette.querySelector(".swatch"),
+            editForm = palette.querySelector(".color-input");
+        if (selection) {
+            input.style.border = "";
+            swatch.style.backgroundColor = selection.hex;
+            hex.innerText = selection.hex;
+            rgb.innerText = selection.rgbString;
+            hsl.innerText = selection.hslString;
+            hex.toggleAttribute("hidden");
+            rgb.toggleAttribute("hidden");
+            hsl.toggleAttribute("hidden");
+            editForm.toggleAttribute("hidden");
+            updateExampleText();
+        } else {
+            console.log("Invalid Color");
+            input.style.border = "2px solid red";
+            input.value = "";
+            input.placeholder = "Please enter a valid color value"
+        }
+    })
+})
 
 pageColorToggle.addEventListener("click", () => {
     toggleView(pageColorDiv);
@@ -253,6 +295,13 @@ function toggleView(view = colorDetailsDiv) {
 }
 
 // HELPERS
+function updateExampleText() {
+    var color = window.getComputedStyle(document.querySelector("#fontColor .swatch")).backgroundColor,
+        bgColor = window.getComputedStyle(document.querySelector("#bgColor .swatch")).backgroundColor;
+    contrastExampleText.style.color = color;
+    contrastExampleText.style.backgroundColor = bgColor;
+}
+
 function getContrastRatio(font = "#000000", bg = "#FFFFFF") {
     font = getColor(font);
     bg = getColor(bg);
@@ -397,7 +446,8 @@ function getColor(input) {
             hslObj = rgbToHsl(...rgbArray);
             hex = rgbToHex(...rgbArray);
         } else {
-            throw Error("This is an unrecognized string.");
+            // throw Error("This is an unrecognized string.");
+            return undefined;
         }
     } else if (Array.isArray(input)) {
         // console.log("This is an array...");

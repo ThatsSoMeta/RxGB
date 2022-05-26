@@ -156,7 +156,6 @@ button,
     align-items: center;
     align-self: stretch;
     justify-content: space-between;
-    margin: 0;
 }
 
 #contrast .section:not(.split) {
@@ -182,7 +181,6 @@ button,
     border-width: 3px;
     justify-content: center;
     padding: 15px 0 0;
-    margin: 5px;
     position: relative;
 }
 
@@ -287,4 +285,42 @@ h3.label {
     border-bottom-left-radius: 7px;
     border-bottom-right-radius: 7px;
     width: 100%;
+}
+
+.color-input {
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.color-input input {
+    margin: 10px;
+    width: 80%;
+    text-align: inherit;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.color-input input.invalid {
+    border: 2px solid var(--chilli);
+}
+
+.color-input button {
+    padding: 10px;
+    border: none;
+    background-color: var(--blueberry);
+    color: white;
+    border-radius: 5px;
+}
+
+#detailsEditForm {
+    padding: 10px;
+}
+
+#detailsEditForm button {
+    margin: 10px;
+}
+
+.vtext {
+    color: var(--chilli);
 }
