@@ -273,6 +273,10 @@ h3.label {
     background-color: lightskyblue;
 }
 
+.option:active {
+    background-color: var(--peacock);
+}
+
 .options .examine {
     border-bottom-left-radius: 7px;
 }
