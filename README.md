@@ -8,3 +8,4 @@ IN CHROME:
     - Select "Load Unpacked"
     - Select the cloned folder
     - Have fun!
+    - (optional) Pin the extension for quick access next to your address bar
