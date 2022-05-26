@@ -198,6 +198,7 @@ updateColorBtns.forEach((elem) => {
             editForm = palette.querySelector(".color-input");
         if (selection) {
             input.style.border = "";
+            input.value = "";
             swatch.style.backgroundColor = selection.hex;
             hex.innerText = selection.hex;
             rgb.innerText = selection.rgbString;
