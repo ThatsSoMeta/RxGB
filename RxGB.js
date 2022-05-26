@@ -1,101 +1,101 @@
 var modalContainer = document.createElement("div"),
-  modalToggleButton = document.createElement("button"),
-  originalComboContainer = document.createElement("div"),
-  origTextColorInputLabel = document.createElement("label"),
-  origTextDiv = document.createElement("div"),
-  origTextColorInput = document.createElement("input"),
-  origTextSwatch = document.createElement("div"),
-  origBgColorInputLabel = document.createElement("label"),
-  origBgDiv = document.createElement("div"),
-  origBgColorInput = document.createElement("input"),
-  origBgSwatch = document.createElement("div"),
-  colorSubmitButton = document.createElement("button"),
-  newTextColorSuggestionContainer = document.createElement("div"),
-  newBgColorSuggestionContainer = document.createElement("div"),
-  newComboContainer1 = document.createElement("div"),
-  newComboContainer2 = document.createElement("div"),
-  resultContainer = document.createElement("div"),
-  input = document.createElement("input"),
-  contrastOptionContainer = document.createElement("div"),
-  AARadio = document.createElement("input"),
-  AAARadio = document.createElement("input"),
-  rxgbLogoURL = "https://i.ibb.co/T22Nc8J/rxgb-logo-wknd.png",
-  wkndDarkBlue = "#303D78",
-  wkndLightBlue = "#3D54CC",
-  wkndGreen = "#24B79D",
-  wkndRed = "#FF4133",
-  wkndYellow = "#FFBB00",
-  wkndSand = "#F4EAE1",
-  wkndBrown = "#CC9965",
-  black = "#000",
-  white = "#FFF",
-  borderWidth = "3px",
-  AA = 4.5,
-  AAA = 7,
-  RGB = "rgb",
-  HEX = "hex",
-  HSL = "hsl",
-  rgbRegex = /\s*\d+,\s*\d+,\s*\d+/gi,
-  hexRegex = /#?[0-9a-f]{6}/gi,
-  hslRegex = /hsl\(\d+,[\s\d%.]+,[\s\d%.]+\)/gi,
-  allContainers = [
-    modalContainer,
-    newTextColorSuggestionContainer,
-    newBgColorSuggestionContainer,
-    originalComboContainer,
-    newComboContainer1,
-    newComboContainer2,
-    resultContainer,
-    contrastOptionContainer,
-  ],
-  comboContainers = [
-    originalComboContainer,
-    newComboContainer1,
-    newComboContainer2,
-    resultContainer,
-  ];
+    modalToggleButton = document.createElement("button"),
+    originalComboContainer = document.createElement("div"),
+    origTextColorInputLabel = document.createElement("label"),
+    origTextDiv = document.createElement("div"),
+    origTextColorInput = document.createElement("input"),
+    origTextSwatch = document.createElement("div"),
+    origBgColorInputLabel = document.createElement("label"),
+    origBgDiv = document.createElement("div"),
+    origBgColorInput = document.createElement("input"),
+    origBgSwatch = document.createElement("div"),
+    colorSubmitButton = document.createElement("button"),
+    newTextColorSuggestionContainer = document.createElement("div"),
+    newBgColorSuggestionContainer = document.createElement("div"),
+    newComboContainer1 = document.createElement("div"),
+    newComboContainer2 = document.createElement("div"),
+    resultContainer = document.createElement("div"),
+    input = document.createElement("input"),
+    contrastOptionContainer = document.createElement("div"),
+    AARadio = document.createElement("input"),
+    AAARadio = document.createElement("input"),
+    rxgbLogoURL = "https://i.ibb.co/T22Nc8J/rxgb-logo-wknd.png",
+    wkndDarkBlue = "#303D78",
+    wkndLightBlue = "#3D54CC",
+    wkndGreen = "#24B79D",
+    wkndRed = "#FF4133",
+    wkndYellow = "#FFBB00",
+    wkndSand = "#F4EAE1",
+    wkndBrown = "#CC9965",
+    black = "#000",
+    white = "#FFF",
+    borderWidth = "3px",
+    AA = 4.5,
+    AAA = 7,
+    RGB = "rgb",
+    HEX = "hex",
+    HSL = "hsl",
+    rgbRegex = /\s*\d+,\s*\d+,\s*\d+/gi,
+    hexRegex = /#?[0-9a-f]{6}/gi,
+    hslRegex = /hsl\(\d+,[\s\d%.]+,[\s\d%.]+\)/gi,
+    allContainers = [
+        modalContainer,
+        newTextColorSuggestionContainer,
+        newBgColorSuggestionContainer,
+        originalComboContainer,
+        newComboContainer1,
+        newComboContainer2,
+        resultContainer,
+        contrastOptionContainer,
+    ],
+    comboContainers = [
+        originalComboContainer,
+        newComboContainer1,
+        newComboContainer2,
+        resultContainer,
+    ];
 
 for (let container of allContainers) {
-  if (!container.classList.contains("rxgb")) {
-    container.classList.add("rxgb");
-  }
-  container.style.display = "flex";
-  container.style.alignItems = "center";
-  if (container === contrastOptionContainer) {
-    container.style.width = "80%";
-    container.style.justifyContent = "space-around";
-  } else {
-    container.style.flexDirection = "column";
-    container.style.justifyContent = "space-between";
-  }
+    if (!container.classList.contains("rxgb")) {
+        container.classList.add("rxgb");
+    }
+    container.style.display = "flex";
+    container.style.alignItems = "center";
+    if (container === contrastOptionContainer) {
+        container.style.width = "80%";
+        container.style.justifyContent = "space-around";
+    } else {
+        container.style.flexDirection = "column";
+        container.style.justifyContent = "space-between";
+    }
 }
 
 for (let radio of [AARadio, AAARadio]) {
-  let label = document.createElement("label"),
-    container = document.createElement("div");
-  radio.type = "radio";
-  radio.name = "contrast-target";
-  radio.style.margin = "auto";
-  if (radio === AARadio) {
-    AARadio.id = "aa";
-    AARadio.value = AA;
-    AARadio.checked = true;
-    label.innerText = "AA";
-    label.style.fontSize = "12px";
-    label.setAttribute("for", "aa");
-  } else {
-    AAARadio.id = "aaa";
-    AAARadio.value = AAA;
-    label.innerText = "AAA";
-    label.style.fontSize = "12px";
-    label.setAttribute("for", "aaa");
-  }
-  container.style.display = "flex";
-  container.style.flexDirection = "column";
-  container.style.justifyContent = "center";
-  container.style.alignItems = "center";
-  container.append(label, radio);
-  contrastOptionContainer.append(container);
+    let label = document.createElement("label"),
+        container = document.createElement("div");
+    radio.type = "radio";
+    radio.name = "contrast-target";
+    radio.style.margin = "auto";
+    if (radio === AARadio) {
+        AARadio.id = "aa";
+        AARadio.value = AA;
+        AARadio.checked = true;
+        label.innerText = "AA";
+        label.style.fontSize = "12px";
+        label.setAttribute("for", "aa");
+    } else {
+        AAARadio.id = "aaa";
+        AAARadio.value = AAA;
+        label.innerText = "AAA";
+        label.style.fontSize = "12px";
+        label.setAttribute("for", "aaa");
+    }
+    container.style.display = "flex";
+    container.style.flexDirection = "column";
+    container.style.justifyContent = "center";
+    container.style.alignItems = "center";
+    container.append(label, radio);
+    contrastOptionContainer.append(container);
 }
 
 modalContainer.classList.add("modal-container", "collapsed");
@@ -115,7 +115,7 @@ modalContainer.style.bottom = "5px";
 modalContainer.style.right = "5px";
 modalContainer.style.padding = "10px";
 modalContainer.style.transition =
-  "height .3s ease-in-out, width .3s ease-in-out";
+    "height .3s ease-in-out, width .3s ease-in-out";
 modalContainer.style.minWidth = "100px";
 modalContainer.style.minHeight = "35px";
 modalContainer.style.alignItems = "flex-end";
@@ -142,120 +142,123 @@ colorSubmitButton.style.cursor = "pointer";
 colorSubmitButton.onclick = submitColors;
 
 function submitColors() {
-  // console.log(`********** submitColors():`);
-  let contrastTarget = Number(
-      document.querySelector('input[name="contrast-target"]:checked').value
-    ),
-    textColorInput = document.querySelector(
-      "input#orig-text-color-input"
-    ).value,
-    bgColorInput = document.querySelector("input#orig-bg-color-input").value,
-    origTextRgb = getColor(textColorInput).rgb,
-    origBgRgb = getColor(bgColorInput).rgb;
-  if (textColorInput === "" || bgColorInput === "") {
-    throw Error("Please make a selection for both colors.")
-  } else {
-    let result = getCompliantColor(origTextRgb, origBgRgb, contrastTarget);
-    // console.log("Is there a result? ", !!result);
-    // console.log(`************* END submitColors() ***************`);
-  }
-  getFullColorArray();
+    // console.log(`********** submitColors():`);
+    let contrastTarget = Number(
+            document.querySelector('input[name="contrast-target"]:checked')
+                .value
+        ),
+        textColorInput = document.querySelector(
+            "input#orig-text-color-input"
+        ).value,
+        bgColorInput = document.querySelector(
+            "input#orig-bg-color-input"
+        ).value,
+        origTextRgb = getColor(textColorInput).rgb,
+        origBgRgb = getColor(bgColorInput).rgb;
+    if (textColorInput === "" || bgColorInput === "") {
+        throw Error("Please make a selection for both colors.");
+    } else {
+        let result = getCompliantColor(origTextRgb, origBgRgb, contrastTarget);
+        // console.log("Is there a result? ", !!result);
+        // console.log(`************* END submitColors() ***************`);
+    }
+    getFullColorArray();
 }
 
 function toggleContainerDisplay() {
-  if (jQuery(".modal-container").hasClass("collapsed")) {
-    modalContainer.classList.remove("collapsed");
-    modalContainer.classList.add("expanded");
-    modalContainer.style.backgroundPosition = "center top 10px";
-    modalContainer.style.alignItems = "flex-start";
-    modalToggleButton.innerText = "hide";
-    modalToggleButton.style.fontSize = "10px";
-    jQuery(".original-colors, .original-colors *").css("display", "flex");
-  } else {
-    modalContainer.classList.remove("expanded");
-    modalContainer.classList.add("collapsed");
-    modalContainer.style.backgroundPosition = "center left 10px";
-    modalContainer.style.alignItems = "flex-end";
-    modalToggleButton.innerText = "+";
-    modalToggleButton.style.fontSize = "16px";
-    jQuery(".original-colors, .result-colors").css("display", "none");
-  }
+    if (jQuery(".modal-container").hasClass("collapsed")) {
+        modalContainer.classList.remove("collapsed");
+        modalContainer.classList.add("expanded");
+        modalContainer.style.backgroundPosition = "center top 10px";
+        modalContainer.style.alignItems = "flex-start";
+        modalToggleButton.innerText = "hide";
+        modalToggleButton.style.fontSize = "10px";
+        jQuery(".original-colors, .original-colors *").css("display", "flex");
+    } else {
+        modalContainer.classList.remove("expanded");
+        modalContainer.classList.add("collapsed");
+        modalContainer.style.backgroundPosition = "center left 10px";
+        modalContainer.style.alignItems = "flex-end";
+        modalToggleButton.innerText = "+";
+        modalToggleButton.style.fontSize = "16px";
+        jQuery(".original-colors, .result-colors").css("display", "none");
+    }
 }
 
 function updateSwatch(e) {
-  let hex = getColor(e.target.value).hex,
-    rgb = getColor(e.target.value).rgb;
-  if (e.target.id === "orig-text-color-input") {
-    origTextSwatch.style.backgroundColor = hex;
-  } else {
-    origBgSwatch.style.backgroundColor = hex;
-  }
-  // if (e.target.value.match(hexRegex)) {
-  //   e.target.value = hex;
-  // } else if (e.target.value.match(rgbRegex)) {
-  //   e.target.value = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
-  // }
-  // console.log({ hex, rgb });
+    let hex = getColor(e.target.value).hex,
+        rgb = getColor(e.target.value).rgb;
+    if (e.target.id === "orig-text-color-input") {
+        origTextSwatch.style.backgroundColor = hex;
+    } else {
+        origBgSwatch.style.backgroundColor = hex;
+    }
+    // if (e.target.value.match(hexRegex)) {
+    //   e.target.value = hex;
+    // } else if (e.target.value.match(rgbRegex)) {
+    //   e.target.value = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+    // }
+    // console.log({ hex, rgb });
 }
 
 for (let element of comboContainers) {
-  let header = document.createElement("h6");
-  if (!element.classList.contains("rxgb")) {
-    element.classList.add("rxgb");
-  }
-  element.style.borderRadius = "10px";
-  element.style.transition = "all .3s";
-  header.style.textAlign = "center";
-  header.style.fontWeight = "bold";
-  header.style.fontSize = "12px";
-  element.style.display = "none";
-  if (element === originalComboContainer) {
-    header.innerText = "Original Color";
-    header.style.marginBottom = "5px";
-    element.prepend(header);
-    element.classList.add("original-colors");
-    element.style.backgroundColor = "lightgray";
-    element.style.border = `${borderWidth} solid darkgray`;
-    element.style.padding = "10px";
-    element.style.marginTop = "15px";
-    modalContainer.append(element);
-  } else if (element === resultContainer) {
-    header.innerText = "Results";
-    header.style.marginBottom = "5px";
-    element.style.marginTop = "15px";
-    element.prepend(header);
-    element.classList.add("result-colors");
-  } else if (element === newComboContainer1) {
-    header.innerText = "Option 1";
-    element.append(header);
-    resultContainer.append(element);
-  } else if (element === newComboContainer2) {
-    header.innerText = "Option 2";
-    element.append(header);
-    resultContainer.append(element);
-  }
+    let header = document.createElement("h6");
+    if (!element.classList.contains("rxgb")) {
+        element.classList.add("rxgb");
+    }
+    element.style.borderRadius = "10px";
+    element.style.transition = "all .3s";
+    header.style.textAlign = "center";
+    header.style.fontWeight = "bold";
+    header.style.fontSize = "12px";
+    element.style.display = "none";
+    if (element === originalComboContainer) {
+        header.innerText = "Original Color";
+        header.style.marginBottom = "5px";
+        element.prepend(header);
+        element.classList.add("original-colors");
+        element.style.backgroundColor = "lightgray";
+        element.style.border = `${borderWidth} solid darkgray`;
+        element.style.padding = "10px";
+        element.style.marginTop = "15px";
+        modalContainer.append(element);
+    } else if (element === resultContainer) {
+        header.innerText = "Results";
+        header.style.marginBottom = "5px";
+        element.style.marginTop = "15px";
+        element.prepend(header);
+        element.classList.add("result-colors");
+    } else if (element === newComboContainer1) {
+        header.innerText = "Option 1";
+        element.append(header);
+        resultContainer.append(element);
+    } else if (element === newComboContainer2) {
+        header.innerText = "Option 2";
+        element.append(header);
+        resultContainer.append(element);
+    }
 }
 modalContainer.append(resultContainer);
 
 origTextColorInput.id = "orig-text-color-input";
 
 for (let swatch of [origBgSwatch, origTextSwatch]) {
-  swatch.style.backgroundColor = "white";
-  swatch.style.borderRadius = "50%";
-  swatch.style.border = `${borderWidth} solid black`;
-  swatch.style.height = "35px";
-  swatch.style.width = "35px";
+    swatch.style.backgroundColor = "white";
+    swatch.style.borderRadius = "50%";
+    swatch.style.border = `${borderWidth} solid black`;
+    swatch.style.height = "35px";
+    swatch.style.width = "35px";
 }
 
 for (let input of [origTextColorInput, origBgColorInput]) {
-  input.style.textAlign = "center";
-  input.style.border = `${borderWidth} solid black`;
-  input.style.borderRadius = "5px";
-  input.style.height = "35px";
-  input.placeholder = "rgb() or #Hex";
-  input.style.marginRight = "10px";
-  input.onchange = updateSwatch;
-  input.oninput = updateSwatch;
+    input.style.textAlign = "center";
+    input.style.border = `${borderWidth} solid black`;
+    input.style.borderRadius = "5px";
+    input.style.height = "35px";
+    input.placeholder = "rgb() or #Hex";
+    input.style.marginRight = "10px";
+    input.onchange = updateSwatch;
+    input.oninput = updateSwatch;
 }
 
 origTextColorInputLabel.setAttribute("for", "orig-text-color-input");
@@ -272,17 +275,17 @@ origTextDiv.append(origTextColorInput, origTextSwatch);
 origBgDiv.append(origBgColorInput, origBgSwatch);
 
 for (let element of [origTextDiv, origBgDiv]) {
-  element.style.display = "flex";
-  element.style.alignItems = "center";
-  element.style.justifyContent = "center";
+    element.style.display = "flex";
+    element.style.alignItems = "center";
+    element.style.justifyContent = "center";
 }
 
 originalComboContainer.append(
-  origTextColorInputLabel,
-  origTextDiv,
-  origBgColorInputLabel,
-  origBgDiv,
-  contrastOptionContainer
+    origTextColorInputLabel,
+    origTextDiv,
+    origBgColorInputLabel,
+    origBgDiv,
+    contrastOptionContainer
 );
 
 contrastOptionContainer.style.margin = "10px";
@@ -293,7 +296,7 @@ resultContainer.style.backgroundColor = "rgb(240, 240, 240)";
 resultContainer.style.padding = "10px";
 
 if (jQuery(".rxgb.modal-container").length) {
-  jQuery(".rxgb.modal-container").remove();
+    jQuery(".rxgb.modal-container").remove();
 }
 document.body.append(modalContainer);
 console.log("");
@@ -318,161 +321,165 @@ https://munsell.com/color-blog/difference-chroma-saturation/
 */
 
 function getLuminance(r, g, b) {
-  let [lumR, lumG, lumB] = [r, g, b].map((component) => {
-    let proportion = component / 255;
-    return proportion <= 0.03928
-      ? proportion / 12.92
-      : Math.pow((proportion + 0.055) / 1.055, 2.4);
-  });
-  return 0.2126 * lumR + 0.7152 * lumG + 0.0722 * lumB;
+    let [lumR, lumG, lumB] = [r, g, b].map((component) => {
+        let proportion = component / 255;
+        return proportion <= 0.03928
+            ? proportion / 12.92
+            : Math.pow((proportion + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * lumR + 0.7152 * lumG + 0.0722 * lumB;
 }
 
 /* https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb */
 function componentToHex(c) {
-  c = Math.round(Number(c));
-  var hex = c.toString(16);
-  return hex.length == 1 ? "0" + hex : hex;
+    c = Math.round(Number(c));
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
 }
 
 function formatRatio(ratio) {
-  let ratioAsFloat = ratio.toFixed(2);
-  let isInteger = Number.isInteger(parseFloat(ratioAsFloat));
-  return isInteger ? Number(Math.floor(ratio)) : Number(ratioAsFloat);
+    let ratioAsFloat = ratio.toFixed(2);
+    let isInteger = Number.isInteger(parseFloat(ratioAsFloat));
+    return isInteger ? Number(Math.floor(ratio)) : Number(ratioAsFloat);
 }
 
 function getColor(input) {
-  // console.log(`**************** getColor(${input}) ***************`);
-  let rgbArray = [],
-    hslArray = [],
-    hex = "",
-    rgbObj = {},
-    hslObj = {};
-  if (typeof input === "string") {
-    // console.log("This is a string...");
-    if (input.match(hexRegex)) {
-      let match = input.match(hexRegex)[0]
-      if (match.startsWith("#")) {
-        hex = match;
-      } else {
-        hex = "#" + match;
-      }
-      rgbObj = hexToRgb(hex);
-      hslObj = rgbToHsl(rgbObj.r, rgbObj.g, rgbObj.b);
-    } else if (input.match(hslRegex)) {
-      console.log("This is an hsl string...");
-      let extractedHSL = captureParentheses(input).split(",");
-      console.log({extractedHSL});
-      extractedHSL.forEach(function (e) {
-        if (e.includes("%")) {
-          /* Convert percentages to decimals */
-          console.log("There is a percent sign.");
-          hslArray.push(Number(e.replace(/\D/g, "")) / 100);
+    // console.log(`**************** getColor(${input}) ***************`);
+    let rgbArray = [],
+        hslArray = [],
+        hex = "",
+        rgbObj = {},
+        hslObj = {};
+    if (typeof input === "string") {
+        // console.log("This is a string...");
+        if (input.match(hexRegex)) {
+            let match = input.match(hexRegex)[0];
+            if (match.startsWith("#")) {
+                hex = match;
+            } else {
+                hex = "#" + match;
+            }
+            rgbObj = hexToRgb(hex);
+            hslObj = rgbToHsl(rgbObj.r, rgbObj.g, rgbObj.b);
+        } else if (input.match(hslRegex)) {
+            console.log("This is an hsl string...");
+            let extractedHSL = captureParentheses(input).split(",");
+            console.log({ extractedHSL });
+            extractedHSL.forEach(function (e) {
+                if (e.includes("%")) {
+                    /* Convert percentages to decimals */
+                    console.log("There is a percent sign.");
+                    hslArray.push(Number(e.replace(/\D/g, "")) / 100);
+                } else {
+                    console.log("There is no percentage sign.");
+                    hslArray.push(Number(e));
+                }
+            });
+            console.log({ hslArray });
+            rgbObj = hslToRgb(hslArray[0], hslArray[1], hslArray[2]);
+            hslObj = { h: hslArray[0], s: hslArray[1], l: hslArray[2] };
+            hex = rgbToHex(rgbObj.r, rgbObj.g, rgbObj.b);
+        } else if (input.match(rgbRegex)) {
+            // console.log("This is an rgb string.");
+            let extractedRgb = captureParentheses(input).split(",");
+            extractedRgb.forEach(function (e) {
+                rgbArray.push(Number(e));
+            });
+            rgbObj = { r: rgbArray[0], g: rgbArray[1], b: rgbArray[2] };
+            hslObj = rgbToHsl(...rgbArray);
+            hex = rgbToHex(...rgbArray);
         } else {
-          console.log("There is no percentage sign.");
-          hslArray.push(Number(e));
+            throw Error("This is an unrecognized string.");
         }
-      });
-      console.log({hslArray});
-      rgbObj = hslToRgb(hslArray[0], hslArray[1], hslArray[2]);
-      hslObj = { h: hslArray[0], s: hslArray[1], l: hslArray[2] };
-      hex = rgbToHex(rgbObj.r, rgbObj.g, rgbObj.b);
-    } else if (input.match(rgbRegex)) {
-      // console.log("This is an rgb string.");
-      let extractedRgb = captureParentheses(input).split(",");
-      extractedRgb.forEach(function (e) {
-        rgbArray.push(Number(e))
-      })
-      rgbObj = {r: rgbArray[0], g: rgbArray[1], b: rgbArray[2]};
-      hslObj = rgbToHsl(...rgbArray);
-      hex = rgbToHex(...rgbArray);
+    } else if (Array.isArray(input)) {
+        // console.log("This is an array...");
+        let isRgb = true,
+            isHsl = false;
+        input.forEach(function (e) {
+            if (e.toString().includes(".") || e.toString().includes("%")) {
+                // if (e.includes('.') || e.includes('%')) {
+                isRgb = false;
+                isHsl = true;
+            }
+        });
+        if (isRgb) {
+            hex = rgbToHex(...input);
+            rgbObj = { r: input[0], g: input[1], b: input[2] };
+            hslObj = rgbToHsl(...input);
+        } else {
+            rgbObj = hslToRgb(...input);
+            hslObj = { h: input[0], s: input[1], l: input[2] };
+            hex = rgbToHex(rgbObj.r, rgbObj.g, rgbObj.b);
+        }
     } else {
-      throw Error("This is an unrecognized string.");
+        if ("r" in input && "g" in input && "b" in input) {
+            rgbObj = input;
+            hslObj = rgbToHsl(input.r, input.g, input.b);
+            hex = rgbToHex(input.r, input.g, input.b);
+        } else if ("red" in input && "green" in input && "blue" in input) {
+            rgbObj = { r: input.red, g: input.green, b: input.blue };
+            hslObj = rgbToHsl(input.red, input.green, input.blue);
+            hex = rgbToHex(input.red, input.green, input.blue);
+        } else if ("h" in input && "s" in input && "l" in input) {
+            hslObj = { h: input.h, s: input.s, l: input.l };
+            rgbObj = hslToRgb(input.h, input.s, input.l);
+            hex = rgbToHex(rgbObj.r, rgbObj.g, rgbObj.b);
+        } else {
+            throw Error(`Cannot determine color from the given input.`);
+        }
     }
-  } else if (Array.isArray(input)) {
-    // console.log("This is an array...");
-    let isRgb = true,
-      isHsl = false;
-    input.forEach(function(e) {
-      if (e.toString().includes('.') || e.toString().includes('%')) {
-      // if (e.includes('.') || e.includes('%')) {
-        isRgb = false;
-        isHsl = true;
-      }
-    });
-    if (isRgb) {
-      hex = rgbToHex(...input);
-      rgbObj = {r: input[0], g: input[1], b: input[2]};
-      hslObj = rgbToHsl(...input)
-    } else {
-      rgbObj = hslToRgb(...input);
-      hslObj = {h: input[0], s: input[1], l: input[2]};
-      hex = rgbToHex(rgbObj.r, rgbObj.g, rgbObj.b);
-    }
-  } else {
-    if ('r' in input && 'g' in input && 'b' in input) {
-      rgbObj = input;
-      hslObj = rgbToHsl(input.r, input.g, input.b);
-      hex = rgbToHex(input.r, input.g, input.b)
-    } else if ('red' in input && 'green' in input && 'blue' in input) {
-      rgbObj = {r: input.red, g: input.green, b: input.blue};
-      hslObj = rgbToHsl(input.red, input.green, input.blue);
-      hex = rgbToHex(input.red, input.green, input.blue);
-    } else if ('h' in input && 's' in input && 'l' in input) {
-      hslObj = {h: input.h, s: input.s, l: input.l};
-      rgbObj = hslToRgb(input.h, input.s, input.l);
-      hex = rgbToHex(rgbObj.r, rgbObj.g, rgbObj.b);
-    } else {
-      throw Error(`Cannot determine color from the given input.`);
-    }
-  }
-  hex = hex.toUpperCase();
-  rgbArray = [rgbObj.r, rgbObj.g, rgbObj.b];
-  hslArray = rgbToHsl(rgbArray[0], rgbArray[1], rgbArray[2]);
-  luminance = getLuminance(rgbObj.r, rgbObj.g, rgbObj.b);
-  let result = {
-    hex,
-    rgb: rgbObj,
-    rgbString: `rgb(${rgbObj.r}, ${rgbObj.g}, ${rgbObj.b})`,
-    hsl: hslObj,
-    hslString: `hsl(${hslObj.h}, ${hslObj.s * 100}%, ${hslObj.l * 100}%)`,
-    luminance,
-  };
-  return result;
+    hex = hex.toUpperCase();
+    rgbArray = [rgbObj.r, rgbObj.g, rgbObj.b];
+    hslArray = rgbToHsl(rgbArray[0], rgbArray[1], rgbArray[2]);
+    luminance = getLuminance(rgbObj.r, rgbObj.g, rgbObj.b);
+    let result = {
+        hex,
+        rgb: rgbObj,
+        rgbString: `rgb(${rgbObj.r}, ${rgbObj.g}, ${rgbObj.b})`,
+        hsl: hslObj,
+        hslString: `hsl(${hslObj.h}, ${hslObj.s * 100}%, ${hslObj.l * 100}%)`,
+        luminance,
+    };
+    return result;
 }
 
 function captureParentheses(input = "") {
-  let regex = /\((.+)\)/gi;
-  if (input === "" || typeof input !== "string") {
-    throw Error("Input must be a string and cannot be blank.");
-  } else if (!input.includes("(") || !input.includes(")")) {
-    throw Error("No parentheses found.");
-  }
-  return regex.exec(input)[1];
+    let regex = /\((.+)\)/gi;
+    if (input === "" || typeof input !== "string") {
+        throw Error("Input must be a string and cannot be blank.");
+    } else if (!input.includes("(") || !input.includes(")")) {
+        throw Error("No parentheses found.");
+    }
+    return regex.exec(input)[1];
 }
 
 function rgbToHex(r, g, b) {
-  return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
 function hexToRgb(hex) {
-  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result
-    ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
-      }
-    : null;
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result
+        ? {
+              r: parseInt(result[1], 16),
+              g: parseInt(result[2], 16),
+              b: parseInt(result[3], 16),
+          }
+        : null;
 }
 
 const hslToRgb = (h, s, l) => {
-  // s /= 100;
-  // l /= 100;
-  const k = n => (n + h / 30) % 12;
-  const a = s * Math.min(l, 1 - l);
-  const f = n =>
-    l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
-  return {r: Math.round(255 * f(0)), g: Math.round(255 * f(8)), b: Math.round(255 * f(4))};
+    // s /= 100;
+    // l /= 100;
+    const k = (n) => (n + h / 30) % 12;
+    const a = s * Math.min(l, 1 - l);
+    const f = (n) =>
+        l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+    return {
+        r: Math.round(255 * f(0)),
+        g: Math.round(255 * f(8)),
+        b: Math.round(255 * f(4)),
+    };
 };
 
 /* https://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl */
@@ -684,211 +691,237 @@ const hslToRgb = (h, s, l) => {
 // }
 
 const rgbToHsl = (r, g, b) => {
-  r /= 255;
-  g /= 255;
-  b /= 255;
-  const l = Math.max(r, g, b);
-  const s = l - Math.min(r, g, b);
-  const h = s
-    ? l === r
-      ? (g - b) / s
-      : l === g
-      ? 2 + (b - r) / s
-      : 4 + (r - g) / s
-    : 0;
-  return {
-    h: 60 * h < 0 ? 60 * h + 360 : 60 * h,
-    s: 100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0),
-    l: (100 * (2 * l - s)) / 2,
-  };
+    r /= 255;
+    g /= 255;
+    b /= 255;
+    const l = Math.max(r, g, b);
+    const s = l - Math.min(r, g, b);
+    const h = s
+        ? l === r
+            ? (g - b) / s
+            : l === g
+            ? 2 + (b - r) / s
+            : 4 + (r - g) / s
+        : 0;
+    return {
+        h: 60 * h < 0 ? 60 * h + 360 : 60 * h,
+        s: 100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0),
+        l: (100 * (2 * l - s)) / 2,
+    };
 };
 
-function getCompliantRGB(textColor, bgColor, targetContrast = AA) {
-  // console.log(
-  //   `********* getCompliantRGB(${textColor}, ${bgColor}, ${targetContrast}):`
-  // );
-  // console.log({ textColor, bgColor, targetContrast });
-  textColor = getColor(textColor);
-  bgColor = getColor(bgColor);
-  let textRGB = textColor.rgb,
-    bgRGB = bgColor.rgb,
-    textHex = textColor.hex,
-    bgHex = bgColor.hex,
-    textLuminance = textColor.luminance,
-    bgLuminance = bgColor.luminance,
-    lighterLum = Math.max(textLuminance, bgLuminance),
-    darkerLum = Math.min(textLuminance, bgLuminance),
-    goalTextRGB = textColor.rgb,
-    contrast = Number(
-      parseFloat((lighterLum + 0.05) / (darkerLum + 0.05)).toFixed(2)
-    );
-  let resultObject = {
-    status: "fail",
-    AA: {},
-    AAA: {},
-  };
-  // console.log("Initial state:", {
-  //   contrast,
-  //   textRGB,
-  //   textHex,
-  //   bgRGB,
-  //   bgHex,
-  //   targetContrast,
-  // });
+function getContrastRatio(font = "#000000", bg = "#FFFFFF") {
+    font = getColor(font);
+    bg = getColor(bg);
+    var lighterLum = Math.max(font.luminance, bg.luminance),
+        darkerLum = Math.min(font.luminance, bg.luminance),
+        contrast = Number(
+            parseFloat((lighterLum + 0.05) / (darkerLum + 0.05)).toFixed(2)
+        );
+        return contrast
+}
 
-  if (contrast < targetContrast) {
-    // console.log("This does not meet a11y standards. Let's find a better one.");
-    let targetDarkerLum =
-        (lighterLum + 0.05 - 0.05 * targetContrast) / targetContrast,
-      targetLighterLum =
-        targetContrast * darkerLum - 0.05 + 0.05 * targetContrast;
-    if (textLuminance === lighterLum) {
-      // Text is lighter
-      console.log("Text is the lighter luminance - we need it to be lighter");
-      // console.log({textColor});
-      goalTextRGB = hslToRgb(rgbToHsl(textRGB[0], textRGB[1], textRGB[2])); // Factor needs adjustment for accuracy
-      // console.log({goalTextRGB});
-      textLuminance = textColor.luminance;
-      darkerLum = Math.min(textLuminance, bgLuminance);
-      lighterLum = Math.max(textLuminance, bgLuminance);
-      contrast = (lighterLum + 0.05) / (darkerLum + 0.05);
+function getCompliantRGB(textColor, bgColor, targetContrast = AA) {
+    // console.log(
+    //   `********* getCompliantRGB(${textColor}, ${bgColor}, ${targetContrast}):`
+    // );
+    // console.log({ textColor, bgColor, targetContrast });
+    textColor = getColor(textColor);
+    bgColor = getColor(bgColor);
+    let textRGB = textColor.rgb,
+        bgRGB = bgColor.rgb,
+        textHex = textColor.hex,
+        bgHex = bgColor.hex,
+        textLuminance = textColor.luminance,
+        bgLuminance = bgColor.luminance,
+        lighterLum = Math.max(textLuminance, bgLuminance),
+        darkerLum = Math.min(textLuminance, bgLuminance),
+        goalTextRGB = textColor.rgb,
+        contrast = Number(
+            parseFloat((lighterLum + 0.05) / (darkerLum + 0.05)).toFixed(2)
+        );
+    let resultObject = {
+        status: "fail",
+        AA: {},
+        AAA: {},
+    };
+    // console.log("Initial state:", {
+    //   contrast,
+    //   textRGB,
+    //   textHex,
+    //   bgRGB,
+    //   bgHex,
+    //   targetContrast,
+    // });
+
+    if (contrast < targetContrast) {
+        // console.log("This does not meet a11y standards. Let's find a better one.");
+        let targetDarkerLum =
+                (lighterLum + 0.05 - 0.05 * targetContrast) / targetContrast,
+            targetLighterLum =
+                targetContrast * darkerLum - 0.05 + 0.05 * targetContrast;
+        if (textLuminance === lighterLum) {
+            // Text is lighter
+            console.log(
+                "Text is the lighter luminance - we need it to be lighter"
+            );
+            // console.log({textColor});
+            goalTextRGB = hslToRgb(
+                rgbToHsl(textRGB[0], textRGB[1], textRGB[2])
+            ); // Factor needs adjustment for accuracy
+            // console.log({goalTextRGB});
+            textLuminance = textColor.luminance;
+            darkerLum = Math.min(textLuminance, bgLuminance);
+            lighterLum = Math.max(textLuminance, bgLuminance);
+            contrast = (lighterLum + 0.05) / (darkerLum + 0.05);
+        } else {
+            // BG is lighter
+            console.log(
+                "BG is the lighter luminance - we need a darker text color"
+            );
+            // console.log({textColor});
+            goalTextRGB = hslToRgb(
+                rgbToHsl(textRGB[0], textRGB[1], textRGB[2])
+            ); // Factor needs adjustment for accuracy
+            console.log({ goalTextRGB });
+            textLuminance = getLuminance(
+                goalTextRGB.r,
+                goalTextRGB.g,
+                goalTextRGB.b
+            );
+            darkerLum = Math.min(textLuminance, bgLuminance);
+            lighterLum = Math.max(textLuminance, bgLuminance);
+            contrast = (lighterLum + 0.05) / (darkerLum + 0.05);
+        }
     } else {
-      // BG is lighter
-      console.log("BG is the lighter luminance - we need a darker text color");
-      // console.log({textColor});
-      goalTextRGB = hslToRgb(rgbToHsl(textRGB[0], textRGB[1], textRGB[2])); // Factor needs adjustment for accuracy
-      console.log({ goalTextRGB });
-      textLuminance = getLuminance(
-        goalTextRGB.r,
-        goalTextRGB.g,
-        goalTextRGB.b
-      );
-      darkerLum = Math.min(textLuminance, bgLuminance);
-      lighterLum = Math.max(textLuminance, bgLuminance);
-      contrast = (lighterLum + 0.05) / (darkerLum + 0.05);
+        console.log("This passes a11y...");
     }
-  } else {
-    console.log("This passes a11y...");
-  }
-  let ratio = formatRatio(contrast);
-  // console.log("New state:", {
-  //   contrast: ratio,
-  //   textRGB: [goalTextRGB.r, goalTextRGB.g, goalTextRGB.b],
-  //   textHex: getColor(
-  //     rgbToHex(goalTextRGB.r, goalTextRGB.g, goalTextRGB.b)
-  //   ).hex,
-  //   bgRGB: bgColor,
-  //   bgHex: getColor(rgbToHex(bgColor.rgb[0], bgColor.rgb[1], bgColor.rgb[2]))
-  //     .hex,
-  // });
-  // console.log(`******** end getCompliantRGB() *************`);
-  return {
-    ratio,
-    textRGB: [goalTextRGB.r, goalTextRGB.g, goalTextRGB.b],
-    textHex: rgbToHex(goalTextRGB.r, goalTextRGB.g, goalTextRGB.b),
-    bgRGB: bgColor,
-    bgHex: rgbToHex(bgColor[0], bgColor[1], bgColor[2]),
-  };
+    let ratio = formatRatio(contrast);
+    // console.log("New state:", {
+    //   contrast: ratio,
+    //   textRGB: [goalTextRGB.r, goalTextRGB.g, goalTextRGB.b],
+    //   textHex: getColor(
+    //     rgbToHex(goalTextRGB.r, goalTextRGB.g, goalTextRGB.b)
+    //   ).hex,
+    //   bgRGB: bgColor,
+    //   bgHex: getColor(rgbToHex(bgColor.rgb[0], bgColor.rgb[1], bgColor.rgb[2]))
+    //     .hex,
+    // });
+    // console.log(`******** end getCompliantRGB() *************`);
+    return {
+        ratio,
+        textRGB: [goalTextRGB.r, goalTextRGB.g, goalTextRGB.b],
+        textHex: rgbToHex(goalTextRGB.r, goalTextRGB.g, goalTextRGB.b),
+        bgRGB: bgColor,
+        bgHex: rgbToHex(bgColor[0], bgColor[1], bgColor[2]),
+    };
 }
 
 function getCompliantColor(textColor, bgColor, targetContrast = AA) {
-  // console.log(`****** getCompliantColor(${textColor}, ${bgColor}, ${targetContrast})`)
-  textColor = getColor(textColor);
-  bgColor = getColor(bgColor);
-  let newTextColor = hslToRgb(
-    textColor.hsl.h,
-    textColor.hsl.s,
-    textColor.hsl.l,
-    0.5
-  );
-  newTextColor = getColor([
-    newTextColor.r,
-    newTextColor.g,
-    newTextColor.b,
-  ]);
-  let lighterLum = Math.max(textColor.luminance, bgColor.luminance),
-    darkerLum = Math.min(textColor.luminance, bgColor.luminance),
-    initialContrast = (lighterLum + 0.05) / (darkerLum + 0.05);
-  if (initialContrast >= targetContrast) {
-    console.log(`These colors already meet the desired contrast ratio.`);
-    return { textColor, bgColor };
-  }
-  let targetLighterLum = targetContrast * (darkerLum + 0.05) - 0.05,
-    targetDarkerLum = (lighterLum + 0.05) / targetContrast - 0.05;
-  let lighterColor, darkerColor;
-  if (textColor.luminance === lighterLum) {
-    // text color is lighter
-    lighterColor = textColor;
-    darkerColor = bgColor;
-    console.log(`We need a lighter text color or a darker background color.`);
-    console.log({lighterColor});
-    // Determine natural luminance
-    let textHue = textColor.hsl.h,
-      naturalColor = getColor(`hsl(${textHue}, 1, .5)`),
-      testLighterColor;
-      // console.log("Natural color:", naturalColor);
-      if (naturalColor.hsl.l >= .5) {
-        console.log("This color's natural luminance is greater than or equal to 50%. Luminance will increase with more saturation. Current saturation:", naturalColor.hsl.s);
-        let newLightness;
-        if (textColor.hsl.l < 1) {
-          newLightness = (textColor.hsl.l + 1) / 2;
+    // console.log(`****** getCompliantColor(${textColor}, ${bgColor}, ${targetContrast})`)
+    textColor = getColor(textColor);
+    bgColor = getColor(bgColor);
+    let newTextColor = hslToRgb(
+        textColor.hsl.h,
+        textColor.hsl.s,
+        textColor.hsl.l,
+        0.5
+    );
+    newTextColor = getColor([newTextColor.r, newTextColor.g, newTextColor.b]);
+    let lighterLum = Math.max(textColor.luminance, bgColor.luminance),
+        darkerLum = Math.min(textColor.luminance, bgColor.luminance),
+        initialContrast = (lighterLum + 0.05) / (darkerLum + 0.05);
+    if (initialContrast >= targetContrast) {
+        console.log(`These colors already meet the desired contrast ratio.`);
+        return { textColor, bgColor };
+    }
+    let targetLighterLum = targetContrast * (darkerLum + 0.05) - 0.05,
+        targetDarkerLum = (lighterLum + 0.05) / targetContrast - 0.05;
+    let lighterColor, darkerColor;
+    if (textColor.luminance === lighterLum) {
+        // text color is lighter
+        lighterColor = textColor;
+        darkerColor = bgColor;
+        console.log(
+            `We need a lighter text color or a darker background color.`
+        );
+        console.log({ lighterColor });
+        // Determine natural luminance
+        let textHue = textColor.hsl.h,
+            naturalColor = getColor(`hsl(${textHue}, 1, .5)`),
+            testLighterColor;
+        // console.log("Natural color:", naturalColor);
+        if (naturalColor.hsl.l >= 0.5) {
+            console.log(
+                "This color's natural luminance is greater than or equal to 50%. Luminance will increase with more saturation. Current saturation:",
+                naturalColor.hsl.s
+            );
+            let newLightness;
+            if (textColor.hsl.l < 1) {
+                newLightness = (textColor.hsl.l + 1) / 2;
+            }
+            testLighterColor = getColor(
+                `hsl(${textColor.hsl.h}, ${textColor.hsl.s}, ${newLightness})`
+            );
+            console.log("Try this lighter color", { testLighterColor });
+        } else {
+            console.log(
+                "This color's natural luminance is less than 50%. Luminance will decrease with more saturation"
+            );
         }
-        testLighterColor = getColor(`hsl(${textColor.hsl.h}, ${textColor.hsl.s}, ${newLightness})`);
-        console.log("Try this lighter color", {testLighterColor});
-      } else {
-        console.log("This color's natural luminance is less than 50%. Luminance will decrease with more saturation");
-      }
-  } else {
-    // bg color is lighter
-    lighterColor = bgColor;
-    darkerColor = textColor;
-    console.log("We need a darker text color or a lighter background color.");
-  }
-  console.log({ textColor, bgColor, initialContrast });
-  // console.log({ lighterColor, darkerColor });
-  console.log({ targetDarkerLum, targetLighterLum });
+    } else {
+        // bg color is lighter
+        lighterColor = bgColor;
+        darkerColor = textColor;
+        console.log(
+            "We need a darker text color or a lighter background color."
+        );
+    }
+    console.log({ textColor, bgColor, initialContrast });
+    // console.log({ lighterColor, darkerColor });
+    console.log({ targetDarkerLum, targetLighterLum });
 }
 
 function getFullColorArray() {
-  let result = [],
-    fullColorArray = [],
-    bgString = "",
-    colorDiv = document.createElement('div');
-    bgString = result.join(', ');
-  for (let i = 0; i <= 360; i += 20) {
-    let color = getColor(hslToRgb(i, 1, 0.5));
-    result.push(color.hex);
-    fullColorArray.push(color);
-  }
-  for (let color of fullColorArray) {
-    let element = document.createElement('div');
-    element.innerText = `${color.hslString} | ${color.rgbString} | ${color.hex}`;
-    element.style.backgroundColor = color.hex;
-    element.style.color = "white";
-    element.style.textAlign = "center";
-    element.style.flexGrow = "1";
-    element.style.display = "flex";
-    element.style.justifyContent = "center";
-    element.style.alignItems = "center";
-    element.style.fontSize = "25px";
-    element.style.webkitTextStrokeColor = "black";
-    element.style.webkitTextStrokeWidth = "1px";
-    colorDiv.append(element)
-  }
-  /* Color Div Style*/
-  // console.log({bgString});
-  // console.log("linear-gradient(" + bgString + ")");
-  // colorDiv.style.background = `linear-gradient(${bgString})`;
-  colorDiv.style.position = 'absolute';
-  colorDiv.style.display = "flex";
-  colorDiv.style.flexDirection = "column";
-  colorDiv.style.top = '0';
-  colorDiv.style.left = '0';
-  colorDiv.style.height = '100vh';
-  colorDiv.style.width = '100vw';
-  colorDiv.style.zIndex = '2147483647';
-  colorDiv.classList.add('rxgb', 'colorDiv');
-  document.body.append(colorDiv);
-  /* END COLOR DIV CREATION */
-  return result;
+    let result = [],
+        fullColorArray = [],
+        bgString = "",
+        colorDiv = document.createElement("div");
+    bgString = result.join(", ");
+    for (let i = 0; i <= 360; i += 20) {
+        let color = getColor(hslToRgb(i, 1, 0.5));
+        result.push(color.hex);
+        fullColorArray.push(color);
+    }
+    for (let color of fullColorArray) {
+        let element = document.createElement("div");
+        element.innerText = `${color.hslString} | ${color.rgbString} | ${color.hex}`;
+        element.style.backgroundColor = color.hex;
+        element.style.color = "white";
+        element.style.textAlign = "center";
+        element.style.flexGrow = "1";
+        element.style.display = "flex";
+        element.style.justifyContent = "center";
+        element.style.alignItems = "center";
+        element.style.fontSize = "25px";
+        element.style.webkitTextStrokeColor = "black";
+        element.style.webkitTextStrokeWidth = "1px";
+        colorDiv.append(element);
+    }
+    /* Color Div Style*/
+    // console.log({bgString});
+    // console.log("linear-gradient(" + bgString + ")");
+    // colorDiv.style.background = `linear-gradient(${bgString})`;
+    colorDiv.style.position = "absolute";
+    colorDiv.style.display = "flex";
+    colorDiv.style.flexDirection = "column";
+    colorDiv.style.top = "0";
+    colorDiv.style.left = "0";
+    colorDiv.style.height = "100vh";
+    colorDiv.style.width = "100vw";
+    colorDiv.style.zIndex = "2147483647";
+    colorDiv.classList.add("rxgb", "colorDiv");
+    document.body.append(colorDiv);
+    /* END COLOR DIV CREATION */
+    return result;
 }

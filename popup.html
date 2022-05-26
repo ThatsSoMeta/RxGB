@@ -8,7 +8,7 @@
             <img src="./images/RxGB_favicon_black_stroke.png" alt="RxGB" class="logo button" />
         </div>
         <div id="modalContainer">
-            <button id="toggleVisibility">minimize -</button>
+            <button id="toggleVisibility">&#8212;</button>
             <img
                 src="./images/RxGB_logo_black_stroke.png"
                 alt="RxGB"
@@ -22,7 +22,7 @@
                 <button id="pageColorToggle" class="toggle">Page Colors</button>
             </div>
             <div id="colorDetails" class="view">
-                <div class="section full primary">
+                <div class="section full primary palette">
                     <div
                         class="swatch"
                         style="background-color: #000000"
@@ -36,31 +36,57 @@
                 <div class="section full split">
                     <div id="fontColor" class="section half">
                         <h3 class="label">Font</h3>
-                        <div class="subsection">
+                        <div class="subsection palette">
                             <div
-                                class="swatch"
-                                style="background-color: #000000"
+                            class="swatch"
+                            style="background-color: #000000"
                             ></div>
                             <h4 class="hex">#000000</h4>
                             <h4 class="rgb">rgb(0, 0, 0)</h4>
                             <h4 class="hsl">hsl(0, 0%, 0%)</h4>
+                            <div class="options">
+                                <button class="option examine" title="See color details">
+                                    <img src="./images/search-look-inspect-magnifying-glass-pngrepo-com.png" width="20" />
+                                </button>
+                                <button class="option edit" title="Edit color">
+                                    <img src="./images/edit-pngrepo-com.png" width="20" />
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div id="bgColor" class="section half">
                         <h3 class="label">Background</h3>
-                        <div class="subsection">
+                        <div class="subsection palette">
                             <div
                                 class="swatch"
                                 style="background-color: #000000"
                             ></div>
-                            <h4 class="hex">#000000</h4>
-                            <h4 class="rgb">rgb(0, 0, 0)</h4>
-                            <h4 class="hsl">hsl(0, 0%, 0%)</h4>
+                            <h4 class="hex">#FFFFFF</h4>
+                            <h4 class="rgb">rgb(255, 255, 255)</h4>
+                            <h4 class="hsl">hsl(0, 0%, 100%)</h4>
+                            <div class="options">
+                                <button class="option examine" title="See color details">
+                                    <img src="./images/search-look-inspect-magnifying-glass-pngrepo-com.png" width="20" />
+                                </button>
+                                <button class="option edit" title="Edit color">
+                                    <img src="./images/edit-pngrepo-com.png" width="20" />
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div id="exampleText" class="section full">
                     <h3>Example Text</h3>
+                </div>
+                <h3>Contrast</h3>
+                <div class="section full contrast-info">
+                    <div>
+                        <h1 class="ratio">4.5</h1>
+                    </div>
+                    <div id="contrast-tiers">
+                        <div id="aa" class="contrast-level">AA</div>
+                        <div id="aaa" class="contrast-level">AAA</div>
+                    </div>
                 </div>
             </div>
             <div id="pageColors" class="view" hidden>

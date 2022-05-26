@@ -19,94 +19,160 @@ var AA = 4.5,
     swatchSize = "20px",
     websiteFontColorDiv = document.getElementById("fontColors"),
     websiteBgColorDiv = document.getElementById("bgColors"),
-    contrastFontPalette = document.querySelector("#contrast #fontColor"),
-    contrastBgPalette = document.querySelector("#contrast #bgColor"),
-    contrastExampleText = document.getElementById("exampleText");
+    contrastFontPalette = document.querySelector(
+        "#contrast #fontColor .palette"
+    ),
+    contrastBgPalette = document.querySelector("#contrast #bgColor .palette"),
+    contrastExampleText = document.getElementById("exampleText"),
+    contrastAA = document.getElementById("aa"),
+    contrastAAA = document.getElementById("aaa");
 
 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     port = chrome.tabs.connect(tabs[0].id, { name: "RxGB" });
     port.postMessage({ request: { type: "init" } });
     port.onMessage.addListener(function (response) {
         if (response.request === "init") {
-            collectNativeColors(response.elements.fontColors, response.elements.bgColors);
+            collectNativeColors(
+                response.elements.fontColors,
+                response.elements.bgColors
+            );
+            setDetailPalette(getColor("#000000"));
+            setContrastPalette(getColor("#000000"), "font");
+            setContrastPalette(getColor("#FFFFFF"), "bg");
         } else {
             console.log("RxGB non-Init in popup.js");
         }
     });
 });
 
-function setDetailPalette(color=getColor("#FFFFFF")) {
+function setDetailPalette(color = getColor("#FFFFFF")) {
     var swatch = colorDetailsDiv.querySelector(".swatch"),
         hex = colorDetailsDiv.querySelector(".hex"),
         rgb = colorDetailsDiv.querySelector(".rgb"),
         hsl = colorDetailsDiv.querySelector(".hsl");
-        swatch.style.backgroundColor = color.hex;
-        hex.innerText = color.hex;
-        rgb.innerText = color.rgbString;
-        hsl.innerText = color.hslString;
+    swatch.style.backgroundColor = color.hex;
+    hex.innerText = color.hex;
+    rgb.innerText = color.rgbString;
+    hsl.innerText = color.hslString;
 }
 
-function setContrastPalette(color=getColor("#FFFFFF"), type="font") {
+function setContrastPalette(color = getColor("#FFFFFF"), type = "font") {
     var container = type === "font" ? contrastFontPalette : contrastBgPalette,
         swatch = container.querySelector(".swatch"),
         hex = container.querySelector(".hex"),
         rgb = container.querySelector(".rgb"),
         hsl = container.querySelector(".hsl");
-        swatch.style.backgroundColor = color.hex;
-        hex.innerText = color.hex;
-        rgb.innerText = color.rgbString;
-        hsl.innerText = color.hslString;
-        if (type === "font") {
-            contrastExampleText.style.color = color.hex;
-        } else if (type === "bg") {
-            contrastExampleText.style.backgroundColor = color.hex;
-        }
-        return color;
+    swatch.style.backgroundColor = color.hex;
+    hex.innerText = color.hex;
+    rgb.innerText = color.rgbString;
+    hsl.innerText = color.hslString;
+    if (type === "font") {
+        contrastExampleText.style.color = color.hex;
+    } else if (type === "bg") {
+        contrastExampleText.style.backgroundColor = color.hex;
+    }
+    return color;
 }
 
 function collectNativeColors(fontColors, bgColors) {
-    var fontColorsArray = Object.values(fontColors).sort((a, b) => (a.hsl.h > b.hsl.h) ? 1 : (a.hsl.s === b.hsl.s) ? ((a.hsl.s > b.hsl.s) ? 1 : -1) : -1 ),
-        bgColorsArray = Object.values(bgColors).sort((a, b) => (a.hsl.h > b.hsl.h) ? 1 : (a.hsl.s === b.hsl.s) ? ((a.hsl.s > b.hsl.s) ? 1 : -1) : -1 );
-    console.log({fontColorsArray});
+    var fontColorsArray = Object.values(fontColors).sort((a, b) =>
+            a.hsl.h > b.hsl.h
+                ? 1
+                : a.hsl.s === b.hsl.s
+                ? a.hsl.s > b.hsl.s
+                    ? 1
+                    : -1
+                : -1
+        ),
+        bgColorsArray = Object.values(bgColors).sort((a, b) =>
+            a.hsl.h > b.hsl.h
+                ? 1
+                : a.hsl.s === b.hsl.s
+                ? a.hsl.s > b.hsl.s
+                    ? 1
+                    : -1
+                : -1
+        );
+    console.log({ fontColorsArray });
     for (var color of fontColorsArray) {
-        var name = color.hex,
-            colorContainer = document.createElement("div"),
+        var colorContainer = document.createElement("div"),
             colorSwatch = document.createElement("div"),
-            colorTitle = document.createElement("h4");
-        colorSwatch.classList.add("color", "swatch");
-        colorTitle.classList.add("color", "title");
-        colorContainer.classList.add("color", "container", "button");
-        colorTitle.innerText = name;
-        colorSwatch.style.backgroundColor = name;
-        colorContainer.append(colorSwatch, colorTitle);
+            colorHex = document.createElement("h4"),
+            colorRgb = document.createElement("h4"),
+            colorHsl = document.createElement("h4"),
+            selectBtn = document.createElement("button"),
+            options = document.createElement("div"),
+            selectIcon = document.createElement("img");
+        selectIcon.src = "./images/add.png";
+        selectIcon.width = "20";
+        colorSwatch.classList.add("swatch");
+        colorHex.classList.add("hex");
+        colorRgb.classList.add("rgb");
+        colorHsl.classList.add("hsl");
+        selectBtn.classList.add("option", "font");
+        options.classList.add("options");
+        colorContainer.classList.add("color", "container", "palette");
+        colorHex.innerText = color.hex;
+        colorRgb.innerText = color.rgbString;
+        colorHsl.innerText = color.hslString;
+        colorSwatch.style.backgroundColor = color.hex;
+        selectBtn.append(selectIcon);
+        colorContainer.append(colorSwatch, colorHex, colorRgb, colorHsl, selectBtn);
+        selectBtn.title =
+            "Click to select font color and to see details about this color.";
         websiteFontColorDiv.append(colorContainer);
-        colorContainer.addEventListener("click", (e) => {
-            var currentColor = getColor(e.target.textContent);
-            console.log({currentColor});
+        selectBtn.addEventListener("click", (e) => {
+            var currentColor = getColor(e.path.find(elem => elem.nodeName === "BUTTON").previousElementSibling.previousElementSibling.textContent);
             setContrastPalette(currentColor, "font");
             setDetailPalette(currentColor);
-        })
+        });
     }
     for (var color of bgColorsArray) {
-        var name = color.hex,
-        colorContainer = document.createElement("div"),
-        colorSwatch = document.createElement("div"),
-        colorTitle = document.createElement("h4");
+        var colorContainer = document.createElement("div"),
+            colorSwatch = document.createElement("div"),
+            colorHex = document.createElement("h4"),
+            colorRgb = document.createElement("h4"),
+            colorHsl = document.createElement("h4"),
+            selectBtn = document.createElement("button"),
+            options = document.createElement("div"),
+            selectIcon = document.createElement("img");
+        selectIcon.src = "./images/add.png";
+        selectIcon.width = "20";
         colorSwatch.classList.add("swatch");
-        colorTitle.classList.add("title");
-        colorContainer.classList.add("color", "container", "button");
-        colorTitle.innerText = name;
-        colorSwatch.style.backgroundColor = name;
-        colorContainer.append(colorSwatch, colorTitle);
+        colorHex.classList.add("hex");
+        colorRgb.classList.add("rgb");
+        colorHsl.classList.add("hsl");
+        selectBtn.classList.add("option", "bg");
+        options.classList.add("options");
+        colorContainer.classList.add("color", "container", "palette");
+        colorHex.innerText = color.hex;
+        colorRgb.innerText = color.rgbString;
+        colorHsl.innerText = color.hslString;
+        colorSwatch.style.backgroundColor = color.hex;
+        selectBtn.append(selectIcon);
+        colorContainer.append(colorSwatch, colorHex, colorRgb, colorHsl, selectBtn);
+        selectBtn.title =
+            "Click to select background color and to see details about this color.";
         websiteBgColorDiv.append(colorContainer);
-        colorContainer.addEventListener("click", (e) => {
-            var currentColor = getColor(e.target.textContent);
-            console.log({currentColor});
+        selectBtn.addEventListener("click", (e) => {
+            var currentColor = getColor(e.path.find(elem => elem.nodeName === "BUTTON").previousElementSibling.previousElementSibling.textContent);
             setContrastPalette(currentColor, "bg");
             setDetailPalette(currentColor);
-        })
+        });
     }
 }
+
+var contrastPaletteExamine = [contrastFontPalette.querySelector(".examine"), contrastBgPalette.querySelector(".examine")];
+contrastPaletteExamine.forEach((elem) => {
+    elem.addEventListener("click", (e) => {
+        var btn = e.path.find(elem => elem.nodeName === "BUTTON"),
+            currentColor = getColor(btn.parentElement.previousElementSibling.innerText);
+        console.log("btn.parentElement.previousElementSibling.innerText", btn.parentElement.previousElementSibling.innerText);
+        console.log({ currentColor });
+        setDetailPalette(currentColor);
+        toggleView(colorDetailsDiv)
+    });
+});
 
 pageColorToggle.addEventListener("click", () => {
     toggleView(pageColorDiv);
@@ -126,21 +192,42 @@ minimizedContainer.addEventListener("click", () => {
 
 minimizeButton.addEventListener("click", () => {
     toggleApp(false);
-})
+});
 
-function toggleApp(showApp=true) {
+const exampleChangeObserver = new MutationObserver(function () {
+    var style = window.getComputedStyle(contrastExampleText),
+        color = getColor(style.color),
+        bgColor = getColor(style.backgroundColor),
+        contrast = getContrastRatio(color.hex, bgColor.hex),
+        contrastLabel = document.querySelector(".contrast-info .ratio");
+    contrastLabel.innerText = contrast;
+    if (contrast >= 4.5) {
+        contrastAA.style.borderColor = "var(--peacock)";
+    } else {
+        contrastAA.style.borderColor = "";
+    }
+    if (contrast >= 7) {
+        contrastAAA.style.borderColor = "var(--peacock)";
+    } else {
+        contrastAAA.style.borderColor = "";
+    }
+});
+
+exampleChangeObserver.observe(contrastExampleText, {
+    attributeFilter: ["style"],
+});
+
+function toggleApp(showApp = true) {
     if (showApp) {
         modalContainer.toggleAttribute("hidden", false);
         minimizedContainer.toggleAttribute("hidden", true);
-    }
-    else {
+    } else {
         minimizedContainer.toggleAttribute("hidden", false);
         modalContainer.toggleAttribute("hidden", true);
-
     }
 }
 
-function toggleView(view=colorDetailsDiv) {
+function toggleView(view = colorDetailsDiv) {
     if (view === colorDetailsDiv) {
         colorDetailsDiv.toggleAttribute("hidden", false);
         colorDetailsToggle.classList.add("active");
@@ -166,6 +253,17 @@ function toggleView(view=colorDetailsDiv) {
 }
 
 // HELPERS
+function getContrastRatio(font = "#000000", bg = "#FFFFFF") {
+    font = getColor(font);
+    bg = getColor(bg);
+    var lighterLum = Math.max(font.luminance, bg.luminance),
+        darkerLum = Math.min(font.luminance, bg.luminance),
+        contrast = Number(
+            parseFloat((lighterLum + 0.05) / (darkerLum + 0.05)).toFixed(2)
+        );
+    return contrast;
+}
+
 function rgbToHsl(r, g, b) {
     r /= 255;
     g /= 255;
@@ -181,8 +279,10 @@ function rgbToHsl(r, g, b) {
         : 0;
     return {
         h: Math.round(60 * h < 0 ? 60 * h + 360 : 60 * h),
-        s: Number(((s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0))).toFixed(2),
-        l: Number((((2 * l - s)) / 2)).toFixed(2),
+        s: Number(
+            s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0
+        ).toFixed(2),
+        l: Number((2 * l - s) / 2).toFixed(2),
     };
 }
 
@@ -280,7 +380,11 @@ function getColor(input) {
             });
             console.log({ hslArray });
             rgbObj = hslToRgb(hslArray[0], hslArray[1], hslArray[2]);
-            hslObj = { h: hslArray[0], s: hslArray[1].toFixed(2), l: hslArray[2].toFixed(2) };
+            hslObj = {
+                h: hslArray[0],
+                s: hslArray[1].toFixed(2),
+                l: hslArray[2].toFixed(2),
+            };
             hex = rgbToHex(rgbObj.r, rgbObj.g, rgbObj.b);
         } else if (input.match(rgbRegex)) {
             // console.log("This is an rgb string.");
@@ -329,7 +433,9 @@ function getColor(input) {
             rgbObj = hslToRgb(input.h, input.s, input.l);
             hex = rgbToHex(rgbObj.r, rgbObj.g, rgbObj.b);
         } else {
-            throw Error(`Cannot determine color from the given input.`);
+            throw Error(
+                `Cannot determine color from the given input: ${input}`
+            );
         }
     }
     hex = hex.toUpperCase();
@@ -341,7 +447,9 @@ function getColor(input) {
         rgb: rgbObj,
         rgbString: `rgb(${rgbObj.r}, ${rgbObj.g}, ${rgbObj.b})`,
         hsl: hslObj,
-        hslString: `hsl(${hslObj.h}, ${Math.round(hslObj.s * 100)}%, ${Math.round(hslObj.l * 100)}%)`,
+        hslString: `hsl(${hslObj.h}, ${Math.round(
+            hslObj.s * 100
+        )}%, ${Math.round(hslObj.l * 100)}%)`,
         luminance,
     };
     return result;
@@ -353,10 +461,10 @@ function getColor(input) {
 //         $(window).on("click", function(ev) {
 //             var x = ev.clientX;
 //             var y = ev.clientY;
-          
+
 //             html2canvas(document.body).then(function(canvas) {
 //                var ctx = canvas.getContext('2d');
-//                var p = ctx.getImageData(x, y, 1, 1).data; 
+//                var p = ctx.getImageData(x, y, 1, 1).data;
 //                var hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
 //                console.log(hex);
 //             });
