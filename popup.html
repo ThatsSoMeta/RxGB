@@ -28,19 +28,19 @@
                         style="background-color: #000000"
                     ></div>
                     <div id="colorStrings">
-                        <div class="hex">
+                        <div class="hex card">
                             <h3>HEX</h3>
                             <h3 class="hex string">#000000</h3>
                         </div>
-                        <div class="rgb">
+                        <div class="rgb card">
                             <h3>RGB</h3>
                             <h3 class="rgb string">rgb(0, 0, 0)</h3>
                         </div>
-                        <div class="hsl">
+                        <div class="hsl card">
                             <h3>HSL</h3>
                             <h3 class="hsl string">hsl(0, 0%, 0%)</h3>
                         </div>
-                        <div class="luminance">
+                        <div class="luminance card">
                             <h3>Luminance</h3>
                             <h3 class="luminance string">0</h3>
                         </div>
@@ -57,31 +57,31 @@
                     </div>
                 </div>
                 <div id="colorGraphContainer" class="section full">
-                    <div id="hueSelector" class="selectColor">
-                        <h3 class="title">Hue</h3>
-                        <input class="valueInput hue" placeholder="0"/>
-                        <div class="slider">
-                            <button class="minus">-</button>
-                            <input type="range" id="hueRange" min="0" max="359" step="1" value="0"/>
-                            <button class="plus">+</button>
+                    <div id="hueSelector" class="selectColor hue">
+                        <h3 class="title hue">Hue</h3>
+                        <input type="number" min="0" max="359" class="valueInput hue" value="0"/>
+                        <div class="slider hue">
+                            <button class="minus action hue"></button>
+                            <input type="range" name="range" id="hueRange" min="0" max="359" step="1" value="0"/>
+                            <button class="plus action hue"></button>
                         </div>
                     </div>
-                    <div id="saturationSelector" class="selectColor">
-                        <h3 class="title">Saturation</h3>
-                        <input class="valueInput saturation" placeholder="0"/>
-                        <div class="slider">
-                            <button class="minus">-</button>
-                            <input type="range" id="saturationRange"value="0"/>
-                            <button class="plus">+</button>
+                    <div id="saturationSelector" class="selectColor saturation">
+                        <h3 class="title saturation">Saturation</h3>
+                        <input type="number" min="0" max="100" class="valueInput saturation" value="0"/>
+                        <div class="slider saturation">
+                            <button class="minus action saturation"></button>
+                            <input type="range" name="range" id="saturationRange"value="0"/>
+                            <button class="plus action saturation"></button>
                         </div>
                     </div>
-                    <div id="lightnessSelector" class="selectColor">
-                        <h3 class="title">Lightness</h3>
-                        <input class="valueInput lightness" placeholder="0"/>
-                        <div class="slider">
-                            <button class="minus">-</button>
-                            <input type="range" id="lightnessRange"value="0"/>
-                            <button class="plus">+</button>
+                    <div id="lightnessSelector" class="selectColor lightness">
+                        <h3 class="title lightness">Lightness</h3>
+                        <input type="number" min="0" max="100" class="valueInput lightness" value="0"/>
+                        <div class="slider lightness">
+                            <button class="minus action lightness"></button>
+                            <input type="range" name="range" id="lightnessRange"value="0"/>
+                            <button class="plus action lightness"></button>
                         </div>
                     </div>
                 </div>

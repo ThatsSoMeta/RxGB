@@ -115,7 +115,7 @@ button,
 
 #colorDetails .section {
     border-radius: 10px;
-    border: 3px solid black;
+    border: 3px solid var(--chosen);
     margin: 5px;
 }
 
@@ -138,7 +138,7 @@ button,
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border: 2px solid var(--chosen);
+    border: 3px solid var(--chosen);
     border-radius: 10px;
     margin: 10px;
 }
@@ -153,9 +153,9 @@ button,
     margin: 5px;
 }
 
-.valueInput {
-    width: 40px;
-}
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
 
 .slider {
     display: flex;
@@ -215,7 +215,7 @@ button,
 }
 
 #exampleText {
-    border: 3px solid black;
+    border: 3px solid var(--chosen);
     margin-top: 10px;
     font-size: 18px;
 }
@@ -241,11 +241,12 @@ button,
 
 .palette {
     border-style: solid;
-    border-color: black;
+    border-color: var(--chosen);
     border-width: 3px;
     justify-content: center;
     position: relative;
 }
+
 
 #pageColors .palette {
     margin: 5px;
@@ -254,17 +255,35 @@ button,
 #contrast-tiers,
 #colorStrings {
     display: grid;
-    grid-template-columns: repeat(2, 1fr [col-start]);
-    grid-template-rows: repeat(2, 1fr [row-start]);
     column-gap: 10px;
     row-gap: 10px;
     padding-bottom: 20px;
     width: 80%;
 }
 
+#contrast-tiers {
+    grid-template-columns: repeat(2, 1fr [col-start]);
+    grid-template-rows: repeat(2, 1fr [row-start]);
+}
+
 #colorStrings {
     width: 80%;
     margin: auto;
+    grid-template-columns: repeat(2, auto [col-start]);
+    grid-template-rows: repeat(2, auto [row-start]);
+}
+
+.selectColor input[type="number"] {
+    border-width: 3px;
+    border-style: solid;
+    border-color: black;
+    border-radius: 5px;
+    outline-offset: 5px;
+}
+
+.card {
+    border-radius: 10px;
+    border: 3px solid var(--chosen);
 }
 
 .contrast-level {
@@ -293,7 +312,7 @@ button,
     flex-grow: 1;
     justify-content: space-between;
     align-items: center;
-    border: 3px solid black;
+    border: 3px solid var(--chosen);
 }
 
 #contrast .palette {
@@ -369,7 +388,7 @@ button,
 }
 
 .color-input input.invalid {
-    border: 2px solid var(--chilli);
+    border: 3px solid var(--chilli);
 }
 
 .color-input button {
@@ -426,4 +445,8 @@ button,
 
 #contrast .examine {
     background-image: url(./images/search-look-inspect-magnifying-glass-pngrepo-com.png);
+}
+
+.string {
+    margin: 5px 0;
 }
