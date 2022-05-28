@@ -14,6 +14,7 @@ var AA = 4.5,
     pageColorDiv = document.getElementById("pageColors"),
     colorDetailsToggle = document.getElementById("colorDetailToggle"),
     colorDetailsDiv = document.getElementById("colorDetails"),
+    colorDetailsSwatch = document.querySelector("#colorDetails .swatch"),
     contrastToggle = document.getElementById("contrastToggle"),
     contrastDiv = document.getElementById("contrast"),
     swatchSize = "20px",
@@ -24,8 +25,12 @@ var AA = 4.5,
     ),
     contrastBgPalette = document.querySelector("#contrast #bgColor .palette"),
     contrastExampleText = document.getElementById("exampleText"),
-    contrastAA = document.getElementById("aa"),
-    contrastAAA = document.getElementById("aaa");
+    contrastAASmall = document.getElementById("aa-small"),
+    contrastAALarge = document.getElementById("aa-large"),
+    contrastAAASmall = document.getElementById("aaa-small"),
+    contrastAAALarge = document.getElementById("aaa-large"),
+    setFontBtn = document.querySelector(".setFont"),
+    setBgBtn = document.querySelector(".setBg");
 
 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     port = chrome.tabs.connect(tabs[0].id, { name: "RxGB" });
@@ -36,16 +41,18 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
                 response.elements.fontColors,
                 response.elements.bgColors
             );
-            setDetailPalette(getColor("#000000"));
-            setContrastPalette(getColor("#000000"), "font");
-            setContrastPalette(getColor("#FFFFFF"), "bg");
+            setDetailPalette("#000000");
+            setContrastPalette("#000000", "font");
+            setContrastPalette("#FFFFFF", "bg");
+            setChosenColor();
         } else {
             console.log("RxGB non-Init in popup.js");
         }
     });
 });
 
-function setDetailPalette(color = getColor("#FFFFFF")) {
+function setDetailPalette(color = "#FFFFFF") {
+    color = getColor(color);
     var swatch = colorDetailsDiv.querySelector(".swatch"),
         hex = colorDetailsDiv.querySelector(".hex"),
         rgb = colorDetailsDiv.querySelector(".rgb"),
@@ -56,7 +63,8 @@ function setDetailPalette(color = getColor("#FFFFFF")) {
     hsl.innerText = color.hslString;
 }
 
-function setContrastPalette(color = getColor("#FFFFFF"), type = "font") {
+function setContrastPalette(color = "#FFFFFF", type = "font") {
+    color = getColor(color);
     var container = type === "font" ? contrastFontPalette : contrastBgPalette,
         swatch = container.querySelector(".swatch"),
         hex = container.querySelector(".hex"),
@@ -101,28 +109,24 @@ function collectNativeColors(fontColors, bgColors) {
             colorRgb = document.createElement("h4"),
             colorHsl = document.createElement("h4"),
             selectBtn = document.createElement("button"),
-            options = document.createElement("div"),
-            selectIcon = document.createElement("img");
-        selectIcon.src = "./images/add.png";
-        selectIcon.width = "20";
+            options = document.createElement("div");
         colorSwatch.classList.add("swatch");
         colorHex.classList.add("hex", "string");
         colorRgb.classList.add("rgb", "string");
         colorHsl.classList.add("hsl", "string");
-        selectBtn.classList.add("option", "font");
+        selectBtn.classList.add("option", "font", "plus");
         options.classList.add("options");
         colorContainer.classList.add("color", "container", "palette");
         colorHex.innerText = color.hex;
         colorRgb.innerText = color.rgbString;
         colorHsl.innerText = color.hslString;
         colorSwatch.style.backgroundColor = color.hex;
-        selectBtn.append(selectIcon);
         colorContainer.append(colorSwatch, colorHex, colorRgb, colorHsl, selectBtn);
         selectBtn.title =
             "Click to select font color and to see details about this color.";
         websiteFontColorDiv.append(colorContainer);
         selectBtn.addEventListener("click", (e) => {
-            var currentColor = getColor(e.path.find(elem => elem.nodeName === "BUTTON").previousElementSibling.previousElementSibling.textContent);
+            var currentColor = e.path.find(elem => elem.nodeName === "BUTTON").previousElementSibling.previousElementSibling.textContent;
             setContrastPalette(currentColor, "font");
             setDetailPalette(currentColor);
         });
@@ -134,28 +138,24 @@ function collectNativeColors(fontColors, bgColors) {
             colorRgb = document.createElement("h4"),
             colorHsl = document.createElement("h4"),
             selectBtn = document.createElement("button"),
-            options = document.createElement("div"),
-            selectIcon = document.createElement("img");
-        selectIcon.src = "./images/add.png";
-        selectIcon.width = "20";
+            options = document.createElement("div");
         colorSwatch.classList.add("swatch");
         colorHex.classList.add("hex", "string");
         colorRgb.classList.add("rgb", "string");
         colorHsl.classList.add("hsl", "string");
-        selectBtn.classList.add("option", "bg");
+        selectBtn.classList.add("option", "bg", "plus");
         options.classList.add("options");
         colorContainer.classList.add("color", "container", "palette");
         colorHex.innerText = color.hex;
         colorRgb.innerText = color.rgbString;
         colorHsl.innerText = color.hslString;
         colorSwatch.style.backgroundColor = color.hex;
-        selectBtn.append(selectIcon);
         colorContainer.append(colorSwatch, colorHex, colorRgb, colorHsl, selectBtn);
         selectBtn.title =
             "Click to select background color and to see details about this color.";
         websiteBgColorDiv.append(colorContainer);
         selectBtn.addEventListener("click", (e) => {
-            var currentColor = getColor(e.path.find(elem => elem.nodeName === "BUTTON").previousElementSibling.previousElementSibling.textContent);
+            var currentColor = e.path.find(elem => elem.nodeName === "BUTTON").previousElementSibling.previousElementSibling.textContent;
             setContrastPalette(currentColor, "bg");
             setDetailPalette(currentColor);
         });
@@ -168,8 +168,7 @@ contrastPaletteExamine.forEach((elem) => {
         console.log({e});
         var btn = e.path.find(elem => elem.nodeName === "BUTTON"),
             palette = e.path.find(elem => elem.classList.contains("palette"))
-            currentColor = getColor(palette.querySelector(".hex").innerText);
-        console.log({ currentColor });
+            currentColor = palette.querySelector(".hex").innerText;
         setDetailPalette(currentColor);
         toggleView(colorDetailsDiv)
     });
@@ -185,7 +184,8 @@ editColorBtns.forEach((elem) => {
     })
 });
 
-var updateColorBtns = document.querySelectorAll(".palette .update-btn");
+var updateColorBtns = document.querySelectorAll(".palette .update-btn"),
+    updateCancelBtns = document.querySelectorAll(".update-cancel-btn");
 updateColorBtns.forEach((elem) => {
     elem.addEventListener("click", (e) => {
         var input = e.target.previousElementSibling,
@@ -215,6 +215,22 @@ updateColorBtns.forEach((elem) => {
             input.placeholder = "Please enter a valid color value"
         }
     })
+});
+
+updateCancelBtns.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+        var palette = e.path.find(elem => elem.classList.contains("palette")),
+            hex = palette.querySelector(".hex"),
+            hsl = palette.querySelector(".hsl"),
+            rgb = palette.querySelector(".rgb"),
+            input = palette.querySelector("input"),
+            editForm = palette.querySelector(".color-input");
+        input.value = "";
+        hex.toggleAttribute("hidden");
+        rgb.toggleAttribute("hidden");
+        hsl.toggleAttribute("hidden");
+        editForm.toggleAttribute("hidden");
+    })
 })
 
 pageColorToggle.addEventListener("click", () => {
@@ -237,6 +253,19 @@ minimizeButton.addEventListener("click", () => {
     toggleApp(false);
 });
 
+[setFontBtn, setBgBtn].forEach(btn => {
+    var type = btn === setFontBtn ? "font" : "bg";
+    btn.addEventListener("click", (e) => {
+        var palette = e.path.find(elem => elem.classList.contains("palette")),
+            hex = palette.querySelector(".hex"),
+            color = hex.innerText;
+        console.log("Setting font button");
+        console.log({palette, hex, color});
+        setContrastPalette(color, type);
+    })
+})
+
+
 const exampleChangeObserver = new MutationObserver(function () {
     var style = window.getComputedStyle(contrastExampleText),
         color = getColor(style.color),
@@ -244,21 +273,51 @@ const exampleChangeObserver = new MutationObserver(function () {
         contrast = getContrastRatio(color.hex, bgColor.hex),
         contrastLabel = document.querySelector(".contrast-info .ratio");
     contrastLabel.innerText = contrast;
-    if (contrast >= 4.5) {
-        contrastAA.style.borderColor = "var(--peacock)";
+    if (contrast >= 3) {
+        contrastAALarge.style.borderColor = "var(--peacock)";
     } else {
-        contrastAA.style.borderColor = "";
+        contrastAALarge.style.borderColor = "";
+    }
+    if (contrast >= 4.5) {
+        contrastAASmall.style.borderColor = "var(--peacock)";
+        contrastAAALarge.style.borderColor = "var(--peacock)";
+    } else {
+        contrastAASmall.style.borderColor = "";
+        contrastAAALarge.style.borderColor = "";
     }
     if (contrast >= 7) {
-        contrastAAA.style.borderColor = "var(--peacock)";
+        contrastAAASmall.style.borderColor = "var(--peacock)";
     } else {
-        contrastAAA.style.borderColor = "";
+        contrastAAASmall.style.borderColor = "";
     }
 });
 
 exampleChangeObserver.observe(contrastExampleText, {
     attributeFilter: ["style"],
 });
+
+function setChosenColor () {
+    let colorVal = window.getComputedStyle(colorDetailsSwatch).backgroundColor,
+        color = getColor(colorVal),
+        graph = document.getElementById("colorGraphContainer"),
+        hueInput = graph.querySelector(".valueInput.hue"),
+        hueSlider = graph.querySelector("#hueRange"),
+        saturationInput = graph.querySelector(".valueInput.saturation"),
+        saturationSlider = graph.querySelector("#saturationRange"),
+        lightnessInput = graph.querySelector(".valueInput.lightness"),
+        lightnessSlider = graph.querySelector("#lightnessRange");
+    document.querySelector(":root").style.setProperty("--chosen", colorVal);
+    hueInput.value = color.hsl.h;
+    hueSlider.value = color.hsl.h;
+    saturationInput.value = Math.round(color.hsl.s * 100);
+    saturationSlider.value = color.hsl.s * 100;
+    lightnessInput.value = Math.round(color.hsl.l * 100);
+    lightnessSlider.value = color.hsl.l * 100;
+
+}
+
+let swatchChangeObserver = new MutationObserver(setChosenColor);
+swatchChangeObserver.observe(colorDetailsSwatch, { attributeFilter: ["style"], });
 
 function toggleApp(showApp = true) {
     if (showApp) {

@@ -32,16 +32,47 @@
                     <h3 class="hsl string">hsl(0, 0%, 0%)</h3>
                     <div id="detailsEditForm" class="color-input" hidden>
                         <input type="text" placeholder="Enter new color" />
-                        <!-- <span class="vtext">Please enter a valid color format (hex, rgb, or hsl)</span> -->
-                        <button class="update-btn button">Update</button>
+                        <button class="update-btn">Update</button>
+                        <button class="update-cancel-btn">Cancel</button>
                     </div>
-                    <button class="option edit" title="Edit color">
-                        <img src="./images/edit-pngrepo-com.png" width="30" />
-                    </button>
+                    <div id="detailButtons">
+                        <button class="option edit" title="Edit color"></button>
+                        <button class="option setFont" title="Set font color"></button>
+                        <button class="option setBg" title="Set background color"></button>
+                    </div>
+                </div>
+                <div id="colorGraphContainer" class="section full">
+                    <div id="hueSelector" class="selectColor">
+                        <h3 class="title">Hue</h3>
+                        <input class="valueInput hue" placeholder="0"/>
+                        <div class="slider">
+                            <button class="minus">-</button>
+                            <input type="range" id="hueRange" min="0" max="359" step="1" value="0"/>
+                            <button class="plus">+</button>
+                        </div>
+                    </div>
+                    <div id="saturationSelector" class="selectColor">
+                        <h3 class="title">Saturation</h3>
+                        <input class="valueInput saturation" placeholder="0"/>
+                        <div class="slider">
+                            <button class="minus">-</button>
+                            <input type="range" id="saturationRange"value="0"/>
+                            <button class="plus">+</button>
+                        </div>
+                    </div>
+                    <div id="lightnessSelector" class="selectColor">
+                        <h3 class="title">Lightness</h3>
+                        <input class="valueInput lightness" placeholder="0"/>
+                        <div class="slider">
+                            <button class="minus">-</button>
+                            <input type="range" id="lightnessRange"value="0"/>
+                            <button class="plus">+</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="contrast" class="view" hidden>
-                <div class="section full split">
+                <div id="contrastColors" class="section full split">
                     <div id="fontColor" class="section half">
                         <h3 class="label">Font</h3>
                         <div class="subsection palette">
@@ -55,14 +86,11 @@
                             <div class="color-input" hidden>
                                 <input placeholder="Enter new color"/>
                                 <button class="update-btn">Update</button>
+                                <button class="update-cancel-btn">Cancel</button>
                             </div>
                             <div class="options">
-                                <button class="option examine" title="See color details">
-                                    <img src="./images/search-look-inspect-magnifying-glass-pngrepo-com.png" width="20" />
-                                </button>
-                                <button class="option edit" title="Edit color">
-                                    <img src="./images/edit-pngrepo-com.png" width="20" />
-                                </button>
+                                <button class="option examine" title="See color details"></button>
+                                <button class="option edit" title="Edit color"></button>
                             </div>
                         </div>
                     </div>
@@ -79,14 +107,11 @@
                             <div class="color-input" hidden>
                                 <input  placeholder="Enter new color"/>
                                 <button class="update-btn">Update</button>
+                                <button class="update-cancel-btn">Cancel</button>
                             </div>
                             <div class="options">
-                                <button class="option examine" title="See color details">
-                                    <img src="./images/search-look-inspect-magnifying-glass-pngrepo-com.png" width="20" />
-                                </button>
-                                <button class="option edit" title="Edit color">
-                                    <img src="./images/edit-pngrepo-com.png" width="20" />
-                                </button>
+                                <button class="option examine" title="See color details"></button>
+                                <button class="option edit" title="Edit color"></button>
                             </div>
                         </div>
                     </div>
@@ -100,8 +125,10 @@
                         <h1 class="ratio">4.5</h1>
                     </div>
                     <div id="contrast-tiers">
-                        <div id="aa" class="contrast-level">AA</div>
-                        <div id="aaa" class="contrast-level">AAA</div>
+                        <div id="aa-large" class="contrast-level aa large">AA</div>
+                        <div id="aa-small" class="contrast-level aa small">AA</div>
+                        <div id="aaa-large" class="contrast-level aaa large">AAA</div>
+                        <div id="aaa-small" class="contrast-level aaa small">AAA</div>
                     </div>
                 </div>
             </div>
