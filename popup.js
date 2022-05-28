@@ -54,9 +54,9 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 function setDetailPalette(color = "#FFFFFF") {
     color = getColor(color);
     var swatch = colorDetailsDiv.querySelector(".swatch"),
-        hex = colorDetailsDiv.querySelector(".hex"),
-        rgb = colorDetailsDiv.querySelector(".rgb"),
-        hsl = colorDetailsDiv.querySelector(".hsl");
+        hex = colorDetailsDiv.querySelector(".hex.string"),
+        rgb = colorDetailsDiv.querySelector(".rgb.string"),
+        hsl = colorDetailsDiv.querySelector(".hsl.string");
     swatch.style.backgroundColor = color.hex;
     hex.innerText = color.hex;
     rgb.innerText = color.rgbString;
@@ -173,6 +173,7 @@ contrastPaletteExamine.forEach((elem) => {
         toggleView(colorDetailsDiv)
     });
 });
+
 var editColorBtns = document.querySelectorAll(".option.edit");
 editColorBtns.forEach((elem) => {
     elem.addEventListener("click", (e) => {
@@ -190,10 +191,10 @@ updateColorBtns.forEach((elem) => {
     elem.addEventListener("click", (e) => {
         var input = e.target.previousElementSibling,
             selection = getColor(input.value),
-            palette = input.parentNode.parentNode,
-            hex = palette.querySelector(".hex"),
-            rgb = palette.querySelector(".rgb"),
-            hsl = palette.querySelector(".hsl"),
+            palette = e.path.find(element => element.classList.contains("palette")),
+            hex = palette.querySelector(".hex.string"),
+            rgb = palette.querySelector(".rgb.string"),
+            hsl = palette.querySelector(".hsl.string"),
             swatch = palette.querySelector(".swatch"),
             editForm = palette.querySelector(".color-input");
         if (selection) {

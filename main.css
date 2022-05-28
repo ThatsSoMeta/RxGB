@@ -233,8 +233,8 @@ button,
 }
 
 #colorDetails .swatch {
-    height: 40px;
-    width: 40px;
+    height: 50px;
+    width: 50px;
     border-width: 4px;
     margin: 15px;
 }
@@ -251,11 +251,8 @@ button,
     margin: 5px;
 }
 
-.string {
-    margin: 5px;
-}
-
-#contrast-tiers {
+#contrast-tiers,
+#colorStrings {
     display: grid;
     grid-template-columns: repeat(2, 1fr [col-start]);
     grid-template-rows: repeat(2, 1fr [row-start]);
@@ -263,6 +260,11 @@ button,
     row-gap: 10px;
     padding-bottom: 20px;
     width: 80%;
+}
+
+#colorStrings {
+    width: 80%;
+    margin: auto;
 }
 
 .contrast-level {

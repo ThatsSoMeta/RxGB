@@ -27,9 +27,24 @@
                         class="swatch"
                         style="background-color: #000000"
                     ></div>
-                    <h3 class="hex string">#000000</h3>
-                    <h3 class="rgb string">rgb(0, 0, 0)</h3>
-                    <h3 class="hsl string">hsl(0, 0%, 0%)</h3>
+                    <div id="colorStrings">
+                        <div class="hex">
+                            <h3>HEX</h3>
+                            <h3 class="hex string">#000000</h3>
+                        </div>
+                        <div class="rgb">
+                            <h3>RGB</h3>
+                            <h3 class="rgb string">rgb(0, 0, 0)</h3>
+                        </div>
+                        <div class="hsl">
+                            <h3>HSL</h3>
+                            <h3 class="hsl string">hsl(0, 0%, 0%)</h3>
+                        </div>
+                        <div class="luminance">
+                            <h3>Luminance</h3>
+                            <h3 class="luminance string">0</h3>
+                        </div>
+                    </div>
                     <div id="detailsEditForm" class="color-input" hidden>
                         <input type="text" placeholder="Enter new color" />
                         <button class="update-btn">Update</button>
