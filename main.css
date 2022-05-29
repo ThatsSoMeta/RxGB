@@ -6,10 +6,12 @@
     --chilli: #ff4133;
     --latte: #cc9965;
     --chino: #f4eae1;
-    --chosen: #FFFFFF;
+    --chosen: #ffffff;
+    --hue: 0;
 }
 
 body * {
+    outline-offset: 5px;
     box-sizing: border-box;
 }
 
@@ -52,7 +54,7 @@ body * {
     display: flex;
     align-items: center;
     text-align: center;
-    border: 1px solid var(--denim);
+    border: 1px solid black;
     background-color: var(--denim);
     color: white;
     padding: 10px;
@@ -94,7 +96,7 @@ body * {
     font-weight: bold;
     font-size: 12px;
     flex-grow: 1;
-    border: 1px solid var(--denim);
+    border: 1px solid black;
     border-radius: 10px 10px 0 0;
     background-color: var(--chino);
 }
@@ -106,7 +108,7 @@ body * {
 
 button,
 .button,
-#minimizedContainer{
+#minimizedContainer {
     cursor: pointer;
     background-position: center;
     background-size: 25px;
@@ -115,7 +117,7 @@ button,
 
 #colorDetails .section {
     border-radius: 10px;
-    border: 3px solid var(--chosen);
+    border: 3px solid black;
     margin: 5px;
 }
 
@@ -124,6 +126,10 @@ button,
     align-items: stretch;
     flex-direction: column;
     display: flex;
+}
+
+#colorDetails .section {
+    background-color: var(--chosen);
 }
 
 #detailButtons {
@@ -138,9 +144,11 @@ button,
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border: 3px solid var(--chosen);
+    border: 3px solid black;
     border-radius: 10px;
     margin: 10px;
+    background-color: white;
+    color: black;
 }
 
 .selectColor .title {
@@ -151,14 +159,65 @@ button,
     text-align: center;
     padding: 5px;
     margin: 5px;
+    letter-spacing: 1px;
 }
 
-input[type=number]::-webkit-inner-spin-button {
+input[type="number"] {
+    border-width: 3px;
+    border-style: solid;
+    border-color: black;
+    border-radius: 5px;
+    font-weight: bold;
+    padding: 10px;
+}
+
+input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
-  }
+}
+
+[type="range"] {
+    border: none;
+    border-radius: 8px;
+    height: 7px;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.hue.slider input {
+    background: linear-gradient(
+        to right,
+        transparent 5%,
+        hsl(0, 100%, 50%),
+        hsl(20, 100%, 50%),
+        hsl(40, 100%, 50%),
+        hsl(60, 100%, 50%),
+        hsl(80, 100%, 50%),
+        hsl(100, 100%, 50%),
+        hsl(120, 100%, 50%),
+        hsl(140, 100%, 50%),
+        hsl(160, 100%, 50%),
+        hsl(180, 100%, 50%),
+        hsl(200, 100%, 50%),
+        hsl(200, 100%, 50%),
+        hsl(220, 100%, 50%),
+        hsl(240, 100%, 50%),
+        hsl(260, 100%, 50%),
+        hsl(280, 100%, 50%),
+        hsl(300, 100%, 50%),
+        hsl(320, 100%, 50%),
+        hsl(340, 100%, 50%),
+        hsl(360, 100%, 50%),
+        transparent 95%
+    );
+}
 
 .slider {
     display: flex;
+    align-items: center;
+}
+
+#saturationRange {
+    border: 1px solid black;
 }
 
 .logo {
@@ -181,7 +240,7 @@ input[type=number]::-webkit-inner-spin-button {
     flex-grow: 1;
     justify-content: space-around;
     align-items: center;
-    border: 1px solid var(--denim);
+    border: 1px solid black;
     border-radius: 10px;
     background-color: white;
     color: black;
@@ -215,7 +274,7 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 #exampleText {
-    border: 3px solid var(--chosen);
+    border: 3px solid black;
     margin-top: 10px;
     font-size: 18px;
 }
@@ -241,24 +300,36 @@ input[type=number]::-webkit-inner-spin-button {
 
 .palette {
     border-style: solid;
-    border-color: var(--chosen);
     border-width: 3px;
+    border-color: black;
     justify-content: center;
     position: relative;
 }
 
+.palette button {
+    background-color: white;
+}
+
+#detailButtons button {
+    border: 3px solid black;
+    border-top-width: 6px;
+}
 
 #pageColors .palette {
+    border-color: var(--chosen);
     margin: 5px;
 }
 
-#contrast-tiers,
-#colorStrings {
+#contrast-tiers {
     display: grid;
     column-gap: 10px;
     row-gap: 10px;
     padding-bottom: 20px;
     width: 80%;
+}
+
+#colorStrings {
+    padding-top: 20px;
 }
 
 #contrast-tiers {
@@ -267,23 +338,37 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 #colorStrings {
-    width: 80%;
-    margin: auto;
-    grid-template-columns: repeat(2, auto [col-start]);
-    grid-template-rows: repeat(2, auto [row-start]);
-}
-
-.selectColor input[type="number"] {
-    border-width: 3px;
-    border-style: solid;
-    border-color: black;
-    border-radius: 5px;
-    outline-offset: 5px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
 }
 
 .card {
     border-radius: 10px;
-    border: 3px solid var(--chosen);
+    border: 3px solid black;
+    background-color: white;
+    display: none;
+}
+
+table {
+    background-color: transparent;
+    margin-bottom: 20px;
+    border-spacing: 5px;
+}
+
+tr * {
+    padding: 10px;
+    background-color: white;
+    color: black;
+    border-radius: 10px;
+    border: 3px solid black;
+    font-weight: bold;
+}
+
+td {
+    padding-right: 20px;
+    padding-left: 20px;
 }
 
 .contrast-level {
@@ -312,7 +397,7 @@ input[type=number]::-webkit-inner-spin-button {
     flex-grow: 1;
     justify-content: space-between;
     align-items: center;
-    border: 3px solid var(--chosen);
+    border: 3px solid black;
 }
 
 #contrast .palette {
@@ -447,6 +532,34 @@ input[type=number]::-webkit-inner-spin-button {
     background-image: url(./images/search-look-inspect-magnifying-glass-pngrepo-com.png);
 }
 
-.string {
+.string,
+.card h3 {
     margin: 5px 0;
 }
+
+/* https://stackoverflow.com/questions/18389224/how-to-style-html5-range-input-to-have-different-color-before-and-after-slider */
+/* @media screen and (-webkit-min-device-pixel-ratio:0) {
+    input[type='range'] {
+      overflow: hidden;
+      width: 80px;
+      -webkit-appearance: none;
+      background-color: #9a905d;
+    }
+    
+    input[type='range']::-webkit-slider-runnable-track {
+      height: 10px;
+      -webkit-appearance: none;
+      color: transparent;
+      margin-top: -1px;
+    }
+    
+    input[type='range']::-webkit-slider-thumb {
+      width: 10px;
+      -webkit-appearance: none;
+      height: 10px;
+      cursor: ew-resize;
+      background: #434343;
+      box-shadow: -80px 0 0 80px #43e5f7;
+    }
+
+} */
