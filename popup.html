@@ -20,23 +20,34 @@
                 class="logo"
             />
             <div id="nav">
-                <button id="colorDetailTab" class="tab active" data-ref="#colorDetailsView">
+                <button
+                    id="colorDetailTab"
+                    class="tab active"
+                    data-ref="#colorDetailsView"
+                >
                     Color Details
                 </button>
-                <button id="contrastTab" class="tab" data-ref="#contrastView">Contrast</button>
-                <button id="pageColorTab" class="tab" data-ref="#pageColorsView">Page Colors</button>
-                <button id="hslTab" class="tab" data-ref="#hslView">HSL</button>
                 <button id="rgbTab" class="tab" data-ref="#rgbView">RGB</button>
+                <button id="hslTab" class="tab" data-ref="#hslView">HSL</button>
+                <button id="contrastTab" class="tab" data-ref="#contrastView">
+                    Contrast
+                </button>
+                <button
+                    id="pageColorTab"
+                    class="tab"
+                    data-ref="#pageColorsView"
+                >
+                    Page Colors
+                </button>
             </div>
             <div id="colorDetailsView" class="view active">
-                <h2>Color Values</h2>
-                <div class="section full primary palette">
+                <div id="detailPalette" class="section full primary palette">
                     <div
+                        id="detailSwatch"
                         class="swatch"
                         style="background-color: #000000"
-                        hidden
                     ></div>
-                    <div id="colorStrings">
+                    <div class="colorStringsTable" hidden>
                         <table id="detailInfo">
                             <tr class="hex card">
                                 <th>HEX</th>
@@ -56,10 +67,19 @@
                             </tr>
                         </table>
                     </div>
-                    <div id="detailsEditForm" class="color-input" hidden>
-                        <input type="text" placeholder="Enter new color" />
-                        <button class="update-btn">Update</button>
-                        <button class="update-cancel-btn">Cancel</button>
+                    <div class="colorStrings">
+                        <h4 class="hex string">#000000</h4>
+                        <h4 class="rgb string">rgb(0, 0, 0)</h4>
+                        <h4 class="hsl string">hsl(0, 0%, 0%)</h4>
+                    </div>
+                    <div class="colorInput" hidden>
+                        <input placeholder="Enter new color" />
+                        <div class="buttonContainer">
+                            <button class="updateBtn">Update</button>
+                            <button class="updateCancelBtn">
+                                Cancel
+                            </button>
+                        </div>
                     </div>
                     <div id="detailButtons">
                         <button class="option edit" title="Edit color"></button>
@@ -73,8 +93,110 @@
                         ></button>
                     </div>
                 </div>
-                <h2>Adjust Color</h2>
-                <div id="sliderSwatch" class="swatch" hidden></div>
+            </div>
+            <div id="contrastView" class="view">
+                <div id="contrastColors" class="section full split">
+                    <div id="fontColor" class="section half">
+                        <h3 class="label">Font</h3>
+                        <div class="subsection palette">
+                            <div
+                                class="swatch"
+                                style="background-color: #000000"
+                            ></div>
+                            <div class="colorStrings">
+                                <h4 class="hex string">#000000</h4>
+                                <h4 class="rgb string">rgb(0, 0, 0)</h4>
+                                <h4 class="hsl string">hsl(0, 0%, 0%)</h4>
+                            </div>
+                            <div class="colorInput" hidden>
+                                <input placeholder="Enter new color" />
+                                <div class="buttonContainer">
+                                    <button class="updateBtn">Update</button>
+                                    <button class="updateCancelBtn">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="options">
+                                <button
+                                    class="option examine"
+                                    title="See color details"
+                                ></button>
+                                <button
+                                    class="option edit"
+                                    title="Edit color"
+                                ></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="bgColor" class="section half">
+                        <h3 class="label">Background</h3>
+                        <div class="subsection palette">
+                            <div
+                                class="swatch"
+                                style="background-color: #000000"
+                            ></div>
+                            <div class="colorStrings">
+                                <h4 class="hex string">#FFFFFF</h4>
+                                <h4 class="rgb string">rgb(255, 255, 255)</h4>
+                                <h4 class="hsl string">hsl(0, 0%, 100%)</h4>
+                            </div>
+                            <div class="colorInput" hidden>
+                                <input placeholder="Enter new color" />
+                                <div class="buttonContainer">
+                                    <button class="updateBtn">Update</button>
+                                    <button class="updateCancelBtn">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="options">
+                                <button
+                                    class="option examine"
+                                    title="See color details"
+                                ></button>
+                                <button
+                                    class="option edit"
+                                    title="Edit color"
+                                ></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="exampleText" class="section full">
+                    <h3>Example Text</h3>
+                </div>
+                <h3>Contrast</h3>
+                <h1 class="contrast ratio">4.5:1</h1>
+                <div id="contrastInfo" class="section full contrast-info">
+                    <div id="contrast-tiers">
+                        <div id="aa-large" class="contrast-level aa large">
+                            AA
+                        </div>
+                        <div id="aa-small" class="contrast-level aa small">
+                            AA
+                        </div>
+                        <div id="aaa-large" class="contrast-level aaa large">
+                            AAA
+                        </div>
+                        <div id="aaa-small" class="contrast-level aaa small">
+                            AAA
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="pageColorsView" class="view">
+                <div class="section half">
+                    <h3 class="label">Font</h3>
+                    <div id="fontColors" class="subsection"></div>
+                </div>
+                <div class="section half">
+                    <h3 class="label">Background</h3>
+                    <div id="bgColors" class="subsection"></div>
+                </div>
+            </div>
+            <div id="hslView" class="view">
+                <div id="hslSwatch" class="swatch"></div>
                 <div
                     id="hslAdjustContainer"
                     class="section full"
@@ -146,102 +268,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div id="contrastView" class="view">
-                <div id="contrastColors" class="section full split">
-                    <div id="fontColor" class="section half">
-                        <h3 class="label">Font</h3>
-                        <div class="subsection palette">
-                            <div
-                                class="swatch"
-                                style="background-color: #000000"
-                            ></div>
-                            <h4 class="hex string">#000000</h4>
-                            <h4 class="rgb string">rgb(0, 0, 0)</h4>
-                            <h4 class="hsl string">hsl(0, 0%, 0%)</h4>
-                            <div class="color-input" hidden>
-                                <input placeholder="Enter new color" />
-                                <button class="update-btn">Update</button>
-                                <button class="update-cancel-btn">
-                                    Cancel
-                                </button>
-                            </div>
-                            <div class="options">
-                                <button
-                                    class="option examine"
-                                    title="See color details"
-                                ></button>
-                                <button
-                                    class="option edit"
-                                    title="Edit color"
-                                ></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="bgColor" class="section half">
-                        <h3 class="label">Background</h3>
-                        <div class="subsection palette">
-                            <div
-                                class="swatch"
-                                style="background-color: #000000"
-                            ></div>
-                            <h4 class="hex string">#FFFFFF</h4>
-                            <h4 class="rgb string">rgb(255, 255, 255)</h4>
-                            <h4 class="hsl string">hsl(0, 0%, 100%)</h4>
-                            <div class="color-input" hidden>
-                                <input placeholder="Enter new color" />
-                                <button class="update-btn">Update</button>
-                                <button class="update-cancel-btn">
-                                    Cancel
-                                </button>
-                            </div>
-                            <div class="options">
-                                <button
-                                    class="option examine"
-                                    title="See color details"
-                                ></button>
-                                <button
-                                    class="option edit"
-                                    title="Edit color"
-                                ></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="exampleText" class="section full">
-                    <h3>Example Text</h3>
-                </div>
-                <h3>Contrast</h3>
-                <h1 class="contrast ratio">4.5:1</h1>
-                <div id="contrastInfo" class="section full contrast-info">
-                    <div id="contrast-tiers">
-                        <div id="aa-large" class="contrast-level aa large">
-                            AA
-                        </div>
-                        <div id="aa-small" class="contrast-level aa small">
-                            AA
-                        </div>
-                        <div id="aaa-large" class="contrast-level aaa large">
-                            AAA
-                        </div>
-                        <div id="aaa-small" class="contrast-level aaa small">
-                            AAA
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="pageColorsView" class="view">
-                <div class="section half">
-                    <h3 class="label">Font</h3>
-                    <div id="fontColors" class="subsection"></div>
-                </div>
-                <div class="section half">
-                    <h3 class="label">Background</h3>
-                    <div id="bgColors" class="subsection"></div>
-                </div>
-            </div>
-            <div id="hslView" class="view">
-                <h1>Hello HSL</h1>
             </div>
             <div id="rgbView" class="view">
                 <h1>Hello RGB</h1>

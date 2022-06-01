@@ -7,9 +7,9 @@
     --latte: #cc9965;
     --chino: #f4eae1;
     --chosen: #ffffff;
-    --active-tab-bg-color: black;
+    --active-tab-bg-color: #424242;
     --active-tab-color: white;
-    --inactive-tab-bg-color: #424242;
+    --inactive-tab-bg-color: black;
     --inactive-tab-color: white;
     --normal-radius: 10px;
     --small-radius: 7px;
@@ -20,7 +20,7 @@
 }
 
 body * {
-    outline-offset: 5px;
+    /* outline-offset: 5px; */
     box-sizing: border-box;
     border-width: 0;
 }
@@ -84,65 +84,6 @@ body * {
     background-color: white;
     border-radius: var(--small-radius);
 }
-
-.selectColor input {
-    text-align: center;
-    padding: 5px;
-    margin: 5px;
-    letter-spacing: 1px;
-}
-
-input[type="number"] {
-    height: 40px;
-    width: 40px;
-    border-width: 0;
-    border-radius: 50%;
-    font-weight: bold;
-    box-shadow: var(--box-shadow);
-}
-
-input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-}
-
-[type="range"] {
-    border-radius: var(--small-radius);
-    height: 7px;
-    outline: none;
-    -webkit-appearance: none;
-}
-
-.hue.slider input {
-    background: linear-gradient(
-        to right,
-        hsl(0, 100%, 50%) 5%,
-        hsl(20, 100%, 50%),
-        hsl(40, 100%, 50%),
-        hsl(60, 100%, 50%),
-        hsl(80, 100%, 50%),
-        hsl(100, 100%, 50%),
-        hsl(120, 100%, 50%),
-        hsl(140, 100%, 50%),
-        hsl(160, 100%, 50%),
-        hsl(180, 100%, 50%),
-        hsl(200, 100%, 50%),
-        hsl(200, 100%, 50%),
-        hsl(220, 100%, 50%),
-        hsl(240, 100%, 50%),
-        hsl(260, 100%, 50%),
-        hsl(280, 100%, 50%),
-        hsl(300, 100%, 50%),
-        hsl(320, 100%, 50%),
-        hsl(340, 100%, 50%),
-        hsl(360, 100%, 50%) 95%
-    );
-}
-
-.slider {
-    display: flex;
-    align-items: center;
-}
-
 
 .subsection {
     display: flex;
@@ -224,7 +165,7 @@ table {
 }
 
 tr * {
-    padding: 10px;
+    padding: 5px;
     background-color: white;
     color: black;
     border-radius: var(--normal-radius);
@@ -274,34 +215,38 @@ td {
     width: 100%;
 }
 
-.color-input {
+.colorInput {
     margin-bottom: 10px;
     font-weight: bold;
     text-align: center;
 }
 
-.color-input input {
-    margin: 10px 0;
+.colorInput input {
     width: 80%;
     text-align: inherit;
     padding: 10px 0;
+    border: 2px solid black;
     border-radius: var(--small-radius);
     font-weight: bold;
-    letter-spacing: 1px;
+    margin: 10px 0;
 }
 
-.color-input input.invalid {
+.colorInput input.invalid {
     border: var(--border-width) solid var(--chilli);
 }
 
-#detailsEditForm {
-    padding: 10px;
+#contrastView .colorInput input {
+    margin: 10px 0;
 }
-
 
 .string,
 .card h3 {
     margin: 5px 0;
+    color: black;
+}
+
+#detailPalette .string {
+    padding: 10px;
 }
 
 /* https://stackoverflow.com/questions/18389224/how-to-style-html5-range-input-to-have-different-color-before-and-after-slider */
@@ -377,6 +322,10 @@ td {
     color: white;
 }
 
+#hslView {
+    flex-direction: column;
+}
+
 /******** BUTTONS *********/
 
 .tab {
@@ -408,15 +357,11 @@ button,
 }
 
 .view button:hover {
-    background-color: lightskyblue;
+    background-color: var(--peacock);
 }
 
 .view button:active {
     background-color: var(--peacock);
-}
-
-#detailsEditForm button {
-    margin: 10px;
 }
 
 .slider button {
@@ -427,35 +372,54 @@ button,
     background-size: 110%;
 }
 
-.color-input button {
+.colorInput button {
     padding: 10px;
-    letter-spacing: 1px;
     border-radius: var(--normal-radius);
+    border: 5px solid black;
+    font-weight: bold;
 }
 
 #detailButtons button {
-    min-height: 50px;
     border-radius: 0;
+    padding: 15px;
 }
 
-#detailButtons button:first-child {
-    border-bottom-left-radius: var(--small-radius);
-}
-
-#detailButtons button:last-child {
-    border-bottom-right-radius: var(--small-radius);
-}
-
-#detailButtons .edit {
-    background-image: url(./images/edit-pngrepo-com.png);
+#detailButtons button:not(.edit) {
+    min-height: 50px;
 }
 
 #detailButtons .setFont {
+    border-bottom-left-radius: var(--small-radius);
     background-image: url(./images/font_icon.png);
 }
 
 #detailButtons .setBg {
+    border-bottom-right-radius: var(--small-radius);
     background-image: url(./images/bg_icon.png);
+}
+
+#detailButtons .edit {
+    background-image: url(./images/edit-pngrepo-com.png);
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-size: 20px;
+}
+
+#detailButtons .edit:hover {
+    background-color: unset;
+}
+
+#detailsEditForm button {
+    margin: 10px;
+}
+
+#detailsEditForm input {
+    border-width: 1px;
+    box-shadow: var(--box-shadow);
+    height: 50px;
+    border-radius: 25px;
+    outline-offset: 0;
 }
 
 .plus {
@@ -489,11 +453,6 @@ button,
     padding: 10px;
 }
 
-#colorDetailsView .option {
-    padding: 15px;
-}
-
-
 #pageColorsView .option {
     width: 30px;
     height: 30px;
@@ -501,6 +460,94 @@ button,
     margin: 10px auto;
     background-size: 110%;
     box-shadow: var(--box-shadow);
+}
+
+.updateBtn {
+    font-weight: bold;
+    border: 5px solid black;
+}
+
+/************* INPUTS **************/
+input {
+    border-radius: var(--small-radius);
+    border-width: 0;
+    border-color: var(--chosen);
+    box-shadow: var(--box-shadow);
+}
+
+
+.selectColor input {
+    text-align: center;
+    padding: 5px;
+    margin: 5px;
+}
+
+.selectColor input:hover {
+    border: 3px solid var(--peacock);
+}
+
+input[type="number"] {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+
+input[type="range"]::-webkit-slider-thumb {
+    /* -webkit-appearance: none; */
+    transition: all .3s;
+}
+
+input[type=range]:active::-webkit-slider-thumb {
+    margin-top: -40px;
+    width: 30px;
+    height: 30px;
+    transform: rotate(45deg);
+    background-color: var(--chosen);
+    border-radius: 0;
+}
+
+input[type="range"] {
+    border-radius: var(--small-radius);
+    height: 7px;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.hue.slider input {
+    background: linear-gradient(
+        to right,
+        hsl(0, 100%, 50%) 5%,
+        hsl(20, 100%, 50%),
+        hsl(40, 100%, 50%),
+        hsl(60, 100%, 50%),
+        hsl(80, 100%, 50%),
+        hsl(100, 100%, 50%),
+        hsl(120, 100%, 50%),
+        hsl(140, 100%, 50%),
+        hsl(160, 100%, 50%),
+        hsl(180, 100%, 50%),
+        hsl(200, 100%, 50%),
+        hsl(200, 100%, 50%),
+        hsl(220, 100%, 50%),
+        hsl(240, 100%, 50%),
+        hsl(260, 100%, 50%),
+        hsl(280, 100%, 50%),
+        hsl(300, 100%, 50%),
+        hsl(320, 100%, 50%),
+        hsl(340, 100%, 50%),
+        hsl(360, 100%, 50%) 95%
+    );
+}
+
+.slider {
+    display: flex;
+    align-items: center;
 }
 
 /************* SECTIONS ***************/
@@ -538,10 +585,19 @@ button,
     border-radius: 50%;
     box-shadow: var(--box-shadow);
     align-self: center;
-    justify-content: center;
+    justify-self: center;
     margin: 10px;
+    min-height: 30px;
     height: 30px;
     width: 30px;
+    background-color: var(--chosen);
+}
+
+#detailSwatch {
+    margin-top: 30px;
+    width: 50px;
+    height: 50px;
+    background-color: var(--chosen);
 }
 
 #sliderSwatch {
@@ -558,9 +614,14 @@ button,
 .palette {
     position: relative;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: stretch;
     flex-direction: column;
+    background-color: white;
+}
+
+#detailPalette {
+    height: 100%;
 }
 
 #pageColorsView .palette {

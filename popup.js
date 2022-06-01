@@ -18,7 +18,7 @@ var AA = 4.5,
     pageColorToggle = document.getElementById("pageColorTab"),
     colorDetailsToggle = document.getElementById("colorDetailTab"),
     contrastToggle = document.getElementById("contrastTab"),
-    colorDetailsSwatch = document.querySelector("#colorDetailsView .swatch"),
+    colorDetailsSwatch = document.querySelector("#detailPalette .swatch"),
     swatchSize = "20px",
     websiteFontColorDiv = document.getElementById("fontColors"),
     websiteBgColorDiv = document.getElementById("bgColors"),
@@ -96,16 +96,18 @@ var editColorBtns = document.querySelectorAll(".option.edit");
 editColorBtns.forEach((elem) => {
     elem.addEventListener("click", (e) => {
         var palette = e.path.find((node) => node.classList.contains("palette")),
-            strings = palette.querySelector("#colorStrings"),
-            input = palette.querySelector(".color-input");
+            strings = palette.querySelector(".colorStrings"),
+            inputContainer = palette.querySelector(".colorInput"),
+            input = inputContainer.querySelector("input");
+        console.log({palette, strings});
         strings.toggleAttribute("hidden");
-
-        input.toggleAttribute("hidden");
+        inputContainer.toggleAttribute("hidden");
+        input.focus();
     });
 });
 
-var updateColorBtns = document.querySelectorAll(".palette .update-btn"),
-    updateCancelBtns = document.querySelectorAll(".update-cancel-btn");
+var updateColorBtns = document.querySelectorAll(".palette .updateBtn"),
+    updateCancelBtns = document.querySelectorAll(".updateCancelBtn");
 updateColorBtns.forEach((elem) => {
     elem.addEventListener("click", (e) => {
         var input = e.target.previousElementSibling,
@@ -117,7 +119,7 @@ updateColorBtns.forEach((elem) => {
             rgb = palette.querySelector(".rgb.string"),
             hsl = palette.querySelector(".hsl.string"),
             swatch = palette.querySelector(".swatch"),
-            editForm = palette.querySelector(".color-input");
+            editForm = palette.querySelector(".colorInput");
         if (selection) {
             input.style.border = "";
             input.value = "";
@@ -141,7 +143,7 @@ updateCancelBtns.forEach((btn) => {
     btn.addEventListener("click", (e) => {
         var palette = e.path.find((elem) => elem.classList.contains("palette")),
             input = palette.querySelector("input"),
-            editForm = palette.querySelector(".color-input");
+            editForm = palette.querySelector(".colorInput");
         input.value = "";
         document.getElementById("colorStrings").toggleAttribute("hidden");
         editForm.toggleAttribute("hidden");
@@ -362,7 +364,7 @@ exampleChangeObserver.observe(contrastExampleText, {
 function setChosenColor() {
     let colorVal = window.getComputedStyle(colorDetailsSwatch).backgroundColor,
         currentHSL = document.querySelector(
-            "#colorStrings .hsl.string"
+            ".colorStrings .hsl.string"
         ).innerText,
         newColor = getColor(currentHSL),
         hslAdjustContainer = document.getElementById("hslAdjustContainer");
@@ -540,10 +542,6 @@ function updateSliderBackgrounds() {
         lightness = Number(container.getAttribute("data-lightness")),
         hslStringForSaturation = `linear-gradient(to right, hsl(${hue}, 0%, ${lightness}%), hsl(${hue}, 100%, ${lightness}%))`,
         hslStringForLightness = `linear-gradient(to right, hsl(${hue}, ${saturation}%, 0%), hsl(${hue}, ${saturation}%, 50%), hsl(${hue}, ${saturation}%, 100%))`;
-    console.log({
-        hslStringForSaturation,
-        hslStringForlightness: hslStringForLightness,
-    });
     document.getElementById("saturationRange").style.background =
         hslStringForSaturation;
     document.getElementById("lightnessRange").style.background =
