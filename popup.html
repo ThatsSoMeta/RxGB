@@ -47,30 +47,11 @@
                         class="swatch"
                         style="background-color: #000000"
                     ></div>
-                    <div class="colorStringsTable" hidden>
-                        <table id="detailInfo">
-                            <tr class="hex card">
-                                <th>HEX</th>
-                                <td class="hex string">#000000</td>
-                            </tr>
-                            <tr class="hsl card">
-                                <th>HSL</th>
-                                <td class="hsl string">hsl(0, 0%, 0%)</td>
-                            </tr>
-                            <tr class="rgb card">
-                                <th>RGB</th>
-                                <td class="rgb string">rgb(0, 0, 0)</td>
-                            </tr>
-                            <tr class="luminance card">
-                                <th>Luminance</th>
-                                <td class="luminance string">0%</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="colorStrings">
+                    <div id="colorStrings">
                         <h4 class="hex string">#000000</h4>
                         <h4 class="rgb string">rgb(0, 0, 0)</h4>
                         <h4 class="hsl string">hsl(0, 0%, 0%)</h4>
+                        <h4 class="string">Luminance: <span class="luminance string">0</span>%</h4>
                     </div>
                     <div class="colorInput" hidden>
                         <input placeholder="Enter new color" />
@@ -196,33 +177,34 @@
                 </div>
             </div>
             <div id="hslView" class="view">
-                <div id="hslSwatch" class="swatch"></div>
-                <div
+                <div id="hslPalette" class="palette">
+                    <div id="hslSwatch" class="swatch"></div>
+                    <div
                     id="hslAdjustContainer"
-                    class="section full"
-                    data-hue="0"
-                    data-saturation="0"
-                    data-lightness="0"
-                >
+                    class="section full colorDataDiv"
+                    data-hue=0
+                    data-saturation=0
+                    data-lightness=0
+                    >
                     <div id="hueSelector" class="selectColor hue">
                         <h3 class="title hue">Hue</h3>
                         <input
-                            type="number"
-                            min="0"
-                            max="359"
-                            class="valueInput hue"
-                            value="0"
+                        type="number"
+                        min=0
+                        max=359
+                        class="valueInput hue"
+                        value=0
                         />
                         <div class="slider hue">
                             <button class="minus action hue"></button>
                             <input
-                                type="range"
-                                name="range"
-                                id="hueRange"
-                                min="0"
-                                max="359"
-                                step="1"
-                                value="0"
+                            type="range"
+                            name="range"
+                            id="hueRange"
+                            min=0
+                            max=359
+                            step=1
+                            value=0
                             />
                             <button class="plus action hue"></button>
                         </div>
@@ -230,19 +212,19 @@
                     <div id="saturationSelector" class="selectColor saturation">
                         <h3 class="title saturation">Saturation</h3>
                         <input
-                            type="number"
-                            min="0"
-                            max="100"
-                            class="valueInput saturation"
-                            value="0"
+                        type="number"
+                        min=0
+                        max=100
+                        class="valueInput saturation"
+                        value=0
                         />
                         <div class="slider saturation">
                             <button class="minus action saturation"></button>
                             <input
-                                type="range"
-                                name="range"
-                                id="saturationRange"
-                                value="0"
+                            type="range"
+                            name="range"
+                            id="saturationRange"
+                            value=0
                             />
                             <button class="plus action saturation"></button>
                         </div>
@@ -250,25 +232,26 @@
                     <div id="lightnessSelector" class="selectColor lightness">
                         <h3 class="title lightness">Lightness</h3>
                         <input
-                            type="number"
-                            min="0"
-                            max="100"
-                            class="valueInput lightness"
-                            value="0"
+                        type="number"
+                        min=0
+                        max=100
+                        class="valueInput lightness"
+                        value=0
                         />
                         <div class="slider lightness">
                             <button class="minus action lightness"></button>
                             <input
-                                type="range"
-                                name="range"
-                                id="lightnessRange"
-                                value="0"
+                            type="range"
+                            name="range"
+                            id="lightnessRange"
+                            value=0
                             />
                             <button class="plus action lightness"></button>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
             <div id="rgbView" class="view">
                 <h1>Hello RGB</h1>
             </div>

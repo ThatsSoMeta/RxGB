@@ -67,22 +67,12 @@ body * {
 }
 
 .selectColor {
-    padding: 0 10px 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border-radius: var(--normal-radius);
-    margin: 10px 0;
-    background-color: var(--chosen);
     color: black;
-}
-
-.selectColor .title {
     margin: 5px;
-    padding: 5px;
-    background-color: white;
-    border-radius: var(--small-radius);
 }
 
 .subsection {
@@ -149,6 +139,7 @@ body * {
 #colorStrings:not([hidden]) {
     width: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: stretch;
     padding-top: 20px;
@@ -245,8 +236,8 @@ td {
     color: black;
 }
 
-#detailPalette .string {
-    padding: 10px;
+#detailPalette .string:not(.luminance) {
+    padding: 5px;
 }
 
 /* https://stackoverflow.com/questions/18389224/how-to-style-html5-range-input-to-have-different-color-before-and-after-slider */
@@ -265,14 +256,7 @@ td {
       margin-top: -1px;
     }
     
-    input[type='range']::-webkit-slider-thumb {
-      width: 10px;
-      -webkit-appearance: none;
-      height: 10px;
-      cursor: ew-resize;
-      background: #434343;
-      box-shadow: -80px 0 0 80px #43e5f7;
-    }
+    
 
 } */
 
@@ -497,19 +481,20 @@ input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
 }
 
-
-input[type="range"]::-webkit-slider-thumb {
-    /* -webkit-appearance: none; */
+input[type=range]::-webkit-slider-thumb {
     transition: all .3s;
+    border: 1px solid black;
 }
 
-input[type=range]:active::-webkit-slider-thumb {
-    margin-top: -40px;
-    width: 30px;
-    height: 30px;
+input[type="range"]:active::-webkit-slider-thumb {
+    margin-top: -35px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border-bottom-right-radius: 0;
     transform: rotate(45deg);
-    background-color: var(--chosen);
-    border-radius: 0;
+    -webkit-appearance: none;
+    background: var(--chosen);
 }
 
 input[type="range"] {
@@ -595,9 +580,16 @@ input[type="range"] {
 
 #detailSwatch {
     margin-top: 30px;
-    width: 50px;
-    height: 50px;
+}
+
+#hslSwatch {
+    margin-bottom: 20px;
+}
+
+#detailSwatch,
+#hslSwatch {
     background-color: var(--chosen);
+    transform: scale(1.5);
 }
 
 #sliderSwatch {
@@ -618,6 +610,7 @@ input[type="range"] {
     align-items: stretch;
     flex-direction: column;
     background-color: white;
+    border-radius: var(--normal-radius);
 }
 
 #detailPalette {
@@ -631,4 +624,12 @@ input[type="range"] {
 
 #contrastView .palette {
     padding-bottom: 50px;
+}
+
+#hslPalette {
+    padding: 10px;
+}
+
+#hslPalette .title {
+    margin: 0;
 }
