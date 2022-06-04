@@ -20,13 +20,14 @@
 }
 
 body * {
-    /* outline-offset: 5px; */
     box-sizing: border-box;
     border-width: 0;
+    font-size: 0;
 }
 
 .logo {
     height: 40px;
+    position: static;
 }
 
 #minimizedContainer {
@@ -37,16 +38,13 @@ body * {
 }
 
 #modalContainer:not([hidden]) {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
     width: 350px;
-    height: 400px;
+    overflow: hidden;
+    text-align: center;
 }
 
 #toggleVisibility {
-    position: absolute;
+    position: fixed;
     top: 10px;
     right: 10px;
     font-size: 12px;
@@ -54,43 +52,17 @@ body * {
     font-weight: bold;
     padding: 5px;
 }
-
-#colorDetailsView .section {
-    border-radius: var(--normal-radius);
-    margin: 5px;
-}
-
-#detailButtons {
-    display: flex;
-    align-items: stretch;
-    justify-content: space-between;
-}
-
 .selectColor {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     color: black;
     margin: 5px;
 }
 
 .subsection {
-    display: flex;
-    flex-grow: 1;
-    flex-direction: column;
-    max-height: 350px;
-    overflow-y: scroll;
-    margin: 5px 0;
+    margin: 0;
     border-radius: var(--normal-radius);
 }
 
 .container {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    justify-content: space-around;
-    align-items: center;
     border-radius: var(--normal-radius);
     background-color: white;
     color: black;
@@ -98,50 +70,28 @@ body * {
 
 .color.container,
 #contrastView .subsection {
-    align-self: stretch;
     background-color: white;
     color: black;
 }
 
-#fontColor .subsection {
-    margin-right: 5px;
-}
-
-#bgColor .subsection {
-    margin-left: 5px;
-}
-
-
-#fontColor,
-#bgColor {
-    flex-direction: column;
-}
-
 #exampleText {
-    margin: 5px 0;
+    margin: 10px 50px;
+    padding: 10px;
     font-size: 18px;
-    justify-content: center;
+    background-color: white;
+    color: black;
+}
+
+.title, .label {
+    font-size: 12px;
 }
 
 #contrast-tiers {
-    display: grid;
-    column-gap: 10px;
-    row-gap: 10px;
-    padding: 20px;
-    width: 80%;
+    background-color: transparent;
 }
 
-#contrast-tiers {
-    grid-template-columns: repeat(2, 1fr [col-start]);
-    grid-template-rows: repeat(2, 1fr [row-start]);
-}
-
-#colorStrings:not([hidden]) {
+#colorStrings {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: stretch;
     padding-top: 20px;
     background-color: white;
     color: black;
@@ -149,35 +99,22 @@ body * {
     border-top-right-radius: var(--normal-radius);
 }
 
-table {
-    background-color: transparent;
-    margin-bottom: 20px;
-    border-spacing: 5px;
-}
-
-tr * {
-    padding: 5px;
-    background-color: white;
-    color: black;
-    border-radius: var(--normal-radius);
-    font-weight: bold;
-}
-
-td {
-    padding-right: 20px;
-    padding-left: 20px;
+.string {
+    font-size: 12px;
 }
 
 .contrast-level {
-    padding: 10px;
     font-weight: bold;
     border-radius: var(--normal-radius);
     border-style: solid;
     border-width: var(--border-width);
     border-color: var(--chilli);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background-color: white;
+    width: calc(50% - 10px);
+    margin: 5px;
+    line-height: 35px;
+    display: inline-block;
+    vertical-align: top;
 }
 
 .contrast-level.large {
@@ -188,28 +125,19 @@ td {
     font-size: 12px;
 }
 
-.contrast-info {
-    display: flex;
-    text-align: center;
-    flex-grow: 1;
-    justify-content: space-between;
-    align-items: center;
-}
-
 
 .options {
     position: absolute;
     bottom: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch;
     width: 100%;
 }
 
 .colorInput {
-    margin-bottom: 10px;
+    margin: 10px auto;
     font-weight: bold;
     text-align: center;
+    /* display: inline-block; */
+    width: 100%;
 }
 
 .colorInput input {
@@ -240,6 +168,10 @@ td {
     padding: 5px;
 }
 
+#contrastLevelLabel {
+    margin-bottom: 0;
+}
+
 /* https://stackoverflow.com/questions/18389224/how-to-style-html5-range-input-to-have-different-color-before-and-after-slider */
 /* @media screen and (-webkit-min-device-pixel-ratio:0) {
     input[type='range'] {
@@ -260,54 +192,30 @@ td {
 
 } */
 
-/****** VIEWS ******/
+/****** 
 
-.view.active,
-#nav {
-    width: 100%;
-}
+VIEWS 
+
+******/
 
 #nav {
-    display: flex;
-    justify-content: space-around;
-    align-items: stretch;
-    margin: 5px 0 0;
-    padding: 0;
-    width: 100%;
+    width: 350px;
+    position: static;
+    top: 40px;
+    text-align: left;
 }
 
 .view.active {
-    display: flex;
-    height: 100%;
-    overflow-y: scroll;
-    align-items: stretch;
-    justify-content: flex-start;
     text-align: center;
     background-color: var(--active-tab-bg-color);
     color: white;
     padding: 10px;
+    position: relative;
+    width: 350px;
 }
 
 .view:not(.active) * {
     display: none !important;
-}
-
-#contrastView {
-    padding-top: 0;
-}
-
-#colorDetailsView,
-#contrastView {
-    flex-direction: column;
-}
-
-#contrastColors {
-    background-color: var(--active-tab-bg-color);
-    color: white;
-}
-
-#hslView {
-    flex-direction: column;
 }
 
 /******** BUTTONS *********/
@@ -318,10 +226,11 @@ td {
     background-size: 100%;
     color: var(--inactive-tab-color);
     border-radius: var(--normal-radius) var(--normal-radius) 0 0;
-    padding: 10px;
     font-weight: bold;
     font-size: 12px;
-    flex-grow: 1;
+    vertical-align: bottom;
+    width: 20%;
+    height: 45px;
 }
 
 .tab.active {
@@ -354,6 +263,7 @@ button,
     border-radius: 50%;
     box-shadow: var(--box-shadow);
     background-size: 110%;
+    margin-top: -5px;
 }
 
 .colorInput button {
@@ -370,6 +280,7 @@ button,
 
 #detailButtons button:not(.edit) {
     min-height: 50px;
+    width: 50%;
 }
 
 #detailButtons .setFont {
@@ -417,6 +328,7 @@ button,
 #contrastView .option {
     height: 50px;
     border-radius: 0;
+    width: 50%;
 }
 
 #contrastView .edit {
@@ -430,10 +342,10 @@ button,
 }
 
 .option {
-    flex-grow: 1;
+    /* flex-grow: 1;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: center; */
     padding: 10px;
 }
 
@@ -475,6 +387,7 @@ input[type="number"] {
     width: 40px;
     border-radius: 50%;
     font-weight: bold;
+    font-size: 12px;
 }
 
 input[type="number"]::-webkit-inner-spin-button {
@@ -502,6 +415,7 @@ input[type="range"] {
     height: 7px;
     outline: none;
     -webkit-appearance: none;
+    vertical-align: top;
 }
 
 .hue.slider input {
@@ -530,14 +444,14 @@ input[type="range"] {
     );
 }
 
-.slider {
+/* .slider {
     display: flex;
     align-items: center;
-}
+} */
 
 /************* SECTIONS ***************/
 
-.view .half {
+/* .view .half {
     flex-basis: 45%;
     flex-grow: 1;
 }
@@ -548,19 +462,51 @@ input[type="range"] {
 
 .view .full.split {
     flex-direction: row !important;
-}
+} */
 
 #contrastInfo {
-    flex-direction: column;
-    background-color: white;
+    background-color: transparent;
     color: black;
 }
 
+#contrastColors {
+    display: inline-block;
+    width: 100%;
+}
+
+#fontColor,
+#bgColor {
+    width: calc(50% - 10px);
+    font-size: 12px;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+#fontColors,
+#bgColors {
+    overflow-y: scroll;
+    max-height: 400px;
+}
+
+#fontColor {
+    margin-right: 5px;
+}
+
+#bgColor {
+    margin-left: 5px;
+}
+
 #contrastView .section {
-    display: flex;
+    /* display: flex;
     align-items: center;
-    align-self: stretch;
+    align-self: stretch; */
     border-radius: var(--normal-radius);
+}
+
+.section.half {
+    vertical-align: top;
+    width: 50%;
+    display: inline-block;
 }
 
 /************* SWATCH *****************/
@@ -569,57 +515,43 @@ input[type="range"] {
 .swatch {
     border-radius: 50%;
     box-shadow: var(--box-shadow);
-    align-self: center;
-    justify-self: center;
-    margin: 10px;
     min-height: 30px;
     height: 30px;
     width: 30px;
     background-color: var(--chosen);
+    margin: 0 auto;
 }
 
-#detailSwatch {
-    margin-top: 30px;
+#contrastView .swatch,
+#pageColorsView .swatch {
+    margin: 10px auto;
 }
 
 #hslSwatch {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 #detailSwatch,
-#hslSwatch {
+#hslSwatch,
+#rgbSwatch {
+    margin-top: 30px;
     background-color: var(--chosen);
     transform: scale(1.5);
-}
-
-#sliderSwatch {
-    position: absolute;
-    transform: rotate(45deg);
-    top: var(--slider-y);
-    left: var(--slider-x);
-    border-bottom-right-radius: 0;
-    background-color: var(--chosen);
 }
 
 /************ PALETTES *************/
 
 .palette {
     position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch;
-    flex-direction: column;
     background-color: white;
     border-radius: var(--normal-radius);
+    display: inline-block;
+    width: 100%;
+    font-size: 12px;
 }
 
-#detailPalette {
-    height: 100%;
-}
-
-#pageColorsView .palette {
-    margin: 5px;
-    border-width: var(--border-width);
+#rgbPalette {
+    width: 100%;
 }
 
 #contrastView .palette {
@@ -627,9 +559,14 @@ input[type="range"] {
 }
 
 #hslPalette {
-    padding: 10px;
+    padding-bottom: 20px;
 }
 
 #hslPalette .title {
     margin: 0;
+}
+
+.color.container.palette {
+    width: calc(100% - 10px);
+    margin-bottom: 10px;
 }

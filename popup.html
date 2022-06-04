@@ -51,15 +51,16 @@
                         <h4 class="hex string">#000000</h4>
                         <h4 class="rgb string">rgb(0, 0, 0)</h4>
                         <h4 class="hsl string">hsl(0, 0%, 0%)</h4>
-                        <h4 class="string">Luminance: <span class="luminance string">0</span>%</h4>
+                        <h4 class="string">
+                            Luminance:
+                            <span class="luminance string">0</span>%
+                        </h4>
                     </div>
                     <div class="colorInput" hidden>
                         <input placeholder="Enter new color" />
                         <div class="buttonContainer">
                             <button class="updateBtn">Update</button>
-                            <button class="updateCancelBtn">
-                                Cancel
-                            </button>
+                            <button class="updateCancelBtn">Cancel</button>
                         </div>
                     </div>
                     <div id="detailButtons">
@@ -76,78 +77,72 @@
                 </div>
             </div>
             <div id="contrastView" class="view">
-                <div id="contrastColors" class="section full split">
-                    <div id="fontColor" class="section half">
-                        <h3 class="label">Font</h3>
-                        <div class="subsection palette">
-                            <div
-                                class="swatch"
-                                style="background-color: #000000"
-                            ></div>
-                            <div class="colorStrings">
-                                <h4 class="hex string">#000000</h4>
-                                <h4 class="rgb string">rgb(0, 0, 0)</h4>
-                                <h4 class="hsl string">hsl(0, 0%, 0%)</h4>
-                            </div>
-                            <div class="colorInput" hidden>
-                                <input placeholder="Enter new color" />
-                                <div class="buttonContainer">
-                                    <button class="updateBtn">Update</button>
-                                    <button class="updateCancelBtn">
-                                        Cancel
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="options">
-                                <button
-                                    class="option examine"
-                                    title="See color details"
-                                ></button>
-                                <button
-                                    class="option edit"
-                                    title="Edit color"
-                                ></button>
+                <div id="fontColor" class="section half">
+                    <h3 class="label">Font</h3>
+                    <div class="subsection palette">
+                        <div
+                            class="swatch"
+                            style="background-color: #000000"
+                        ></div>
+                        <div class="colorStrings">
+                            <h4 class="hex string">#000000</h4>
+                            <h4 class="rgb string">rgb(0, 0, 0)</h4>
+                            <h4 class="hsl string">hsl(0, 0%, 0%)</h4>
+                        </div>
+                        <div class="colorInput" hidden>
+                            <input placeholder="Enter new color" />
+                            <div class="buttonContainer">
+                                <button class="updateBtn">Update</button>
+                                <button class="updateCancelBtn">Cancel</button>
                             </div>
                         </div>
-                    </div>
-                    <div id="bgColor" class="section half">
-                        <h3 class="label">Background</h3>
-                        <div class="subsection palette">
-                            <div
-                                class="swatch"
-                                style="background-color: #000000"
-                            ></div>
-                            <div class="colorStrings">
-                                <h4 class="hex string">#FFFFFF</h4>
-                                <h4 class="rgb string">rgb(255, 255, 255)</h4>
-                                <h4 class="hsl string">hsl(0, 0%, 100%)</h4>
-                            </div>
-                            <div class="colorInput" hidden>
-                                <input placeholder="Enter new color" />
-                                <div class="buttonContainer">
-                                    <button class="updateBtn">Update</button>
-                                    <button class="updateCancelBtn">
-                                        Cancel
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="options">
-                                <button
-                                    class="option examine"
-                                    title="See color details"
-                                ></button>
-                                <button
-                                    class="option edit"
-                                    title="Edit color"
-                                ></button>
-                            </div>
+                        <div class="options">
+                            <button
+                                class="option examine"
+                                title="See color details"
+                            ></button>
+                            <button
+                                class="option edit"
+                                title="Edit color"
+                            ></button>
                         </div>
                     </div>
                 </div>
-                <div id="exampleText" class="section full">
-                    <h3>Example Text</h3>
+                <div id="bgColor" class="section half">
+                    <h3 class="label">Background</h3>
+                    <div class="subsection palette">
+                        <div
+                            class="swatch"
+                            style="background-color: #000000"
+                        ></div>
+                        <div class="colorStrings">
+                            <h4 class="hex string">#FFFFFF</h4>
+                            <h4 class="rgb string">rgb(255, 255, 255)</h4>
+                            <h4 class="hsl string">hsl(0, 0%, 100%)</h4>
+                        </div>
+                        <div class="colorInput" hidden>
+                            <input placeholder="Enter new color" />
+                            <div class="buttonContainer">
+                                <button class="updateBtn">Update</button>
+                                <button class="updateCancelBtn">Cancel</button>
+                            </div>
+                        </div>
+                        <div class="options">
+                            <button
+                                class="option examine"
+                                title="See color details"
+                            ></button>
+                            <button
+                                class="option edit"
+                                title="Edit color"
+                            ></button>
+                        </div>
+                    </div>
                 </div>
-                <h3>Contrast</h3>
+                <h3 id="exampleText" class="section full">
+                    Example Text
+                </h3>
+                <h3 id="contrastLevelLabel">Contrast</h3>
                 <h1 class="contrast ratio">4.5:1</h1>
                 <div id="contrastInfo" class="section full contrast-info">
                     <div id="contrast-tiers">
@@ -180,80 +175,90 @@
                 <div id="hslPalette" class="palette">
                     <div id="hslSwatch" class="swatch"></div>
                     <div
-                    id="hslAdjustContainer"
-                    class="section full colorDataDiv"
-                    data-hue=0
-                    data-saturation=0
-                    data-lightness=0
+                        id="hslAdjustContainer"
+                        class="section full colorDataDiv"
+                        data-hue="0"
+                        data-saturation="0"
+                        data-lightness="0"
                     >
-                    <div id="hueSelector" class="selectColor hue">
-                        <h3 class="title hue">Hue</h3>
-                        <input
-                        type="number"
-                        min=0
-                        max=359
-                        class="valueInput hue"
-                        value=0
-                        />
-                        <div class="slider hue">
-                            <button class="minus action hue"></button>
+                        <div id="hueSelector" class="selectColor hue">
+                            <h3 class="title hue">Hue</h3>
                             <input
-                            type="range"
-                            name="range"
-                            id="hueRange"
-                            min=0
-                            max=359
-                            step=1
-                            value=0
+                                type="number"
+                                min="0"
+                                max="359"
+                                class="valueInput hue"
+                                value="0"
                             />
-                            <button class="plus action hue"></button>
+                            <div class="slider hue">
+                                <button class="minus action hue"></button>
+                                <input
+                                    type="range"
+                                    name="range"
+                                    id="hueRange"
+                                    min="0"
+                                    max="359"
+                                    step="1"
+                                    value="0"
+                                />
+                                <button class="plus action hue"></button>
+                            </div>
                         </div>
-                    </div>
-                    <div id="saturationSelector" class="selectColor saturation">
-                        <h3 class="title saturation">Saturation</h3>
-                        <input
-                        type="number"
-                        min=0
-                        max=100
-                        class="valueInput saturation"
-                        value=0
-                        />
-                        <div class="slider saturation">
-                            <button class="minus action saturation"></button>
+                        <div
+                            id="saturationSelector"
+                            class="selectColor saturation"
+                        >
+                            <h3 class="title saturation">Saturation</h3>
                             <input
-                            type="range"
-                            name="range"
-                            id="saturationRange"
-                            value=0
+                                type="number"
+                                min="0"
+                                max="100"
+                                class="valueInput saturation"
+                                value="0"
                             />
-                            <button class="plus action saturation"></button>
+                            <div class="slider saturation">
+                                <button
+                                    class="minus action saturation"
+                                ></button>
+                                <input
+                                    type="range"
+                                    name="range"
+                                    id="saturationRange"
+                                    value="0"
+                                />
+                                <button class="plus action saturation"></button>
+                            </div>
                         </div>
-                    </div>
-                    <div id="lightnessSelector" class="selectColor lightness">
-                        <h3 class="title lightness">Lightness</h3>
-                        <input
-                        type="number"
-                        min=0
-                        max=100
-                        class="valueInput lightness"
-                        value=0
-                        />
-                        <div class="slider lightness">
-                            <button class="minus action lightness"></button>
+                        <div
+                            id="lightnessSelector"
+                            class="selectColor lightness"
+                        >
+                            <h3 class="title lightness">Lightness</h3>
                             <input
-                            type="range"
-                            name="range"
-                            id="lightnessRange"
-                            value=0
+                                type="number"
+                                min="0"
+                                max="100"
+                                class="valueInput lightness"
+                                value="0"
                             />
-                            <button class="plus action lightness"></button>
+                            <div class="slider lightness">
+                                <button class="minus action lightness"></button>
+                                <input
+                                    type="range"
+                                    name="range"
+                                    id="lightnessRange"
+                                    value="0"
+                                />
+                                <button class="plus action lightness"></button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
             <div id="rgbView" class="view">
-                <h1>Hello RGB</h1>
+                <div id="rgbPalette" class="palette">
+                    <div id="rgbSwatch" class="swatch"></div>
+                </div>
             </div>
         </div>
         <script src="popup.js"></script>
