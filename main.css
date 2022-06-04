@@ -273,22 +273,30 @@ button,
     font-weight: bold;
 }
 
-#detailButtons button {
+#hslButtons {
+    margin-top: 15px;
+}
+
+#detailButtons button,
+#hslButtons button {
     border-radius: 0;
     padding: 15px;
 }
 
-#detailButtons button:not(.edit) {
+#detailButtons button:not(.edit),
+#hslButtons button {
     min-height: 50px;
     width: 50%;
 }
 
-#detailButtons .setFont {
+#detailButtons .setFont,
+#hslButtons .setFont {
     border-bottom-left-radius: var(--small-radius);
     background-image: url(./images/font_icon.png);
 }
 
-#detailButtons .setBg {
+#detailButtons .setBg,
+#hslButtons .setBg {
     border-bottom-right-radius: var(--small-radius);
     background-image: url(./images/bg_icon.png);
 }
@@ -376,9 +384,10 @@ input {
     text-align: center;
     padding: 5px;
     margin: 5px;
+    cursor: pointer;
 }
 
-.selectColor input:hover {
+.selectColor input:not([type=range]):hover {
     border: 3px solid var(--peacock);
 }
 
@@ -556,10 +565,6 @@ input[type="range"] {
 
 #contrastView .palette {
     padding-bottom: 50px;
-}
-
-#hslPalette {
-    padding-bottom: 20px;
 }
 
 #hslPalette .title {

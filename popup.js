@@ -34,8 +34,8 @@ var AA = 4.5,
     contrastAALarge = document.getElementById("aa-large"),
     contrastAAASmall = document.getElementById("aaa-small"),
     contrastAAALarge = document.getElementById("aaa-large"),
-    setFontBtn = document.querySelector(".setFont"),
-    setBgBtn = document.querySelector(".setBg"),
+    setColorBtns = document.querySelectorAll(".option:not(.edit)"),
+    setBgBtns = document.querySelectorAll(".setBg"),
     actionToggles = document.querySelectorAll("#hslAdjustContainer .action");
 
 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -188,12 +188,21 @@ minimizeButton.addEventListener("click", () => {
     toggleApp(false);
 });
 
-[setFontBtn, setBgBtn].forEach((btn) => {
-    var type = btn === setFontBtn ? "font" : "bg";
+setColorBtns.forEach((btn) => {
+    var type = btn.classList.contains("setFont") ? "font" : "bg";
     btn.addEventListener("click", (e) => {
-        var palette = e.path.find((elem) => elem.classList.contains("palette")),
-            hex = palette.querySelector(".hex"),
-            color = hex.innerText;
+        var palette = e.path.find((elem) => elem.classList.contains("palette"));
+        if (e.path.find(elem => elem.id === "detailButtons")) {
+            var hex = palette.querySelector(".hex"),
+                color = hex.innerText;
+        } else {
+            var colorDetailsDiv = palette.querySelector(".colorDataDiv");
+            console.log({palette, colorDetailsDiv});
+            var hue = colorDetailsDiv.getAttribute("data-hue"),
+                saturation = colorDetailsDiv.getAttribute("data-saturation"),
+                lightness = colorDetailsDiv.getAttribute("data-lightness"),
+                color = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        }
         setContrastPalette(color, type);
         updateDetailsView(color, true);
     });
