@@ -22,7 +22,7 @@ chrome.runtime.onConnect.addListener(function (port) {
         // DO SOMETHING
     });
 });
-;
+
 
 function findColors () {
     var allElems = document.querySelectorAll("*"),

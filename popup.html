@@ -22,30 +22,29 @@
             <div id="nav">
                 <button
                     id="colorDetailTab"
-                    class="tab active"
+                    class="tab details active"
                     data-ref="#colorDetailsView"
                 >
                     Color Details
                 </button>
-                <button id="rgbTab" class="tab" data-ref="#rgbView">RGB</button>
-                <button id="hslTab" class="tab" data-ref="#hslView">HSL</button>
-                <button id="contrastTab" class="tab" data-ref="#contrastView">
+                <button id="rgbTab" class="tab rgb" data-ref="#rgbView">RGB</button>
+                <button id="hslTab" class="tab hsl" data-ref="#hslView">HSL</button>
+                <button id="contrastTab" class="tab contrast" data-ref="#contrastView">
                     Contrast
                 </button>
                 <button
                     id="pageColorTab"
-                    class="tab"
+                    class="tab pageColors"
                     data-ref="#pageColorsView"
                 >
                     Page Colors
                 </button>
             </div>
-            <div id="colorDetailsView" class="view active">
+            <div id="colorDetailsView" class="view details active">
                 <div id="detailPalette" class="section full primary palette">
                     <div
                         id="detailSwatch"
-                        class="swatch"
-                        style="background-color: #000000"
+                        class="swatch primary"
                     ></div>
                     <div id="colorStrings">
                         <h4 class="hex string">#000000</h4>
@@ -76,7 +75,7 @@
                     </div>
                 </div>
             </div>
-            <div id="contrastView" class="view">
+            <div id="contrastView" class="view contrast">
                 <div id="fontColor" class="section half">
                     <h3 class="label">Font</h3>
                     <div class="subsection palette">
@@ -161,7 +160,7 @@
                     </div>
                 </div>
             </div>
-            <div id="pageColorsView" class="view">
+            <div id="pageColorsView" class="view pageColors">
                 <div class="section half">
                     <h3 class="label">Font</h3>
                     <div id="fontColors" class="subsection"></div>
@@ -171,24 +170,24 @@
                     <div id="bgColors" class="subsection"></div>
                 </div>
             </div>
-            <div id="hslView" class="view">
+            <div id="hslView" class="view hsl">
                 <div id="hslPalette" class="palette">
-                    <div id="hslSwatch" class="swatch"></div>
+                    <div id="hslSwatch" class="swatch primary"></div>
                     <div
                         id="hslAdjustContainer"
-                        class="section full colorDataDiv"
-                        data-hue="0"
-                        data-saturation="0"
-                        data-lightness="0"
+                        class="section full colorDataDiv hsl"
+                        data-hue=0
+                        data-saturation=0
+                        data-lightness=0
                     >
                         <div id="hueSelector" class="selectColor hue">
                             <h3 class="title hue">Hue</h3>
                             <input
                                 type="number"
-                                min="0"
-                                max="359"
+                                min=0
+                                max=359
                                 class="valueInput hue"
-                                value="0"
+                                value=0
                             />
                             <div class="slider hue">
                                 <button class="minus action hue"></button>
@@ -196,10 +195,11 @@
                                     type="range"
                                     name="range"
                                     id="hueRange"
-                                    min="0"
-                                    max="359"
-                                    step="1"
-                                    value="0"
+                                    min=0
+                                    max=359
+                                    step=1
+                                    value=0
+                                    class="hue range"
                                 />
                                 <button class="plus action hue"></button>
                             </div>
@@ -211,10 +211,10 @@
                             <h3 class="title saturation">Saturation</h3>
                             <input
                                 type="number"
-                                min="0"
-                                max="100"
+                                min=0
+                                max=100
                                 class="valueInput saturation"
-                                value="0"
+                                value=0
                             />
                             <div class="slider saturation">
                                 <button
@@ -224,7 +224,8 @@
                                     type="range"
                                     name="range"
                                     id="saturationRange"
-                                    value="0"
+                                    value=0
+                                    class="saturation range"
                                 />
                                 <button class="plus action saturation"></button>
                             </div>
@@ -236,10 +237,10 @@
                             <h3 class="title lightness">Lightness</h3>
                             <input
                                 type="number"
-                                min="0"
-                                max="100"
+                                min=0
+                                max=100
                                 class="valueInput lightness"
-                                value="0"
+                                value=0
                             />
                             <div class="slider lightness">
                                 <button class="minus action lightness"></button>
@@ -247,7 +248,8 @@
                                     type="range"
                                     name="range"
                                     id="lightnessRange"
-                                    value="0"
+                                    value=0
+                                    class="lightness range"
                                 />
                                 <button class="plus action lightness"></button>
                             </div>
@@ -265,9 +267,99 @@
                     </div>
                 </div>
             </div>
-            <div id="rgbView" class="view">
+            <div id="rgbView" class="view rgb">
                 <div id="rgbPalette" class="palette">
-                    <div id="rgbSwatch" class="swatch"></div>
+                    <div id="rgbSwatch" class="swatch primary"></div>
+                    <div
+                        id="rgbAdjustContainer"
+                        class="section full colorDataDiv rgb"
+                        data-red=0
+                        data-green=0
+                        data-blue=0
+                    >
+                        <div id="redSelector" class="selectColor red">
+                            <h3 class="title red">Red</h3>
+                            <input
+                                type="number"
+                                class="valueInput red"
+                                min=0
+                                max=255
+                            />
+                            <div class="slider red">
+                                <button class="minus action red"></button>
+                                <input
+                                    type="range"
+                                    name="range"
+                                    id="redRange"
+                                    step=1
+                                    min=0
+                                    max=255
+                                    class="red range"
+                                />
+                                <button class="plus action red"></button>
+                            </div>
+                        </div>
+                        <div
+                            id="greenSelector"
+                            class="selectColor green"
+                        >
+                            <h3 class="title green">Green</h3>
+                            <input
+                                type="number"
+                                class="valueInput green"
+                                min=0
+                                max=255
+                            />
+                            <div class="slider green">
+                                <button
+                                    class="minus action green"
+                                ></button>
+                                <input
+                                    type="range"
+                                    name="range"
+                                    id="greenRange"
+                                    min=0
+                                    max=255
+                                    class="green range"
+                                />
+                                <button class="plus action green"></button>
+                            </div>
+                        </div>
+                        <div
+                            id="blueSelector"
+                            class="selectColor blue"
+                        >
+                            <h3 class="title blue">Blue</h3>
+                            <input
+                                type="number"
+                                class="valueInput blue"
+                                min=0
+                                max=255
+                            />
+                            <div class="slider blue">
+                                <button class="minus action blue"></button>
+                                <input
+                                    type="range"
+                                    name="range"
+                                    id="blueRange"
+                                    min=0
+                                    max=255
+                                    class="blue range"
+                                />
+                                <button class="plus action blue"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="hslButtons">
+                        <button
+                            class="option setFont"
+                            title="Set font color"
+                        ></button>
+                        <button
+                            class="option setBg"
+                            title="Set background color"
+                        ></button>
+                    </div>
                 </div>
             </div>
         </div>

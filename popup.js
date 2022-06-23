@@ -47,27 +47,34 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
                 response.elements.fontColors,
                 response.elements.bgColors
             );
-            setContrastPalette("#000000", "font");
             setContrastPalette("#FFFFFF", "bg");
-            updateDetailsView("#000000", true);
-            setChosenColor();
+            setContrastPalette("#000000", "font");
+            updateDetailsView("#FFFFFF", true);
             let white = getColor("#FFFFFF");
             document
                 .getElementById("hslAdjustContainer")
-                .toggleAttribute("hue", white.hsl.h);
+                .setAttribute("data-hue", white.hsl.h);
             document
                 .getElementById("hslAdjustContainer")
-                .toggleAttribute(
-                    "saturation",
+                .setAttribute(
+                    "data-saturation",
                     Math.round(Number(white.hsl.s) * 100)
                 );
             document
                 .getElementById("hslAdjustContainer")
-                .toggleAttribute(
-                    "lightness",
+                .setAttribute(
+                    "data-lightness",
                     Math.round(Number(white.hsl.l) * 100)
                 );
-
+            document
+                .getElementById("rgbAdjustContainer")
+                .setAttribute("data-red", white.rgb.r);
+            document
+                .getElementById("rgbAdjustContainer")
+                .setAttribute("data-green", white.rgb.g);
+            document
+                .getElementById("rgbAdjustContainer")
+                .setAttribute("data-blue", white.rgb.b);
             updateSliderBackgrounds();
         } else {
             console.log("RxGB non-Init in popup.js");
@@ -87,10 +94,9 @@ var contrastPaletteExamine = [
 ];
 contrastPaletteExamine.forEach((elem) => {
     elem.addEventListener("click", (e) => {
-        // console.log({e});
         var palette = e.path.find((elem) => elem.classList.contains("palette")),
             currentColor = palette.querySelector(".hex").innerText;
-        setDetailPalette(currentColor);
+        // setDetailPalette(currentColor);
         updateDetailsView(currentColor, true);
         toggleView(colorDetailsView);
     });
@@ -195,13 +201,20 @@ setColorBtns.forEach((btn) => {
         if (e.path.find(elem => elem.id === "detailButtons")) {
             var hex = palette.querySelector(".hex"),
                 color = hex.innerText;
-        } else {
+        } else if (palette.querySelector(".colorDataDiv")) {
             var colorDetailsDiv = palette.querySelector(".colorDataDiv");
             console.log({palette, colorDetailsDiv});
             var hue = colorDetailsDiv.getAttribute("data-hue"),
                 saturation = colorDetailsDiv.getAttribute("data-saturation"),
                 lightness = colorDetailsDiv.getAttribute("data-lightness"),
                 color = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+            console.log({color});
+        } else if (e.path.find(elem => elem.id === "fontColor" || elem.id === "bgColor")) {
+            console.log({palette});
+            var color = palette.querySelector(".hsl.string").innerText;
+        } else {
+            console.log("This doesn't meet the above criteria");
+            console.log({path: e.path});
         }
         setContrastPalette(color, type);
         updateDetailsView(color, true);
@@ -226,80 +239,81 @@ actionToggles.forEach((toggle) => {
             value = Number(container.getAttribute("data-lightness"));
             container.setAttribute("data-lightness", value + increment);
         }
+        else if (selector.classList.contains("red")) {
+            value = Number(container.getAttribute("data-red"));
+            container.setAttribute("data-red", value + increment);
+        }
+        else if (selector.classList.contains("green")) {
+            value = Number(container.getAttribute("data-green"));
+            container.setAttribute("data-green", value + increment);
+        }
+        else if (selector.classList.contains("blue")) {
+            value = Number(container.getAttribute("data-blue"));
+            container.setAttribute("data-blue", value + increment);
+        }
     })
 })
 
 function dataChangeObserverHSL () {
-    let container = document.getElementById("hslAdjustContainer"),
-        hue = container.getAttribute("data-hue"),
-        saturation = container.getAttribute("data-saturation"),
-        lightness = container.getAttribute("data-lightness"),
-        hueInputs = container.querySelectorAll(".hue input"),
-        satInputs = container.querySelectorAll(".saturation input"),
-        lightInputs = container.querySelectorAll(".lightness input"),
-        hslString = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-    hueInputs.forEach(input => input.value = hue);
-    satInputs.forEach(input => input.value = saturation);
-    lightInputs.forEach(input => input.value = lightness);
-    updateDetailsView(hslString, false);
-    colorDetailsSwatch.style.backgroundColor = hslString;
-}
-
-function inputChangeObserver(e) {
-    let container = e.path.find((elem) =>
-            elem.classList.contains("selectColor")
-        ),
-        inputType = e.target.type,
-        inputToUpdate = inputType === "number" ? "range" : "number",
-        prop = [...container.classList].filter(
-            (val) => val !== "selectColor"
-        )[0],
-        value = e.target.valueAsNumber,
-        hue = document.querySelector("input.hue").valueAsNumber,
-        saturation = document.querySelector("input.saturation").valueAsNumber,
-        lightness = document.querySelector("input.lightness").valueAsNumber,
-        input;
-    if (prop === "hue") {
-        input = document.querySelector(`.hue  [type="${inputToUpdate}"]`);
-        hue = e.target.valueAsNumber;
-    }
-    if (prop === "saturation") {
-        input = document.querySelector(
-            `.saturation  [type="${inputToUpdate}"]`
-        );
-        saturation = e.target.valueAsNumber;
-    }
-    if (prop === "lightness") {
-        input = document.querySelector(`.lightness  [type="${inputToUpdate}"]`);
-        lightness = e.target.valueAsNumber;
-    }
-    input.value = value;
-    if (
-        inputToUpdate === "range" &&
-        (e.target.valueAsNumber > Number(e.target.max) ||
-            e.target.valueAsNumber < 0)
-    ) {
-        e.target.style.borderColor = "var(--chilli)";
-    } else {
-        e.target.style.borderColor = "";
-    }
-    let hslString = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-    document.getElementById("hslAdjustContainer").setAttribute("data-hue", hue);
-    document
-        .getElementById("hslAdjustContainer")
-        .setAttribute("data-saturation", saturation);
-    document
-        .getElementById("hslAdjustContainer")
-        .setAttribute("data-lightness", lightness);
-    document.querySelector("#colorStrings .hsl.string").innerText = hslString;
-    updateDetailsView(hslString, false);
+    let hslContainer = document.getElementById("hslAdjustContainer"),
+        rgbContainer = document.getElementById("rgbAdjustContainer"),
+        hue = hslContainer.getAttribute("data-hue"),
+        saturation = hslContainer.getAttribute("data-saturation"),
+        lightness = hslContainer.getAttribute("data-lightness"),
+        hueInputs = hslContainer.querySelectorAll(".hue input"),
+        satInputs = hslContainer.querySelectorAll(".saturation input"),
+        lightInputs = hslContainer.querySelectorAll(".lightness input"),
+        red = rgbContainer.getAttribute("data-red"),
+        green = rgbContainer.getAttribute("data-green"),
+        blue = rgbContainer.getAttribute("data-blue"),
+        redInputs = rgbContainer.querySelectorAll(".red input"),
+        greenInputs = rgbContainer.querySelectorAll(".green input"),
+        blueInputs = rgbContainer.querySelectorAll(".blue input"),
+        hslString = `hsl(${hue}, ${saturation}%, ${lightness}%)`,
+        rgbString = `rgb(${red}, ${green}, ${blue})`;
+    console.log("activeElement:", document.activeElement);
+    hueInputs.forEach(input => input !== document.activeElement ? input.value = hue : null);
+    satInputs.forEach(input => input !== document.activeElement ? input.value = saturation : null);
+    lightInputs.forEach(input => input !== document.activeElement ? input.value = lightness : null);
+    redInputs.forEach(input => input !== document.activeElement ? input.value = red : null);
+    greenInputs.forEach(input => input !== document.activeElement ? input.value = green : null);
+    blueInputs.forEach(input => input !== document.activeElement ? input.value = blue : null);
+    updateDetailsView(hslString, true);
+    updateSliderBackgrounds();
 }
 
 let valueInputs = document.querySelectorAll(".selectColor input");
 
 valueInputs.forEach((input) => {
-    input.addEventListener("input", inputChangeObserver);
+    let parent = input.parentElement,
+        type = parent.id === "rgbAdjustContainer" ? "rgb" : parent.id === "hslAdjustContainer" ? "hsl" : "";
+        input.addEventListener("input", inputObserverUpdate);
 });
+
+function inputObserverUpdate(e) {
+    let selectColor = e.path.find(elem => elem.classList.contains("selectColor")),
+        dataDiv = e.path.find(elem => elem.classList.contains("colorDataDiv")),
+        type = [...selectColor.classList].filter(className => className !== "selectColor")[0],
+        relatedInputs = selectColor.querySelectorAll(`input.${type}`),
+        root = document.querySelector(":root");
+    console.log({selectColor, type, relatedInputs, value: e.target.value});
+    relatedInputs.forEach(input => input.value = e.target.value);
+    dataDiv.setAttribute(`data-${type}`, e.target.value);
+
+    if (dataDiv.classList.contains("hsl")) {
+        let hue = dataDiv.getAttribute("data-hue"),
+            saturation = dataDiv.getAttribute("data-saturation"),
+            lightness = dataDiv.getAttribute("data-lightness");
+        root.style.setProperty("--chosen", `hsl(${hue}, ${saturation}%, ${lightness}%)`);
+    }
+
+    if (dataDiv.classList.contains("rgb")) {
+        let red = dataDiv.getAttribute("data-red"),
+            green = dataDiv.getAttribute("data-green"),
+            blue = dataDiv.getAttribute("data-blue");
+        root.style.setProperty("--chosen", `rgb(${red}, ${green}, ${blue})`);
+    }
+}
 
 /*
 
@@ -307,50 +321,63 @@ MUTATION OBSERVERS
 
 */
 
-let hslAdjustObserver = new MutationObserver(dataChangeObserverHSL);
-hslAdjustObserver.observe(document.getElementById("hslAdjustContainer"), {attributeFilter: ["data-hue", "data-saturation", "data-lightness"]});
-
-
-let graphContainerObserver = new MutationObserver(updateSliderBackgrounds);
-graphContainerObserver.observe(document.querySelector("#hslAdjustContainer"), {
-    attributeFilter: ["data-hue", "data-saturation", "data-lightness"],
-});
+let dataAdjustObserver = new MutationObserver(dataChangeObserverHSL),
+    dataDivs = document.querySelectorAll(".colorDataDiv");
+dataDivs.forEach(div => {
+    dataAdjustObserver.observe(div, { attributes: true, })
+})
 
 function updateDetailsView(color = "#FFFFFF", updateSliderDiv = false) {
-    // console.log({color});
     let newColor = getColor(color),
         hexString = colorDetailsView.querySelector(".hex.string"),
         hslString = colorDetailsView.querySelector(".hsl.string"),
         rgbString = colorDetailsView.querySelector(".rgb.string"),
         luminanceString = colorDetailsView.querySelector(".luminance.string");
-    colorDetailsSwatch.style.backgroundColor = newColor.hexString;
     hexString.innerText = newColor.hex;
     hslString.innerText = newColor.hslString;
     rgbString.innerText = newColor.rgbString;
     luminanceString.innerText = Math.round(
         Number(newColor.luminance.toFixed(2) * 100)
     );
+    document.querySelector(":root").style.setProperty("--chosen", color);
     if (updateSliderDiv) {
-        updateSliders(newColor.hslString);
+        updateSliders(color);
     }
 }
 
-function updateSliders() {
-    let colorVal = window.getComputedStyle(colorDetailsSwatch).backgroundColor,
-        color = getColor(colorVal),
-        graph = document.getElementById("hslAdjustContainer"),
-        hueInput = graph.querySelector(".valueInput.hue"),
-        hueSlider = graph.querySelector("#hueRange"),
-        saturationInput = graph.querySelector(".valueInput.saturation"),
-        saturationSlider = graph.querySelector("#saturationRange"),
-        lightnessInput = graph.querySelector(".valueInput.lightness"),
-        lightnessSlider = graph.querySelector("#lightnessRange");
-    hueInput.value = color.hsl.h;
-    hueSlider.value = color.hsl.h;
-    saturationInput.value = Math.round(color.hsl.s * 100);
-    saturationSlider.value = color.hsl.s * 100;
-    lightnessInput.value = Math.round(color.hsl.l * 100);
-    lightnessSlider.value = color.hsl.l * 100;
+function updateSliders(color="#FFFFFF") {
+    let newColor = getColor(color),
+        retrievedColor = window.getComputedStyle(document.querySelector(":root")).getPropertyValue("--chosen"),
+        retrievedColorObj = getColor(retrievedColor),
+        hslAdjust = document.getElementById("hslAdjustContainer"),
+        rgbAdjust = document.getElementById("rgbAdjustContainer"),
+        hueInput = hslAdjust.querySelector(".valueInput.hue"),
+        hueSlider = hslAdjust.querySelector("#hueRange"),
+        saturationInput = hslAdjust.querySelector(".valueInput.saturation"),
+        saturationSlider = hslAdjust.querySelector("#saturationRange"),
+        lightnessInput = hslAdjust.querySelector(".valueInput.lightness"),
+        lightnessSlider = hslAdjust.querySelector("#lightnessRange"),
+        redInput = rgbAdjust.querySelector(".valueInput.red"),
+        redSlider = rgbAdjust.querySelector("#redRange"),
+        greenInput = rgbAdjust.querySelector(".valueInput.green"),
+        greenSlider = rgbAdjust.querySelector("#greenRange"),
+        blueInput = rgbAdjust.querySelector(".valueInput.blue"),
+        blueSlider = rgbAdjust.querySelector("#blueRange");
+    console.log({color, retrievedColor});
+    /* Update HSL */
+    hueInput.value = newColor.hsl.h;
+    hueSlider.value = newColor.hsl.h;
+    saturationInput.value = Math.round(newColor.hsl.s * 100);
+    saturationSlider.value = newColor.hsl.s * 100;
+    lightnessInput.value = Math.round(newColor.hsl.l * 100);
+    lightnessSlider.value = newColor.hsl.l * 100;
+    /* Update RGB */
+    redInput.value = newColor.rgb.r;
+    redSlider.value = newColor.rgb.r;
+    greenInput.value = newColor.rgb.g;
+    greenSlider.value = newColor.rgb.g;
+    blueInput.value = newColor.rgb.b;
+    blueSlider.value = newColor.rgb.b;
 }
 
 let colorDetailInputs = document.querySelectorAll(".selectColor input");
@@ -385,30 +412,6 @@ exampleChangeObserver.observe(contrastExampleText, {
     attributeFilter: ["style"],
 });
 
-function setChosenColor() {
-    let colorVal = window.getComputedStyle(colorDetailsSwatch).backgroundColor,
-        currentHSL = document.querySelector(
-            "#colorStrings .hsl.string"
-        ).innerText,
-        newColor = getColor(currentHSL),
-        hslAdjustContainer = document.getElementById("hslAdjustContainer");
-    document.querySelector(":root").style.setProperty("--chosen", colorVal);
-    setDetailPalette(currentHSL);
-    hslAdjustContainer.setAttribute("data-hue", newColor.hsl.h);
-    hslAdjustContainer.setAttribute(
-        "data-saturation",
-        Math.round(Number(newColor.hsl.s) * 100)
-    );
-    hslAdjustContainer.setAttribute(
-        "data-lightness",
-        Math.round(Number(newColor.hsl.l) * 100)
-    );
-}
-
-let swatchChangeObserver = new MutationObserver(setChosenColor);
-swatchChangeObserver.observe(colorDetailsSwatch, {
-    attributeFilter: ["style"],
-});
 
 /*
 
@@ -435,25 +438,30 @@ function toggleView(selection) {
         rgbView,
     ];
     for (let view of views) {
+        let type = [...view.classList].find(name => name !== "view" && name !== "active"),
+            tab = document.querySelector(`#nav .${type}`);
         if (view === selection) {
             view.classList.add("active");
+            tab.classList.add("active");
         } else {
             view.classList.remove("active");
+            tab.classList.remove("active");
         }
     }
 }
 
-function setDetailPalette(color) {
-    let newColor = getColor(color),
-        swatch = colorDetailsView.querySelector(".swatch"),
-        hex = colorDetailsView.querySelector(".hex.string"),
-        rgb = colorDetailsView.querySelector(".rgb.string"),
-        hsl = colorDetailsView.querySelector(".hsl.string");
-    swatch.style.backgroundColor = newColor.hex;
-    hex.innerText = newColor.hex;
-    rgb.innerText = newColor.rgbString;
-    hsl.innerText = newColor.hslString;
-}
+// function setDetailPalette(color) {
+//     let newColor = getColor(color),
+//         swatch = colorDetailsView.querySelector(".swatch"),
+//         hex = colorDetailsView.querySelector(".hex.string"),
+//         rgb = colorDetailsView.querySelector(".rgb.string"),
+//         hsl = colorDetailsView.querySelector(".hsl.string");
+//     swatch.style.backgroundColor = newColor.hex;
+//     hex.innerText = newColor.hex;
+//     rgb.innerText = newColor.rgbString;
+//     hsl.innerText = newColor.hslString;
+//     updateSliders(color);
+// }
 
 function setContrastPalette(color = "#FFFFFF", type = "font") {
     color = getColor(color);
@@ -471,7 +479,7 @@ function setContrastPalette(color = "#FFFFFF", type = "font") {
     } else if (type === "bg") {
         contrastExampleText.style.backgroundColor = color.hex;
     }
-    setDetailPalette(color.hex);
+    updateDetailsView(color.hex, true);
     return color;
 }
 
@@ -527,8 +535,7 @@ function collectNativeColors(fontColors, bgColors) {
             var currentColor = e.path.find((elem) => elem.nodeName === "BUTTON")
                 .previousElementSibling.previousElementSibling.textContent;
             setContrastPalette(currentColor, "font");
-            setDetailPalette(currentColor);
-            updateSliders(currentColor);
+            updateDetailsView(currentColor);
         });
     }
     for (var color of bgColorsArray) {
@@ -564,8 +571,7 @@ function collectNativeColors(fontColors, bgColors) {
             var currentColor = e.path.find((elem) => elem.nodeName === "BUTTON")
                 .previousElementSibling.previousElementSibling.textContent;
             setContrastPalette(currentColor, "bg");
-            setDetailPalette(currentColor);
-            updateSliders(currentColor);
+            updateDetailsView(currentColor, true);
         });
     }
 }
