@@ -154,10 +154,11 @@ updateColorBtns.forEach((elem) => {
 updateCancelBtns.forEach((btn) => {
     btn.addEventListener("click", (e) => {
         var palette = e.path.find((elem) => elem.classList.contains("palette")),
+            container = e.path.find((elem) => elem.classList.contains("section")),
             input = palette.querySelector("input"),
             editForm = palette.querySelector(".colorInput");
         input.value = "";
-        document.getElementById("colorStrings").toggleAttribute("hidden");
+        container.querySelector(".colorStrings").toggleAttribute("hidden");
         editForm.toggleAttribute("hidden");
     });
 });
