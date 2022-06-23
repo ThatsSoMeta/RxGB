@@ -106,7 +106,7 @@ var editColorBtns = document.querySelectorAll(".option.edit");
 editColorBtns.forEach((elem) => {
     elem.addEventListener("click", (e) => {
         var palette = e.path.find((node) => node.classList.contains("palette")),
-            strings = palette.querySelector("#colorStrings"),
+            strings = palette.querySelector(".colorStrings"),
             inputContainer = palette.querySelector(".colorInput"),
             input = inputContainer.querySelector("input");
         console.log({ palette, strings });

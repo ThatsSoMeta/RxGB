@@ -94,7 +94,7 @@ h1 {
     background-color: transparent;
 }
 
-#colorStrings {
+.colorStrings {
     width: 100%;
     padding-top: 20px;
     background-color: white;
@@ -140,7 +140,6 @@ h1 {
     margin: 10px auto;
     font-weight: bold;
     text-align: center;
-    /* display: inline-block; */
     width: 100%;
 }
 
@@ -150,8 +149,13 @@ h1 {
     padding: 10px 0;
     border: 2px solid black;
     border-radius: var(--small-radius);
+    font-size: 16px;
     font-weight: bold;
     margin: 10px 0;
+}
+
+.colorInput button {
+    font-size: 12px;
 }
 
 .colorInput input.invalid {
