@@ -5,6 +5,8 @@
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script> -->
     </head>
     <body>
+        <button id="toggleVisibility">&#8212;</button>
+        <button id="help" title="Help coming soon!"></button>
         <div id="minimizedContainer" hidden>
             <img
                 src="./images/RxGB_favicon_black_stroke.png"
@@ -12,9 +14,19 @@
                 class="logo button"
             />
         </div>
+        <div id="helpContainer" hidden>
+            <img
+                src="./images/RxGB_logo_black_stroke.png"
+                alt="RxGB"
+                class="logo"
+            />
+            <div id="helpView">
+                <h2>FAQ</h2>
+                <h2>Report a Bug</h2>
+                <h2>Feature Request</h2>
+            </div>
+        </div>
         <div id="modalContainer">
-            <button id="toggleVisibility">&#8212;</button>
-            <a id="help" href="https://www.youtube.com/watch?v=8ybW48rKBME" target="_blank" title="Help coming soon!"></a>
             <img
                 src="./images/RxGB_logo_black_stroke.png"
                 alt="RxGB"

@@ -27,6 +27,25 @@ body * {
     font-size: 0;
 }
 
+#helpView {
+    font-size: initial;
+    padding: 20px;
+    border-radius: var(--normal-radius);
+    background-color: var(--active-tab-bg-color);
+}
+
+#helpView * {
+    box-shadow: var(--box-shadow);
+    border-radius: var(--normal-radius);
+    padding: 15px;
+    max-width: 60%;
+    margin: 10px auto;
+    cursor: pointer;
+    font-size: initial;
+    border: var(--border-width) solid var(--latte);
+    background-color: white;
+}
+
 .logo {
     height: 40px;
     position: static;
@@ -39,7 +58,8 @@ body * {
     background-repeat: no-repeat;
 }
 
-#modalContainer:not([hidden]) {
+#modalContainer:not([hidden]),
+#helpContainer:not([hidden]) {
     width: 350px;
     overflow: hidden;
     text-align: center;

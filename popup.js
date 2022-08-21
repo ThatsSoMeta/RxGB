@@ -292,6 +292,14 @@ minimizeButton.addEventListener("click", () => {
     toggleApp(false);
 });
 
+let helpButton = document.querySelector("#help"),
+    helpContainer = document.querySelector("#helpContainer");
+helpButton.addEventListener("click", (e) => {
+    console.log("Help button clicked.");
+    modalContainer.toggleAttribute("hidden");
+    helpContainer.toggleAttribute("hidden");
+})
+
 setColorBtns.forEach((btn) => {
     btn.addEventListener("click", (e) => {
         let view = e.path.find(elem => elem.classList.contains("view")),
