@@ -518,11 +518,26 @@ function collectNativeColors(fontColors, bgColors) {
             options = document.createElement("div");
         colorSwatch.classList.add("swatch");
         colorHex.classList.add("hex", "string");
-        colorHex.setAttribute("title", "Click to copy HEX");
+        colorHex.setAttribute("title", "Click to copy");
+        colorHex.addEventListener("click", (e) => {
+            let content = e.target.innerText;
+            console.log(content, "clicked");
+            navigator.clipboard.writeText(content);
+        })
         colorRgb.classList.add("rgb", "string");
-        colorRgb.setAttribute("title", "Click to copy RGB")
+        colorRgb.setAttribute("title", "Click to copy");
+        colorRgb.addEventListener("click", (e) => {
+            let content = e.target.innerText;
+            console.log(content, "clicked");
+            navigator.clipboard.writeText(content);
+        })
         colorHsl.classList.add("hsl", "string");
-        colorHsl.setAttribute("title", "Click to copy HSL")
+        colorHsl.setAttribute("title", "Click to copy");
+        colorHsl.addEventListener("click", (e) => {
+            let content = e.target.innerText;
+            console.log(content, "clicked");
+            navigator.clipboard.writeText(content);
+        })
         selectBtn.classList.add("option", "font", "plus");
         options.classList.add("options");
         colorContainer.classList.add("color", "container", "palette");
@@ -557,8 +572,26 @@ function collectNativeColors(fontColors, bgColors) {
             options = document.createElement("div");
         colorSwatch.classList.add("swatch");
         colorHex.classList.add("hex", "string");
+        colorHex.setAttribute("title", "Click to copy");
+        colorHex.addEventListener("click", (e) => {
+            let content = e.target.innerText;
+            console.log(content, "clicked");
+            navigator.clipboard.writeText(content);
+        })
         colorRgb.classList.add("rgb", "string");
+        colorRgb.setAttribute("title", "Click to copy");
+        colorRgb.addEventListener("click", (e) => {
+            let content = e.target.innerText;
+            console.log(content, "clicked");
+            navigator.clipboard.writeText(content);
+        })
         colorHsl.classList.add("hsl", "string");
+        colorHsl.setAttribute("title", "Click to copy");
+        colorHsl.addEventListener("click", (e) => {
+            let content = e.target.innerText;
+            console.log(content, "clicked");
+            navigator.clipboard.writeText(content);
+        })
         selectBtn.classList.add("option", "bg", "plus");
         options.classList.add("options");
         colorContainer.classList.add("color", "container", "palette");

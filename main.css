@@ -60,7 +60,7 @@ body * {
     top: 10px;
     left: 10px;
     background-color: transparent;
-    background-image: url(./images/help-icon-2.png);
+    background-image: url(./images/help-icon.png);
     background-size: contain;
     height: 20px;
     width: 20px;
@@ -291,6 +291,7 @@ button,
 
 .view button:active {
     background-color: var(--peacock);
+    color: white;
 }
 
 .slider button {
@@ -329,8 +330,16 @@ button,
     background-image: url(./images/font_icon.png);
 }
 
+.setFont:active {
+    background-image: url(./images/font_icon_white.png);
+}
+
 .setBg {
     background-image: url(./images/bg_icon.png);
+}
+
+.setBg:active {
+    background-image: url(./images/bg_icon_white.png);
 }
 
 #detailButtons *:first-child,
@@ -391,10 +400,12 @@ button,
     background-image: url(./images/edit-pngrepo-com.png);
 }
 
-#contrastView .examine,
-#hslButtons .examine,
-#rgbButtons .examine {
-    background-image: url(./images/search-look-inspect-magnifying-glass-pngrepo-com.png);
+.examine {
+    background-image: url(./images/magnifier_black.png);
+}
+
+.examine:active {
+    background-image: url(./images/magnifier_white.png);
 }
 
 .option {
