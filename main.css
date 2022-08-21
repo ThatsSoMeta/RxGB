@@ -405,7 +405,7 @@ button,
     background-image: url(./images/edit_black.png);
 }
 
-.edit:active {
+.edit:not(#detailButtons .edit):active {
     background-image: url(./images/edit_white.png);
 }
 
