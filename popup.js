@@ -204,15 +204,46 @@ actionToggles.forEach((btn) => {
 let ranges = document.querySelectorAll("input[type=range]");
 ranges.forEach(range => {
     range.addEventListener("input", (e) => {
-        console.log(e.target.value);
         let view = e.path.find(elem => elem.classList.contains("view")),
             type = Array.from(view.classList).filter(item => item !== "view" && item !== "active")[0],
             selectColor = e.path.find(elem => elem.classList.contains("selectColor")),
             attribute = Array.from(selectColor.classList).filter(item => item !== "selectColor")[0],
-            otherInput = selectColor.querySelector(".valueInput"),
-            swatch = view.querySelector(".swatch");
-        // console.log({view, attribute});
+            otherInput = selectColor.querySelector(".valueInput");
         otherInput.value = e.target.value;
+        view.setAttribute(`data-${attribute}`, e.target.value);
+        if (type === "rgb") {
+            let red = Number(view.getAttribute("data-red")),
+                green = Number(view.getAttribute("data-green")),
+                blue = Number(view.getAttribute("data-blue"));
+                document.querySelector(":root").style.setProperty("--rgb", `rgb(${red}, ${green}, ${blue})`);
+            }
+        if (type === "hsl") {
+            let hue = Number(view.getAttribute("data-hue")),
+                saturation = Number(view.getAttribute("data-saturation")),
+                lightness = Number(view.getAttribute("data-lightness"));
+                document.querySelector(":root").style.setProperty("--hsl", `hsl(${hue}, ${saturation}%, ${lightness}%)`);
+            }
+    })
+})
+
+let colorInputFields = document.querySelectorAll("input[type=number]");
+colorInputFields.forEach(input => {
+    input.addEventListener("change", (e) => {
+        let max = Number(e.target.max),
+            min = Number(e.target.min),
+            range = e.target.parentElement.querySelector("input[type=range]"),
+            view = e.path.find(elem => elem.classList.contains("view")),
+            type = Array.from(view.classList).filter(item => item !== "view" && item !== "active")[0],
+            selectColor = e.path.find(elem => elem.classList.contains("selectColor")),
+            attribute = Array.from(selectColor.classList).filter(item => item !== "selectColor")[0];
+        if (Number(e.target.value) > max) {
+            e.target.value = max;
+        }
+        if (Number(e.target.value) < min) {
+            e.target.value = min;
+        }
+        let value = Number(e.target.value);
+        range.value = value;
         view.setAttribute(`data-${attribute}`, e.target.value);
         if (type === "rgb") {
             let red = Number(view.getAttribute("data-red")),
@@ -487,8 +518,11 @@ function collectNativeColors(fontColors, bgColors) {
             options = document.createElement("div");
         colorSwatch.classList.add("swatch");
         colorHex.classList.add("hex", "string");
+        colorHex.setAttribute("title", "Click to copy HEX");
         colorRgb.classList.add("rgb", "string");
+        colorRgb.setAttribute("title", "Click to copy RGB")
         colorHsl.classList.add("hsl", "string");
+        colorHsl.setAttribute("title", "Click to copy HSL")
         selectBtn.classList.add("option", "font", "plus");
         options.classList.add("options");
         colorContainer.classList.add("color", "container", "palette");
@@ -550,6 +584,15 @@ function collectNativeColors(fontColors, bgColors) {
         });
     }
 }
+
+let copyStrings = document.querySelectorAll(".string[title*='Click to copy']");
+copyStrings.forEach(string => {
+    string.addEventListener("click", (e) => {
+        let content = string.innerText;
+        console.log(content, "clicked");
+        navigator.clipboard.writeText(content);
+    })
+})
 
 function updateSliderBackgroundsHSL() {
     let container = document.getElementById("hslView"),

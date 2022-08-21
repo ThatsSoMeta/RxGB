@@ -213,6 +213,24 @@ h1 {
     padding: 5px;
 }
 
+.string.hsl,
+.string.rgb,
+.string.hex {
+    cursor: pointer;
+}
+
+.string.hsl:hover,
+.string.rgb:hover,
+.string.hex:hover {
+    text-decoration: underline;
+}
+
+.string.hsl:active,
+.string.rgb:active,
+.string.hex:active {
+    color: seagreen;
+}
+
 #contrastLevelLabel {
     margin-bottom: 0;
 }
