@@ -357,7 +357,6 @@ button,
 }
 
 #detailButtons .edit {
-    background-image: url(./images/edit-pngrepo-com.png);
     position: absolute;
     top: 10px;
     right: 10px;
@@ -402,10 +401,12 @@ button,
     width: 50%;
 }
 
-#contrastView .edit,
-#hslButtons .edit,
-#rgbButtons .edit {
-    background-image: url(./images/edit-pngrepo-com.png);
+.edit {
+    background-image: url(./images/edit_black.png);
+}
+
+.edit:active {
+    background-image: url(./images/edit_white.png);
 }
 
 .examine {
