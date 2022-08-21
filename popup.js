@@ -262,29 +262,50 @@ minimizeButton.addEventListener("click", () => {
 });
 
 setColorBtns.forEach((btn) => {
-    var type = btn.classList.contains("setFont") ? "font" : "bg";
     btn.addEventListener("click", (e) => {
-        var palette = e.path.find((elem) => elem.classList.contains("palette"));
-        if (e.path.find(elem => elem.id === "detailButtons")) {
-            var hex = palette.querySelector(".hex"),
-                color = hex.innerText;
-        } else if (palette.querySelector(".colorDataDiv")) {
-            var colorDetailsDiv = palette.querySelector(".colorDataDiv");
-            console.log({palette, colorDetailsDiv});
-            var hue = colorDetailsDiv.getAttribute("data-hue"),
-                saturation = colorDetailsDiv.getAttribute("data-saturation"),
-                lightness = colorDetailsDiv.getAttribute("data-lightness"),
-                color = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-            console.log({color});
-        } else if (e.path.find(elem => elem.id === "fontColor" || elem.id === "bgColor")) {
-            console.log({palette});
-            var color = palette.querySelector(".hsl.string").innerText;
+        let view = e.path.find(elem => elem.classList.contains("view")),
+            type = e.target.classList.contains("setFont") ? "font" : e.target.classList.contains("setBg") ? "bg" : "examine",
+            color;
+        console.log({type});
+        if (view.classList.contains("rgb")) {
+            let red = Number(view.getAttribute("data-red")),
+                green = Number(view.getAttribute("data-green")),
+                blue = Number(view.getAttribute("data-blue"));
+            color = `rgb(${red}, ${green}, ${blue})`;
+        } else if (view.classList.contains("hsl")) {
+            let hue = Number(view.getAttribute("data-hue")),
+                saturation = Number(view.getAttribute("data-saturation")),
+                lightness = Number(view.getAttribute("data-lightness"));
+            color = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
         } else {
-            console.log("This doesn't meet the above criteria");
-            console.log({path: e.path});
+            let palette = e.path.find((elem) => elem.classList.contains("palette"));
+            if (e.path.find(elem => elem.id === "detailButtons")) {
+                var hex = palette.querySelector(".hex");
+                color = hex.innerText;
+            } else if (palette.querySelector(".colorDataDiv")) {
+                var colorDetailsDiv = palette.querySelector(".colorDataDiv");
+                console.log({palette, colorDetailsDiv});
+                var hue = colorDetailsDiv.getAttribute("data-hue"),
+                    saturation = colorDetailsDiv.getAttribute("data-saturation"),
+                    lightness = colorDetailsDiv.getAttribute("data-lightness");
+                color = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+                console.log({color});
+            } else if (e.path.find(elem => elem.id === "fontColor" || elem.id === "bgColor")) {
+                console.log({palette});
+                color = palette.querySelector(".hsl.string").innerText;
+            } else {
+                console.log("This doesn't meet the above criteria");
+                console.log({path: e.target});
+            }
         }
-        setContrastPalette(color, type);
         updateDetailsView(color, true);
+        document.querySelector(":root").style.setProperty("--chosen", color);
+        if (type === "examine") {
+            toggleView(colorDetailsView);
+        } else {
+            setContrastPalette(color, type);
+            toggleView(contrastView);
+        }
     });
 });
 
