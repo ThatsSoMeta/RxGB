@@ -309,18 +309,7 @@ setColorBtns.forEach((btn) => {
     });
 });
 
-// let hslInputs = hslView.querySelectorAll("input");
-// hslInputs.forEach(input => {
-//     input.addEventListener("input", (e) => {
-//         // console.log("Input triggered:", e.target, e.target.value);
-//         let parent = e.path.find(elem => elem.classList.contains("selectColor")),
-//             otherInput = Array.from(parent.querySelectorAll("input")).filter(elem => elem !== input);
-//         console.log("Other input:", otherInput);
-//     })
-// })
-
 const updateHslSliders = new MutationObserver(() => {
-    console.log('HSL data changed');
     updateSliderBackgroundsHSL();
 });
 updateHslSliders.observe(document.getElementById('hslView'), {attributes: true, subtree: false, childList: false})
@@ -348,8 +337,7 @@ function updateDetailsView(color = "#FFFFFF", updateSliderDiv = false) {
 
 function updateSliders(color="#FFFFFF") {
     let newColor = getColor(color),
-        retrievedColor = window.getComputedStyle(document.querySelector(":root")).getPropertyValue("--chosen"),
-        retrievedColorObj = getColor(retrievedColor),
+        retrievedColor = window.getComputedStyle(document.querySelector(":root")).getPropertyValue("--chosen")
         hslAdjust = document.getElementById("hslAdjustContainer"),
         rgbAdjust = document.getElementById("rgbAdjustContainer"),
         hueInput = hslAdjust.querySelector(".valueInput.hue"),
@@ -372,6 +360,9 @@ function updateSliders(color="#FFFFFF") {
     saturationSlider.value = newColor.hsl.s * 100;
     lightnessInput.value = Math.round(newColor.hsl.l * 100);
     lightnessSlider.value = newColor.hsl.l * 100;
+    hslView.setAttribute("data-hue", newColor.hsl.h);
+    hslView.setAttribute("data-saturation", Number(newColor.hsl.s) * 100);
+    hslView.setAttribute("data-lightness", Number(newColor.hsl.l) * 100);
     /* Update RGB */
     redInput.value = newColor.rgb.r;
     redSlider.value = newColor.rgb.r;
@@ -382,9 +373,6 @@ function updateSliders(color="#FFFFFF") {
     rgbView.setAttribute("data-red", newColor.rgb.r);
     rgbView.setAttribute("data-green", newColor.rgb.g);
     rgbView.setAttribute("data-blue", newColor.rgb.b);
-    hslView.setAttribute("data-hue", newColor.hsl.h);
-    hslView.setAttribute("data-saturation", Number(newColor.hsl.s) * 100);
-    hslView.setAttribute("data-lightness", Number(newColor.hsl.l) * 100);
 }
 
 let colorDetailInputs = document.querySelectorAll(".selectColor input");
