@@ -93,6 +93,7 @@
                                 class="valueInput red"
                                 min=0
                                 max=255
+                                value=255
                             />
                             <div class="slider red">
                                 <button class="minus action red"></button>
@@ -103,6 +104,7 @@
                                     step=1
                                     min=0
                                     max=255
+                                    value=255
                                     class="red range"
                                 />
                                 <button class="plus action red"></button>
@@ -118,6 +120,7 @@
                                 class="valueInput green"
                                 min=0
                                 max=255
+                                value=255
                             />
                             <div class="slider green">
                                 <button
@@ -129,6 +132,8 @@
                                     id="greenRange"
                                     min=0
                                     max=255
+                                    value=255
+                                    step=1
                                     class="green range"
                                 />
                                 <button class="plus action green"></button>
@@ -144,6 +149,7 @@
                                 class="valueInput blue"
                                 min=0
                                 max=255
+                                value=255
                             />
                             <div class="slider blue">
                                 <button class="minus action blue"></button>
@@ -153,6 +159,8 @@
                                     id="blueRange"
                                     min=0
                                     max=255
+                                    value=255
+                                    step=1
                                     class="blue range"
                                 />
                                 <button class="plus action blue"></button>
@@ -175,7 +183,7 @@
                     </div>
                 </div>
             </div>
-            <div id="hslView" class="view hsl" data-hue=0 data-saturation=0 data-lightness=0>
+            <div id="hslView" class="view hsl" data-hue=0 data-saturation=0 data-lightness=100>
                 <div id="hslPalette" class="palette">
                     <div id="hslSwatch" class="swatch primary"></div>
                     <div
@@ -193,6 +201,7 @@
                                 max=359
                                 class="valueInput hue"
                                 value=0
+                                step=1
                             />
                             <div class="slider hue">
                                 <button class="minus action hue"></button>
@@ -220,6 +229,7 @@
                                 max=100
                                 class="valueInput saturation"
                                 value=0
+                                step=1
                             />
                             <div class="slider saturation">
                                 <button
@@ -230,6 +240,9 @@
                                     name="range"
                                     id="saturationRange"
                                     value=0
+                                    min=0
+                                    max=100
+                                    step=1
                                     class="saturation range"
                                 />
                                 <button class="plus action saturation"></button>
@@ -245,7 +258,8 @@
                                 min=0
                                 max=100
                                 class="valueInput lightness"
-                                value=0
+                                value=100
+                                step=1
                             />
                             <div class="slider lightness">
                                 <button class="minus action lightness"></button>
@@ -253,7 +267,10 @@
                                     type="range"
                                     name="range"
                                     id="lightnessRange"
-                                    value=0
+                                    value=100
+                                    min=0
+                                    max=100
+                                    step=1
                                     class="lightness range"
                                 />
                                 <button class="plus action lightness"></button>

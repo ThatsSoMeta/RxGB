@@ -7,6 +7,8 @@
     --latte: #cc9965;
     --chino: #f4eae1;
     --chosen: #ffffff;
+    --rgb: rgb(255, 255, 255);
+    --hsl: hsl(0,0%,100%);
     --active-tab-bg-color: #424242;
     --active-tab-color: white;
     --inactive-tab-bg-color: black;
@@ -215,38 +217,11 @@ h1 {
     margin-bottom: 0;
 }
 
-/* https://stackoverflow.com/questions/18389224/how-to-style-html5-range-input-to-have-different-color-before-and-after-slider */
-/* @media screen and (-webkit-min-device-pixel-ratio:0) {
-    input[type='range'] {
-      overflow: hidden;
-      width: 80px;
-      -webkit-appearance: none;
-      background-color: #9a905d;
-    }
-    
-    input[type='range']::-webkit-slider-runnable-track {
-      height: 10px;
-      -webkit-appearance: none;
-      color: transparent;
-      margin-top: -1px;
-    }
-    
-    
-
-} */
-
 /****** 
 
 VIEWS 
 
 ******/
-
-#nav {
-    width: 350px;
-    position: static;
-    top: 40px;
-    text-align: left;
-}
 
 .view.active {
     text-align: center;
@@ -471,7 +446,14 @@ input[type="range"]:active::-webkit-slider-thumb {
     border-bottom-right-radius: 0;
     transform: rotate(45deg);
     -webkit-appearance: none;
-    background: var(--chosen);
+}
+
+#rgbView input[type="range"]:active::-webkit-slider-thumb {
+    background: var(--rgb);
+}
+
+#hslView input[type="range"]:active::-webkit-slider-thumb {
+    background: var(--hsl);
 }
 
 input[type="range"] {
@@ -611,8 +593,15 @@ input[type="range"] {
 #hslSwatch,
 #rgbSwatch {
     margin-top: 30px;
-    background-color: var(--chosen);
     transform: scale(1.5);
+}
+
+#hslSwatch {
+    background-color: var(--hsl);
+}
+
+#rgbSwatch {
+    background-color: var(--rgb);
 }
 
 #detailSwatch {
