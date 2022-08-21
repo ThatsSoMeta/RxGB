@@ -82,12 +82,6 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     });
 });
 
-/*
-
-EVENT LISTENERS
-
-*/
-
 var contrastPaletteExamine = [
     contrastFontPalette.querySelector(".examine"),
     contrastBgPalette.querySelector(".examine"),
@@ -108,9 +102,11 @@ editColorBtns.forEach((elem) => {
         var palette = e.path.find((node) => node.classList.contains("palette")),
             strings = palette.querySelector(".colorStrings"),
             inputContainer = palette.querySelector(".colorInput"),
-            input = inputContainer.querySelector("input");
+            input = inputContainer.querySelector("input"),
+            options = palette.querySelector(".options");
         console.log({ palette, strings });
         strings.toggleAttribute("hidden");
+        options.toggleAttribute("hidden");
         inputContainer.toggleAttribute("hidden");
         input.focus();
     });
@@ -124,8 +120,9 @@ updateColorBtns.forEach((elem) => {
                 element.classList.contains("palette")
             ),
             editForm = palette.querySelector(".colorInput"),
-            colorStrings = palette.querySelector("#colorStrings"),
+            colorStrings = palette.querySelector(".colorStrings"),
             input = editForm.querySelector("input"),
+            options = palette.querySelector(".options"),
             selection = getColor(input.value),
             hex = palette.querySelector(".hex.string"),
             rgb = palette.querySelector(".rgb.string"),
@@ -139,8 +136,10 @@ updateColorBtns.forEach((elem) => {
             rgb.innerText = selection.rgbString;
             hsl.innerText = selection.hslString;
             colorStrings.toggleAttribute("hidden");
+            options.toggleAttribute("hidden");
             editForm.toggleAttribute("hidden");
             updateExampleText();
+            updateDetailsView(selection.hex, true);
 
         } else {
             console.log("Invalid Color");
@@ -156,10 +155,12 @@ updateCancelBtns.forEach((btn) => {
         var palette = e.path.find((elem) => elem.classList.contains("palette")),
             container = e.path.find((elem) => elem.classList.contains("section")),
             input = palette.querySelector("input"),
-            editForm = palette.querySelector(".colorInput");
+            editForm = palette.querySelector(".colorInput"),
+            options = palette.querySelector(".options");
         input.value = "";
         container.querySelector(".colorStrings").toggleAttribute("hidden");
         editForm.toggleAttribute("hidden");
+        options.toggleAttribute("hidden");
     });
 });
 
@@ -272,13 +273,6 @@ hslInputs.forEach(input => {
     })
 })
 
-/*
-
-MUTATION OBSERVERS
-
-*/
-
-
 const updateHslSliders = new MutationObserver(() => {
     console.log('HSL data changed');
     updateSliderBackgroundsHSL();
@@ -286,6 +280,7 @@ const updateHslSliders = new MutationObserver(() => {
 updateHslSliders.observe(document.getElementById('hslView'), {attributes: true, subtree: false, childList: false})
 
 function updateDetailsView(color = "#FFFFFF", updateSliderDiv = false) {
+    console.log("Updating Details View. Color:", color);
     let newColor = getColor(color),
         hexString = colorDetailsView.querySelector(".hex.string"),
         hslString = colorDetailsView.querySelector(".hsl.string"),
@@ -336,6 +331,12 @@ function updateSliders(color="#FFFFFF") {
     greenSlider.value = newColor.rgb.g;
     blueInput.value = newColor.rgb.b;
     blueSlider.value = newColor.rgb.b;
+    rgbView.setAttribute("data-red", newColor.rgb.r);
+    rgbView.setAttribute("data-green", newColor.rgb.g);
+    rgbView.setAttribute("data-blue", newColor.rgb.b);
+    hslView.setAttribute("data-hue", newColor.hsl.h);
+    hslView.setAttribute("data-saturation", newColor.hsl.s);
+    hslView.setAttribute("data-lightness", newColor.hsl.l);
 }
 
 let colorDetailInputs = document.querySelectorAll(".selectColor input");
@@ -370,13 +371,6 @@ exampleChangeObserver.observe(contrastExampleText, {
     attributeFilter: ["style"],
 });
 
-
-/*
-
-HELPERS
-
-*/
-
 function toggleApp(showApp = true) {
     if (showApp) {
         modalContainer.toggleAttribute("hidden", false);
@@ -407,19 +401,6 @@ function toggleView(selection) {
         }
     }
 }
-
-// function setDetailPalette(color) {
-//     let newColor = getColor(color),
-//         swatch = colorDetailsView.querySelector(".swatch"),
-//         hex = colorDetailsView.querySelector(".hex.string"),
-//         rgb = colorDetailsView.querySelector(".rgb.string"),
-//         hsl = colorDetailsView.querySelector(".hsl.string");
-//     swatch.style.backgroundColor = newColor.hex;
-//     hex.innerText = newColor.hex;
-//     rgb.innerText = newColor.rgbString;
-//     hsl.innerText = newColor.hslString;
-//     updateSliders(color);
-// }
 
 function setContrastPalette(color = "#FFFFFF", type = "font") {
     color = getColor(color);

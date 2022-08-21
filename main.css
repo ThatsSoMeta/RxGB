@@ -52,6 +52,18 @@ body * {
     font-weight: bold;
     padding: 5px;
 }
+
+#help {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: transparent;
+    background-image: url(./images/help-icon-2.png);
+    background-size: contain;
+    height: 20px;
+    width: 20px;
+}
+
 .selectColor {
     color: black;
     margin: 5px;
@@ -96,7 +108,6 @@ h1 {
 
 .colorStrings {
     width: 100%;
-    padding-top: 20px;
     background-color: white;
     color: black;
     border-top-left-radius: var(--normal-radius);
@@ -131,8 +142,6 @@ h1 {
 
 
 .options {
-    position: absolute;
-    bottom: 0;
     width: 100%;
 }
 
@@ -154,8 +163,30 @@ h1 {
     margin: 10px 0;
 }
 
+.colorInput .buttonContainer {
+    width: 80%;
+    margin: 5px auto;
+}
+
 .colorInput button {
     font-size: 12px;
+    width: 50%;
+    padding: 10px;
+    border: 4px solid black;
+    font-weight: bold;
+    border-radius: 0;
+}
+
+.colorInput button:first-child {
+    border-top-left-radius: var(--normal-radius);
+    border-bottom-left-radius: var(--normal-radius);
+    border-right-width: 2px;
+}
+
+.colorInput button:last-child {
+    border-top-right-radius: var(--normal-radius);
+    border-bottom-right-radius: var(--normal-radius);
+    border-left-width: 2px;
 }
 
 .colorInput input.invalid {
@@ -164,6 +195,10 @@ h1 {
 
 #contrastView .colorInput input {
     margin: 10px 0;
+}
+
+#colorDetailsView .colorInput {
+    padding-bottom: 10px;
 }
 
 .string,
@@ -274,39 +309,49 @@ button,
     margin: -5px 5px 0 5px;
 }
 
-.colorInput button {
-    padding: 10px;
-    border-radius: var(--normal-radius);
-    border: 5px solid black;
-    font-weight: bold;
-}
-
-#hslButtons {
+#hslButtons,
+#rgbButtons {
     margin-top: 15px;
 }
 
 #detailButtons button,
-#hslButtons button {
+#hslButtons button,
+#rgbButtons button {
     border-radius: 0;
     padding: 15px;
 }
 
-#detailButtons button:not(.edit),
-#hslButtons button {
+#detailButtons button:not(.edit) {
     min-height: 50px;
     width: 50%;
 }
 
-#detailButtons .setFont,
-#hslButtons .setFont {
-    border-bottom-left-radius: var(--small-radius);
+#hslButtons button,
+#rgbButtons button {
+    width: calc(100% / 3);
+    min-height: 50px;
+}
+
+.setFont {
     background-image: url(./images/font_icon.png);
 }
 
-#detailButtons .setBg,
-#hslButtons .setBg {
-    border-bottom-right-radius: var(--small-radius);
+.setBg {
     background-image: url(./images/bg_icon.png);
+}
+
+#detailButtons *:first-child,
+#hslButtons *:first-child,
+#rgbButtons *:first-child,
+#contrastView .options *:first-child {
+    border-bottom-left-radius: var(--small-radius);
+}
+
+#detailButtons *:last-child,
+#hslButtons *:last-child,
+#rgbButtons *:last-child,
+#contrastView .options *:last-child {
+    border-bottom-right-radius: var(--small-radius);
 }
 
 #detailButtons .edit {
@@ -347,14 +392,16 @@ button,
     width: 50%;
 }
 
-#contrastView .edit {
+#contrastView .edit,
+#hslButtons .edit,
+#rgbButtons .edit {
     background-image: url(./images/edit-pngrepo-com.png);
-    border-bottom-right-radius: var(--normal-radius);
 }
 
-#contrastView .examine {
+#contrastView .examine,
+#hslButtons .examine,
+#rgbButtons .examine {
     background-image: url(./images/search-look-inspect-magnifying-glass-pngrepo-com.png);
-    border-bottom-left-radius: var(--normal-radius);
 }
 
 .option {
@@ -552,7 +599,7 @@ input[type="range"] {
 
 #contrastView .swatch,
 #pageColorsView .swatch {
-    margin: 10px auto;
+    margin: 15px auto;
 }
 
 #hslSwatch,
@@ -568,6 +615,11 @@ input[type="range"] {
     transform: scale(1.5);
 }
 
+#detailSwatch {
+    margin-bottom: 20px;
+    background-color: var(--chosen);
+}
+
 /************ PALETTES *************/
 
 .palette {
@@ -581,10 +633,6 @@ input[type="range"] {
 
 #rgbPalette {
     width: 100%;
-}
-
-#contrastView .palette {
-    padding-bottom: 50px;
 }
 
 #hslPalette .title,
