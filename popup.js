@@ -144,7 +144,7 @@ updateColorBtns.forEach((elem) => {
             console.log("Invalid Color");
             input.style.border = "2px solid red";
             input.value = "";
-            input.placeholder = "Please enter a valid color value";
+            input.placeholder = "Invalid Color";
         }
     });
 });

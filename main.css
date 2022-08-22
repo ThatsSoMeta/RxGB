@@ -42,8 +42,17 @@ body * {
     margin: 10px auto;
     cursor: pointer;
     font-size: initial;
-    border: var(--border-width) solid var(--latte);
+    border: var(--border-width) solid black;
     background-color: white;
+}
+
+#helpView *:hover {
+    background-color: var(--peacock);
+}
+
+#helpView *:active {
+    color: white;
+    border-color: white;
 }
 
 .logo {
@@ -312,6 +321,7 @@ button,
 .view button:active {
     background-color: var(--peacock);
     color: white;
+    border-color: white;
 }
 
 .slider button {
@@ -489,17 +499,21 @@ input[type="number"]::-webkit-inner-spin-button {
 
 input[type=range]::-webkit-slider-thumb {
     transition: all .3s;
-    border: 2px solid black;
+    border: 3px solid black;
+    background: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 input[type="range"]:active::-webkit-slider-thumb {
     margin-top: -35px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
+    width: 25px;
+    height: 25px;
     border-bottom-right-radius: 0;
     transform: rotate(45deg);
-    -webkit-appearance: none;
 }
 
 #rgbView input[type="range"]:active::-webkit-slider-thumb {
