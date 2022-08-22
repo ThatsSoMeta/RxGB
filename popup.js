@@ -489,9 +489,9 @@ function setContrastPalette(color = "#FFFFFF", type = "font") {
     rgb.innerText = color.rgbString;
     hsl.innerText = color.hslString;
     if (type === "font") {
-        contrastExampleText.style.color = color.hex;
+        document.querySelector(":root").style.setProperty("--fontColor", color.hex);
     } else if (type === "bg") {
-        contrastExampleText.style.backgroundColor = color.hex;
+        document.querySelector(":root").style.setProperty("--bgColor", color.hex);
     }
     updateDetailsView(color.hex, true);
     return color;

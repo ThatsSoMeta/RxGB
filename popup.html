@@ -305,7 +305,7 @@
                     </div>
                 </div>
             </div>
-            <div id="contrastView" class="view contrast">
+            <div id="contrastView" class="view contrast" data-opacity=100>
                 <div id="fontColor" class="section half">
                     <h3 class="label">Font</h3>
                     <div class="subsection palette">
@@ -365,6 +365,32 @@
                                 class="option edit"
                                 title="Edit color"
                             ></button>
+                        </div>
+                    </div>
+                </div>
+                <div id="opacityContainer">
+                    <div id="opacitySelector" class="selectColor opacity">
+                        <h3 class="title opacity">Opacity</h3>
+                        <input
+                            type="number"
+                            class="valueInput opacity"
+                            min=0
+                            max=100
+                            value=100
+                        />
+                        <div class="slider opacity">
+                            <button class="minus action opacity"></button>
+                            <input
+                                type="range"
+                                name="range"
+                                id="opacityRange"
+                                step=1
+                                min=0
+                                max=100
+                                value=100
+                                class="opacity range"
+                            />
+                            <button class="plus action opacity"></button>
                         </div>
                     </div>
                 </div>

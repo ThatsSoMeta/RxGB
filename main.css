@@ -9,6 +9,8 @@
     --chosen: #ffffff;
     --rgb: rgb(255, 255, 255);
     --hsl: hsl(0,0%,100%);
+    --bgColor: rgb(255, 255, 255);
+    --fontColor: rgb(0, 0, 0);
     --active-tab-bg-color: #424242;
     --active-tab-color: white;
     --inactive-tab-bg-color: black;
@@ -97,7 +99,6 @@ body * {
 
 .selectColor {
     color: black;
-    margin: 5px;
 }
 
 .subsection {
@@ -118,11 +119,11 @@ body * {
 }
 
 #exampleText {
-    margin: 10px 50px;
+    margin: 10px 30px;
     padding: 10px;
     font-size: 18px;
-    background-color: white;
-    color: black;
+    background-color: var(--bgColor);
+    color: var(--fontColor);
 }
 
 .title, .label, h3 {
@@ -131,6 +132,13 @@ body * {
 
 h1 {
     font-size: 18px;
+}
+
+#opacityContainer {
+    background-color: white;
+    border-radius: var(--normal-radius);
+    padding: 5px 0 10px;
+    margin: 5px 30px;
 }
 
 #contrast-tiers {
@@ -156,7 +164,7 @@ h1 {
     border-width: var(--border-width);
     border-color: var(--chilli);
     background-color: white;
-    width: calc(50% - 10px);
+    width: calc(25% - 10px);
     margin: 5px;
     line-height: 35px;
     display: inline-block;
@@ -171,6 +179,9 @@ h1 {
     font-size: 12px;
 }
 
+.contrast.ratio {
+    margin: 5px;
+}
 
 .options {
     width: 100%;
@@ -261,7 +272,7 @@ h1 {
 }
 
 #contrastLevelLabel {
-    margin-bottom: 0;
+    margin: 0;
 }
 
 /****** 
@@ -277,6 +288,13 @@ VIEWS
     padding: 10px;
     position: relative;
     width: 350px;
+    overflow: scroll;
+    max-height: 475px;
+}
+
+#contrastView.active,
+#pageColorsView.active {
+    padding-top: 0;
 }
 
 .view:not(.active) * {
@@ -426,9 +444,10 @@ button,
 }
 
 #contrastView .option {
-    height: 50px;
+    height: 30px;
     border-radius: 0;
     width: 50%;
+    background-size: 25%;
 }
 
 .edit {
@@ -485,12 +504,20 @@ input {
     border: 3px solid var(--peacock);
 }
 
-input[type="number"] {
+input[type=number] {
     height: 40px;
     width: 40px;
     border-radius: 50%;
     font-weight: bold;
     font-size: 12px;
+}
+
+.valueInput.opacity {
+    margin-top: -5px;
+}
+
+.title.opacity {
+    margin-top: 3px;
 }
 
 input[type="number"]::-webkit-inner-spin-button {
@@ -516,20 +543,24 @@ input[type="range"]:active::-webkit-slider-thumb {
     transform: rotate(45deg);
 }
 
-#rgbView input[type="range"]:active::-webkit-slider-thumb {
+#rgbView input[type=range]:active::-webkit-slider-thumb {
     background: var(--rgb);
 }
 
-#hslView input[type="range"]:active::-webkit-slider-thumb {
+#hslView input[type=range]:active::-webkit-slider-thumb {
     background: var(--hsl);
 }
 
-input[type="range"] {
+input[type=range] {
     border-radius: var(--small-radius);
     height: 7px;
     outline: none;
     -webkit-appearance: none;
     vertical-align: top;
+}
+
+.opacity[type=range] {
+    background: linear-gradient(90deg, var(--bgColor), var(--fontColor));
 }
 
 .hue.slider input {
@@ -605,21 +636,13 @@ input[type="range"] {
     width: calc(50% - 10px);
     font-size: 12px;
     display: inline-block;
-    margin-bottom: 5px;
+    margin: 0 5px 5px;
 }
 
 #fontColors,
 #bgColors {
     overflow-y: scroll;
     max-height: 400px;
-}
-
-#fontColor {
-    margin-right: 5px;
-}
-
-#bgColor {
-    margin-left: 5px;
 }
 
 #contrastView .section {
@@ -649,7 +672,7 @@ input[type="range"] {
 
 #contrastView .swatch,
 #pageColorsView .swatch {
-    margin: 15px auto;
+    margin: 10px auto;
 }
 
 #hslSwatch,
