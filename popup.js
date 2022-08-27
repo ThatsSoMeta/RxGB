@@ -193,17 +193,22 @@ actionToggles.forEach((btn) => {
                 let red = Number(view.getAttribute("data-red")),
                 green = Number(view.getAttribute("data-green")),
                 blue = Number(view.getAttribute("data-blue"));
-                document.querySelector(":root").style.setProperty("--rgb", `rgb(${red}, ${green}, ${blue})`);
+                setCSSVariable("--rgb", `rgb(${red}, ${green}, ${blue})`);
             }
             if (type === "hsl") {
                 let hue = Number(view.getAttribute("data-hue")),
                 saturation = Number(view.getAttribute("data-saturation")),
                 lightness = Number(view.getAttribute("data-lightness"));
-                document.querySelector(":root").style.setProperty("--hsl", `hsl(${hue}, ${saturation}%, ${lightness}%)`);
+                setCSSVariable("--hsl", `hsl(${hue}, ${saturation}%, ${lightness}%)`);
             }
         }
         if (type === "contrast") {
-            selectColor.setAttribute("data-opacity", newVal);
+            let red = document.querySelector("[data-red]").getAttribute("data-red"),
+                green = document.querySelector("[data-green]").getAttribute("data-green"),
+                blue = document.querySelector("[data-blue]").getAttribute("data-blue"),
+                opacity = newVal;
+            selectColor.setAttribute("data-opacity", opacity);
+            setCSSVariable("--fontColorWithOpacity", `rgba(${red}, ${green}, ${blue}, ${opacity/100})`);
         }
     })
 })
@@ -234,17 +239,23 @@ ranges.forEach(range => {
                 let red = Number(view.getAttribute("data-red")),
                 green = Number(view.getAttribute("data-green")),
                 blue = Number(view.getAttribute("data-blue"));
-                document.querySelector(":root").style.setProperty("--rgb", `rgb(${red}, ${green}, ${blue})`);
+                setCSSVariable("--rgb", `rgb(${red}, ${green}, ${blue})`);
             }
             if (type === "hsl") {
                 let hue = Number(view.getAttribute("data-hue")),
                 saturation = Number(view.getAttribute("data-saturation")),
                 lightness = Number(view.getAttribute("data-lightness"));
-                document.querySelector(":root").style.setProperty("--hsl", `hsl(${hue}, ${saturation}%, ${lightness}%)`);
+                setCSSVariable("--hsl", `hsl(${hue}, ${saturation}%, ${lightness}%)`);
             }
         }
         if (type === "contrast") {
-            selectColor.setAttribute("data-opacity", value);
+            let red = document.querySelector("[data-red]").getAttribute("data-red"),
+                green = document.querySelector("[data-green]").getAttribute("data-green"),
+                blue = document.querySelector("[data-blue]").getAttribute("data-blue"),
+                opacity = value;
+            selectColor.setAttribute("data-opacity", opacity);
+            setCSSVariable("--fontColorWithOpacity", `rgba(${red}, ${green}, ${blue}, ${opacity/100})`);
+
         }
     })
 })
@@ -273,17 +284,25 @@ colorInputFields.forEach(input => {
                 let red = Number(view.getAttribute("data-red")),
                 green = Number(view.getAttribute("data-green")),
                 blue = Number(view.getAttribute("data-blue"));
-                document.querySelector(":root").style.setProperty("--rgb", `rgb(${red}, ${green}, ${blue})`);
+                setCSSVariable("--rgb", `rgb(${red}, ${green}, ${blue})`);
             }
             if (type === "hsl") {
                 let hue = Number(view.getAttribute("data-hue")),
                 saturation = Number(view.getAttribute("data-saturation")),
                 lightness = Number(view.getAttribute("data-lightness"));
-                document.querySelector(":root").style.setProperty("--hsl", `hsl(${hue}, ${saturation}%, ${lightness}%)`);
+                setCSSVariable("--hsl", `hsl(${hue}, ${saturation}%, ${lightness}%)`);
             }
         }
         if (type === "contrast") {
-            selectColor.setAttribute("data-opacity", value);
+            let red = document.querySelector("[data-red]").getAttribute("data-red"),
+                green = document.querySelector("[data-green]").getAttribute("data-green"),
+                blue = document.querySelector("[data-blue]").getAttribute("data-blue"),
+                opacity = value;
+            let fontColorDiv = document.getElementById("fontColor"),
+                currentFontColor = fontColorDiv.querySelector('.rgb.string').innerText,
+                colorObj = getColor(currentFontColor);
+            selectColor.setAttribute("data-opacity", opacity);
+            setCSSVariable("--fontColorWithOpacity", `rgba(${red}, ${green}, ${blue}, ${opacity/100})`);
         }
     })
 })
@@ -366,7 +385,7 @@ setColorBtns.forEach((btn) => {
             }
         }
         updateDetailsView(color, true);
-        document.querySelector(":root").style.setProperty("--chosen", color);
+        setCSSVariable("--chosen", color);
         if (type === "examine") {
             toggleView(colorDetailsView);
         } else {
@@ -394,9 +413,9 @@ function updateDetailsView(color = "#FFFFFF", updateSliderDiv = false) {
     luminanceString.innerText = Math.round(
         Number(newColor.luminance.toFixed(2) * 100)
     );
-    document.querySelector(":root").style.setProperty("--chosen", color);
-    document.querySelector(":root").style.setProperty("--rgb", color);
-    document.querySelector(":root").style.setProperty("--hsl", color);
+    setCSSVariable("--chosen", color);
+    setCSSVariable("--rgb", color);
+    setCSSVariable("--hsl", color);
     if (updateSliderDiv) {
         updateSliders(color);
     }
@@ -520,10 +539,10 @@ function setContrastPalette(color = "#FFFFFF", type = "font") {
     hsl.innerText = color.hslString;
     container.setAttribute("data-hex", color.hex);
     if (type === "font") {
-        document.querySelector(":root").style.setProperty("--fontColor", color.hex);
-        document.querySelector(":root").style.setProperty("--fontColorWithOpacity", color.hex);
+        setCSSVariable("--fontColor", color.hex);
+        setCSSVariable("--fontColorWithOpacity", color.hex);
     } else if (type === "bg") {
-        document.querySelector(":root").style.setProperty("--bgColor", color.hex);
+        setCSSVariable("--bgColor", color.hex);
     }
     updateDetailsView(color.hex, true);
     updateContrastData();
@@ -894,6 +913,9 @@ function getColor(input) {
 
 function getColorWithOpacity(fontColor=getColor("#000000"), bgColor=getColor("#FFFFFF"), opacity=100) {
     console.log({fontColor, bgColor, opacity});
+    let fontColorObj = getColor(fontColor),
+        newColor = `rgba(${fontColorObj.rgb.r}, ${fontColorObj.rgb.g}, ${fontColorObj.rgb.b}, ${opacity/100})`;
+        setCSSVariable("--fontColorWithOpacity", newColor);
 }
 
 let opacityContainer = document.getElementById("opacityContainer"),
@@ -901,6 +923,10 @@ let opacityContainer = document.getElementById("opacityContainer"),
     opacityAddBtn = document.querySelector(".plus.action.opacity"),
     opacitySubBtn = document.querySelector(".minus.action.opacity"),
     opacityInput = document.querySelector(".valueInput.opacity");
+
+function setCSSVariable(property, value) {
+    document.querySelector(":root").style.setProperty(property, value);
+}
 
 
 
