@@ -305,10 +305,10 @@
                     </div>
                 </div>
             </div>
-            <div id="contrastView" class="view contrast" data-opacity=100>
-                <div id="fontColor" class="section half">
+            <div id="contrastView" class="view contrast">
+                <div id="fontColor" class="section half font">
                     <h3 class="label">Font</h3>
-                    <div class="subsection palette">
+                    <div class="subsection palette" data-hex="#000000">
                         <div
                             class="swatch"
                             style="background-color: #000000"
@@ -337,9 +337,9 @@
                         </div>
                     </div>
                 </div>
-                <div id="bgColor" class="section half">
+                <div id="bgColor" class="section half bg">
                     <h3 class="label">Background</h3>
-                    <div class="subsection palette">
+                    <div class="subsection palette" data-hex="#FFFFFF">
                         <div
                             class="swatch"
                             style="background-color: #000000"
@@ -368,14 +368,15 @@
                         </div>
                     </div>
                 </div>
-                <div id="opacityContainer">
-                    <div id="opacitySelector" class="selectColor opacity">
+                <div id="opacityContainer" class="section">
+                    <div id="opacitySelector" class="selectColor opacity" data-opacity=100>
                         <h3 class="title opacity">Opacity</h3>
                         <input
                             type="number"
                             class="valueInput opacity"
                             min=0
                             max=100
+                            step=1
                             value=100
                         />
                         <div class="slider opacity">

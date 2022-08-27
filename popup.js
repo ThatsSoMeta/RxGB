@@ -48,6 +48,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
             );
             setContrastPalette("#FFFFFF", "bg");
             setContrastPalette("#000000", "font");
+            updateContrastData();
             updateDetailsView("#FFFFFF", true);
             let white = getColor("#FFFFFF");
             document
@@ -87,7 +88,7 @@ var contrastPaletteExamine = [
 ];
 contrastPaletteExamine.forEach((elem) => {
     elem.addEventListener("click", (e) => {
-        var palette = e.path.find((elem) => elem.classList.contains("palette")),
+        var palette = e.composedPath().find((elem) => elem.classList.contains("palette")),
             currentColor = palette.querySelector(".hex").innerText;
         // setDetailPalette(currentColor);
         updateDetailsView(currentColor, true);
@@ -98,7 +99,7 @@ contrastPaletteExamine.forEach((elem) => {
 var editColorBtns = document.querySelectorAll(".option.edit");
 editColorBtns.forEach((elem) => {
     elem.addEventListener("click", (e) => {
-        var palette = e.path.find((node) => node.classList.contains("palette")),
+        var palette = e.composedPath().find((node) => node.classList.contains("palette")),
             strings = palette.querySelector(".colorStrings"),
             inputContainer = palette.querySelector(".colorInput"),
             input = inputContainer.querySelector("input"),
@@ -115,7 +116,7 @@ var updateColorBtns = document.querySelectorAll(".palette .updateBtn"),
     updateCancelBtns = document.querySelectorAll(".updateCancelBtn");
 updateColorBtns.forEach((elem) => {
     elem.addEventListener("click", (e) => {
-        var palette = e.path.find((element) =>
+        var palette = e.composedPath().find((element) =>
                 element.classList.contains("palette")
             ),
             editForm = palette.querySelector(".colorInput"),
@@ -151,8 +152,8 @@ updateColorBtns.forEach((elem) => {
 
 updateCancelBtns.forEach((btn) => {
     btn.addEventListener("click", (e) => {
-        var palette = e.path.find((elem) => elem.classList.contains("palette")),
-            container = e.path.find((elem) => elem.classList.contains("section")),
+        var palette = e.composedPath().find((elem) => elem.classList.contains("palette")),
+            container = e.composedPath().find((elem) => elem.classList.contains("section")),
             input = palette.querySelector("input"),
             editForm = palette.querySelector(".colorInput"),
             options = palette.querySelector(".options");
@@ -166,37 +167,43 @@ updateCancelBtns.forEach((btn) => {
 let actionToggles = document.querySelectorAll(".action");
 actionToggles.forEach((btn) => {
     btn.addEventListener("click", (e) => {
-        let view = e.path.find(elem => elem.classList.contains("view")),
+        let view = e.composedPath().find(elem => elem.classList.contains("view")),
+            selectColor = e.composedPath().find(elem => elem.classList.contains("selectColor")),
             type = Array.from(view.classList).filter(item => item !== "view" && item !== "active")[0],
             attribute = Array.from(e.target.classList).filter((attr) => !["plus", "minus", "action"].includes(attr))[0],
             increment = e.target.classList.contains("plus") ? 1 : -1,
-            currentVal = Number(view.getAttribute(`data-${attribute}`)),
+            currentVal = selectColor.classList.contains("opacity") ? Number(selectColor.getAttribute("data-opacity")) : Number(view.getAttribute(`data-${attribute}`)),
             newVal = currentVal + increment,
-            localInputs = view.querySelectorAll(`input.${attribute}`),
-            swatch = view.querySelector(".swatch"),
+            localInputs = selectColor.querySelectorAll("input"),
             min = Number(localInputs[0].getAttribute("min")),
             max = Number(localInputs[0].getAttribute("max"));
+        console.log(newVal);
         if (newVal > max) {
             newVal = max;
         }
         if (newVal < min) {
             newVal = min;
         }
-        view.setAttribute(`data-${attribute}`, newVal);
         localInputs.forEach(input => {
             input.value = newVal;
         });
-        if (type === "rgb") {
-            let red = Number(view.getAttribute("data-red")),
+        if (type === "rgb" || type==="hsl") {
+            view.setAttribute(`data-${attribute}`, newVal);
+            if (type === "rgb") {
+                let red = Number(view.getAttribute("data-red")),
                 green = Number(view.getAttribute("data-green")),
                 blue = Number(view.getAttribute("data-blue"));
-            document.querySelector(":root").style.setProperty("--rgb", `rgb(${red}, ${green}, ${blue})`);
-        }
-        if (type === "hsl") {
-            let hue = Number(view.getAttribute("data-hue")),
+                document.querySelector(":root").style.setProperty("--rgb", `rgb(${red}, ${green}, ${blue})`);
+            }
+            if (type === "hsl") {
+                let hue = Number(view.getAttribute("data-hue")),
                 saturation = Number(view.getAttribute("data-saturation")),
                 lightness = Number(view.getAttribute("data-lightness"));
-            document.querySelector(":root").style.setProperty("--hsl", `hsl(${hue}, ${saturation}%, ${lightness}%)`);
+                document.querySelector(":root").style.setProperty("--hsl", `hsl(${hue}, ${saturation}%, ${lightness}%)`);
+            }
+        }
+        if (type === "contrast") {
+            selectColor.setAttribute("data-opacity", newVal);
         }
     })
 })
@@ -204,25 +211,41 @@ actionToggles.forEach((btn) => {
 let ranges = document.querySelectorAll("input[type=range]");
 ranges.forEach(range => {
     range.addEventListener("input", (e) => {
-        let view = e.path.find(elem => elem.classList.contains("view")),
+        let view = e.composedPath().find(elem => elem.classList.contains("view")),
             type = Array.from(view.classList).filter(item => item !== "view" && item !== "active")[0],
-            selectColor = e.path.find(elem => elem.classList.contains("selectColor")),
+            selectColor = e.composedPath().find(elem => elem.classList.contains("selectColor")),
             attribute = Array.from(selectColor.classList).filter(item => item !== "selectColor")[0],
-            otherInput = selectColor.querySelector(".valueInput");
-        otherInput.value = e.target.value;
-        view.setAttribute(`data-${attribute}`, e.target.value);
-        if (type === "rgb") {
-            let red = Number(view.getAttribute("data-red")),
+            otherInput = selectColor.querySelector(".valueInput"),
+            value = Number(e.target.value),
+            max = Number(e.target.max),
+            min = Number(e.target.min);
+
+        if (value > max) {
+            value = max;
+        }
+        if (value < min) {
+            value = min;
+        }
+        e.target.value = value;
+        otherInput.value = value;
+        if (type === "rgb" || type === "hsl") {
+            view.setAttribute(`data-${attribute}`, e.target.value);
+            if (type === "rgb") {
+                let red = Number(view.getAttribute("data-red")),
                 green = Number(view.getAttribute("data-green")),
                 blue = Number(view.getAttribute("data-blue"));
                 document.querySelector(":root").style.setProperty("--rgb", `rgb(${red}, ${green}, ${blue})`);
             }
-        if (type === "hsl") {
-            let hue = Number(view.getAttribute("data-hue")),
+            if (type === "hsl") {
+                let hue = Number(view.getAttribute("data-hue")),
                 saturation = Number(view.getAttribute("data-saturation")),
                 lightness = Number(view.getAttribute("data-lightness"));
                 document.querySelector(":root").style.setProperty("--hsl", `hsl(${hue}, ${saturation}%, ${lightness}%)`);
             }
+        }
+        if (type === "contrast") {
+            selectColor.setAttribute("data-opacity", value);
+        }
     })
 })
 
@@ -232,9 +255,9 @@ colorInputFields.forEach(input => {
         let max = Number(e.target.max),
             min = Number(e.target.min),
             range = e.target.parentElement.querySelector("input[type=range]"),
-            view = e.path.find(elem => elem.classList.contains("view")),
+            view = e.composedPath().find(elem => elem.classList.contains("view")),
             type = Array.from(view.classList).filter(item => item !== "view" && item !== "active")[0],
-            selectColor = e.path.find(elem => elem.classList.contains("selectColor")),
+            selectColor = e.composedPath().find(elem => elem.classList.contains("selectColor")),
             attribute = Array.from(selectColor.classList).filter(item => item !== "selectColor")[0];
         if (Number(e.target.value) > max) {
             e.target.value = max;
@@ -244,19 +267,24 @@ colorInputFields.forEach(input => {
         }
         let value = Number(e.target.value);
         range.value = value;
-        view.setAttribute(`data-${attribute}`, e.target.value);
-        if (type === "rgb") {
-            let red = Number(view.getAttribute("data-red")),
+        if (type === "rgb" || type === "hsl") {
+            view.setAttribute(`data-${attribute}`, e.target.value);
+            if (type === "rgb") {
+                let red = Number(view.getAttribute("data-red")),
                 green = Number(view.getAttribute("data-green")),
                 blue = Number(view.getAttribute("data-blue"));
                 document.querySelector(":root").style.setProperty("--rgb", `rgb(${red}, ${green}, ${blue})`);
             }
-        if (type === "hsl") {
-            let hue = Number(view.getAttribute("data-hue")),
+            if (type === "hsl") {
+                let hue = Number(view.getAttribute("data-hue")),
                 saturation = Number(view.getAttribute("data-saturation")),
                 lightness = Number(view.getAttribute("data-lightness"));
                 document.querySelector(":root").style.setProperty("--hsl", `hsl(${hue}, ${saturation}%, ${lightness}%)`);
             }
+        }
+        if (type === "contrast") {
+            selectColor.setAttribute("data-opacity", value);
+        }
     })
 })
 
@@ -302,7 +330,7 @@ helpButton.addEventListener("click", (e) => {
 
 setColorBtns.forEach((btn) => {
     btn.addEventListener("click", (e) => {
-        let view = e.path.find(elem => elem.classList.contains("view")),
+        let view = e.composedPath().find(elem => elem.classList.contains("view")),
             type = e.target.classList.contains("setFont") ? "font" : e.target.classList.contains("setBg") ? "bg" : "examine",
             color;
         console.log({type});
@@ -317,8 +345,8 @@ setColorBtns.forEach((btn) => {
                 lightness = Number(view.getAttribute("data-lightness"));
             color = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
         } else {
-            let palette = e.path.find((elem) => elem.classList.contains("palette"));
-            if (e.path.find(elem => elem.id === "detailButtons")) {
+            let palette = e.composedPath().find((elem) => elem.classList.contains("palette"));
+            if (e.composedPath().find(elem => elem.id === "detailButtons")) {
                 var hex = palette.querySelector(".hex");
                 color = hex.innerText;
             } else if (palette.querySelector(".colorDataDiv")) {
@@ -329,7 +357,7 @@ setColorBtns.forEach((btn) => {
                     lightness = colorDetailsDiv.getAttribute("data-lightness");
                 color = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
                 console.log({color});
-            } else if (e.path.find(elem => elem.id === "fontColor" || elem.id === "bgColor")) {
+            } else if (e.composedPath().find(elem => elem.id === "fontColor" || elem.id === "bgColor")) {
                 console.log({palette});
                 color = palette.querySelector(".hsl.string").innerText;
             } else {
@@ -416,7 +444,7 @@ function updateSliders(color="#FFFFFF") {
 
 let colorDetailInputs = document.querySelectorAll(".selectColor input");
 
-const exampleChangeObserver = new MutationObserver(function () {
+function updateContrastData () {
     var style = window.getComputedStyle(contrastExampleText),
         color = getColor(style.color),
         bgColor = getColor(style.backgroundColor),
@@ -440,7 +468,9 @@ const exampleChangeObserver = new MutationObserver(function () {
     } else {
         contrastAAASmall.style.borderColor = "";
     }
-});
+}
+
+const exampleChangeObserver = new MutationObserver(updateContrastData);
 
 exampleChangeObserver.observe(contrastExampleText, {
     attributeFilter: ["style"],
@@ -488,12 +518,15 @@ function setContrastPalette(color = "#FFFFFF", type = "font") {
     hex.innerText = color.hex;
     rgb.innerText = color.rgbString;
     hsl.innerText = color.hslString;
+    container.setAttribute("data-hex", color.hex);
     if (type === "font") {
         document.querySelector(":root").style.setProperty("--fontColor", color.hex);
+        document.querySelector(":root").style.setProperty("--fontColorWithOpacity", color.hex);
     } else if (type === "bg") {
         document.querySelector(":root").style.setProperty("--bgColor", color.hex);
     }
     updateDetailsView(color.hex, true);
+    updateContrastData();
     return color;
 }
 
@@ -564,7 +597,7 @@ function collectNativeColors(fontColors, bgColors) {
             "Click to select font color and to see details about this color.";
         websiteFontColorDiv.append(colorContainer);
         selectBtn.addEventListener("click", (e) => {
-            var currentColor = e.path.find((elem) => elem.nodeName === "BUTTON")
+            var currentColor = e.composedPath().find((elem) => elem.nodeName === "BUTTON")
                 .previousElementSibling.previousElementSibling.textContent;
             setContrastPalette(currentColor, "font");
             updateDetailsView(currentColor);
@@ -618,7 +651,7 @@ function collectNativeColors(fontColors, bgColors) {
             "Click to select background color and to see details about this color.";
         websiteBgColorDiv.append(colorContainer);
         selectBtn.addEventListener("click", (e) => {
-            var currentColor = e.path.find((elem) => elem.nodeName === "BUTTON")
+            var currentColor = e.composedPath().find((elem) => elem.nodeName === "BUTTON")
                 .previousElementSibling.previousElementSibling.textContent;
             setContrastPalette(currentColor, "bg");
             updateDetailsView(currentColor, true);
@@ -858,6 +891,18 @@ function getColor(input) {
     };
     return result;
 }
+
+function getColorWithOpacity(fontColor=getColor("#000000"), bgColor=getColor("#FFFFFF"), opacity=100) {
+    console.log({fontColor, bgColor, opacity});
+}
+
+let opacityContainer = document.getElementById("opacityContainer"),
+    opacityRange = document.getElementById("opacityRange"),
+    opacityAddBtn = document.querySelector(".plus.action.opacity"),
+    opacitySubBtn = document.querySelector(".minus.action.opacity"),
+    opacityInput = document.querySelector(".valueInput.opacity");
+
+
 
 // https://www.reddit.com/r/learnjavascript/comments/31glai/color_selector_help/
 // function toggleColorPicker(enable=true) {
