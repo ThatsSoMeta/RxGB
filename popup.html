@@ -52,6 +52,7 @@
                 >
                     Page Colors
                 </button>
+                <button id="colorGraphTab" class="tab colorGraph" data-ref="#colorGraphView">Color Graph</button>
             </div>
             <div id="colorDetailsView" class="view details active">
                 <div id="detailPalette" class="section full primary palette">
@@ -426,6 +427,10 @@
                     <h3 class="label">Background</h3>
                     <div id="bgColors" class="subsection"></div>
                 </div>
+            </div>
+            <div id="colorGraphView" class="view colorGraph">
+                <h1 id="graphHeader">This is a color graph</h1>
+                <div id="colorGraph"></div>
             </div>
         </div>
         <script src="popup.js"></script>

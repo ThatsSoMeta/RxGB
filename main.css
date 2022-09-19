@@ -314,7 +314,7 @@ VIEWS
     font-weight: bold;
     font-size: 12px;
     vertical-align: bottom;
-    width: 20%;
+    width: calc(100% / 6);
     height: 45px;
 }
 
@@ -729,4 +729,11 @@ input[type=range] {
 .color.container.palette {
     width: calc(100% - 10px);
     margin-bottom: 10px;
+}
+
+#colorGraph {
+    width: 325px;
+    height: 325px;
+    margin: 0 auto;
+    position: relative;
 }

@@ -926,6 +926,32 @@ let opacityContainer = document.getElementById("opacityContainer"),
 
 function setCSSVariable(property, value) {
     document.querySelector(":root").style.setProperty(property, value);
+    if (property === '--chosen') {
+        setColorGraph(value);
+    }
+}
+
+function setColorGraph(color="rgb(255, 0, 0)") {
+    let colorObj = getColor(color),
+        colorGraph = document.querySelector("#colorGraph"),
+        hue = colorObj.hsl.h,
+        trueColor = `hsl(${hue}, 100%, 50%)`;
+    colorGraph.style.background = `linear-gradient(90deg, black, ${trueColor}, white)`;
+    colorGraph.innerHTML = "";
+    let inc = 100;
+    for (let i = 0; i <= inc; i++) {
+        let point = document.createElement("div");
+        point.style.height = "8px";
+        point.style.width = "8px";
+        point.style.backgroundColor = "white";
+        point.style.borderRadius = "50%";
+        point.style.border = "2px solid black";
+        point.style.position = "absolute";
+        point.style.left = `calc(${100/inc * i}% - 4px)`;
+        point.style.bottom = `calc(${getColor(`hsl(${hue}, 100%, ${100/inc * i}%)`).luminance * 100}% - 4px)`;
+        // console.log({trueColorObj: getColor(trueColor)});
+        colorGraph.append(point);
+    }
 }
 
 
